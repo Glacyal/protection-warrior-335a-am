@@ -26,6 +26,8 @@ def build_alerts_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
             "internalVersion": 90,
+            "anchorPoint": "CENTER",
+            "selfPoint": "CENTER",
             "xOffset": 0,
             "yOffset": 78,
             "controlledChildren": [

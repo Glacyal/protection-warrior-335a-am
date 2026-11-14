@@ -84,11 +84,6 @@ def build_buffs_auras() -> list[dict]:
                 "Battle Shout - Active",
                 "Battle Shout - OFF",
             ],
-            "actions": {
-                "init": {"do_custom": True, "custom": f"_G.PWHUD_GetPlayerBuffs = {SHARED_GET_PLAYER_BUFFS_LUA}"},
-                "start": {},
-                "finish": {},
-            },
         },
         {
             "id": "Battle Shout - Active",
@@ -187,11 +182,6 @@ def build_buffs_auras() -> list[dict]:
                 "Commanding Shout - Active",
                 "Commanding Shout - OFF",
             ],
-            "actions": {
-                "init": {"do_custom": True, "custom": f"_G.PWHUD_GetPlayerBuffs = {SHARED_GET_PLAYER_BUFFS_LUA}"},
-                "start": {},
-                "finish": {},
-            },
         },
         {
             "id": "Commanding Shout - Active",

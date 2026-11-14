@@ -78,6 +78,8 @@ def build_stats_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
             "internalVersion": 90,
+            "anchorPoint": "CENTER",
+            "selfPoint": "CENTER",
             "xOffset": -190,
             "yOffset": -45,
             "controlledChildren": [

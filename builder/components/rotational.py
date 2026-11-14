@@ -99,6 +99,8 @@ def build_rotational_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
             "internalVersion": 90,
+            "anchorPoint": "CENTER",
+            "selfPoint": "CENTER",
             "xOffset": 0,
             "yOffset": -7,
             "controlledChildren": [
