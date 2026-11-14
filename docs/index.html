@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Warrior (Protection) — HUD Simulator & 1:1 Interactive Showcase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Share+Tech+Mono&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --prot-blue: #1e88e5;
+            --prot-dark-blue: #0d47a1;
+            --prot-steel: #607d8b;
+            --warrior-red: #c71e1e;
+            --warrior-gold: #ffd700;
+            --castbar-cyan: #00e5ff;
+            --bg-dark: #06080d;
+            --border-dark: #192231;
+            --border-light: #2a374e;
+            --text-main: #e2e8f0;
+            --text-muted: #8ca0b8;
+            --cap-green: #22c55e;
+            --crit-red: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 50% 5%, rgba(30, 136, 229, 0.18) 0%, transparent 55%),
+                radial-gradient(circle at 85% 90%, rgba(255, 215, 0, 0.08) 0%, transparent 45%),
+                linear-gradient(180deg, #05070a 0%, #0b111a 100%);
+        }
+
+        header {
+            text-align: center;
+            padding: 24px 20px 14px;
+            width: 100%;
+            max-width: 1150px;
+        }
+        .badge-header {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(30, 136, 229, 0.15);
+            border: 1px solid rgba(30, 136, 229, 0.4);
+            color: #64b5f6;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+        h1 {
+            color: #fff;
+            font-size: 26px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 20px rgba(30, 136, 229, 0.5);
+            margin-bottom: 4px;
+        }
+        h1 span { color: #42a5f5; }
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 13.5px;
+            max-width: 860px;
+            margin: 0 auto 14px;
+            line-height: 1.5;
+        }
+
+        /* Action buttons bar */
+        .action-bar {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #131a26;
+            color: #cbd5e1;
+            border: 1px solid var(--border-light);
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.4);
+            text-decoration: none;
+        }
+        .nav-btn:hover {
+            background: #1c273b;
+            color: #fff;
+            border-color: #42a5f5;
+            transform: translateY(-1px);
+        }
+        .nav-btn.primary {
+            background: linear-gradient(135deg, #1976d2, #0d47a1);
+            color: #fff;
+            border-color: #64b5f6;
+            box-shadow: 0 4px 14px rgba(30, 136, 229, 0.4);
+        }
+        .nav-btn.primary:hover {
+            background: linear-gradient(135deg, #2196f3, #1565c0);
+            box-shadow: 0 6px 18px rgba(30, 136, 229, 0.6);
+        }
+
+        /* Layout Grid */
+        .main-container {
+            display: flex;
+            gap: 22px;
+            max-width: 1200px;
+            width: 100%;
+            padding: 0 16px 36px;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        /* HUD Simulator Canvas */
+        .sim-wrapper {
+            background: #090d14;
+            border: 1px solid var(--border-dark);
+            border-radius: 12px;
+            padding: 24px;
+            width: 520px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+        .sim-title {
+            align-self: flex-start;
+            font-size: 12px;
+            font-weight: 700;
+            color: #94a3b8;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sim-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--cap-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--cap-green);
+        }
+
+        /* WoW HUD Elements */
+        .hud-area {
+            width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            min-height: 480px;
+        }
+
+        /* Alert Box */
+        .alert-box {
+            min-height: 54px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: 8px;
+            padding: 6px 14px;
+            width: 100%;
+            transition: all 0.25s ease;
+        }
+        .alert-box.golden {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+        .alert-box.hidden { display: none; }
+        .alert-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 4px;
+            border: 2px solid #ef4444;
+            background: #200505;
+            object-fit: cover;
+        }
+        .alert-box.golden .alert-icon { border-color: #ffd700; }
+        .alert-text {
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1.3;
+            text-align: left;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Kick Advisor Box */
+        .kick-box {
+            width: 100%;
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.35);
+            border-radius: 8px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .kick-box.immune {
+            background: rgba(120, 144, 156, 0.12);
+            border-color: rgba(120, 144, 156, 0.4);
+        }
+        .kick-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .kick-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 4px;
+            border: 2px solid #00e5ff;
+        }
+        .kick-box.immune .kick-icon { border-color: #78909c; }
+        .kick-title {
+            font-size: 12px;
+            font-weight: 800;
+            color: #00e5ff;
+            text-transform: uppercase;
+        }
+        .kick-box.immune .kick-title { color: #b0bec5; }
+        .kick-sub {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        /* Rotational Bar */
+        .rotation-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            justify-content: center;
+            margin: 6px 0;
+        }
+        .spell-icon {
+            width: 46px;
+            height: 46px;
+            background: #141923;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding-bottom: 2px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+        .spell-icon:hover { transform: scale(1.05); }
+        .spell-icon img {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            z-index: 1;
+        }
+        .spell-tag {
+            position: relative;
+            z-index: 2;
+            font-size: 9px;
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 1px 1px 2px #000;
+            background: rgba(0,0,0,0.7);
+            padding: 1px 3px;
+            border-radius: 2px;
+        }
+        .spell-icon.glow-sab {
+            border-color: #ffd700;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.7);
+            animation: pulse-gold 1.2s infinite;
+        }
+        .spell-icon.glow-rev {
+            border-color: #ff9800;
+            box-shadow: 0 0 12px rgba(255, 152, 0, 0.7);
+            animation: pulse-orange 1.2s infinite;
+        }
+
+        @keyframes pulse-gold {
+            0%, 100% { box-shadow: 0 0 6px rgba(255,215,0,0.5); }
+            50% { box-shadow: 0 0 16px rgba(255,215,0,0.9); }
+        }
+        @keyframes pulse-orange {
+            0%, 100% { box-shadow: 0 0 6px rgba(255,152,0,0.5); }
+            50% { box-shadow: 0 0 16px rgba(255,152,0,0.9); }
+        }
+
+        /* Bars */
+        .bar-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .wow-bar {
+            width: 100%;
+            height: 16px;
+            background: #11141c;
+            border: 1px solid #222b3c;
+            border-radius: 3px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .wow-bar-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            transition: width 0.3s ease, background 0.3s ease;
+        }
+        .wow-bar-text {
+            position: relative;
+            z-index: 2;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 1px 1px 2px #000;
+        }
+
+        /* Swing Timer */
+        .swing-bar-fill {
+            background: linear-gradient(90deg, #eab308, #ca8a04);
+            width: 60%;
+        }
+        /* Rage Bar */
+        .rage-bar-fill {
+            background: linear-gradient(90deg, #b91c1c, #dc2626);
+            width: 55%;
+        }
+        .rage-bar-fill.dump {
+            background: linear-gradient(90deg, #d97706, #f59e0b);
+        }
+        /* Health Bar */
+        .hp-bar-fill {
+            background: linear-gradient(90deg, #15803d, #22c55e);
+            width: 85%;
+        }
+        .hp-bar-fill.crit {
+            background: linear-gradient(90deg, #991b1b, #ef4444);
+            animation: pulse-red 0.8s infinite;
+        }
+        @keyframes pulse-red {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+        /* Castbar */
+        .cast-bar-fill {
+            background: linear-gradient(90deg, #0284c7, #00e5ff);
+            width: 40%;
+        }
+        .cast-bar-fill.immune {
+            background: linear-gradient(90deg, #475569, #64748b);
+        }
+
+        /* Defensive Cooldowns Row */
+        .defensives-row {
+            display: flex;
+            gap: 6px;
+            justify-content: center;
+            margin: 6px 0;
+        }
+        .def-icon {
+            width: 36px;
+            height: 36px;
+            background: #101622;
+            border: 1px solid #334155;
+            border-radius: 4px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .def-icon img {
+            width: 32px;
+            height: 32px;
+            border-radius: 2px;
+        }
+        .def-icon.active {
+            border-color: #22c55e;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+        }
+        .def-tag {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            font-size: 8px;
+            font-weight: 800;
+            background: #000;
+            color: #60a5fa;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        /* Stats Panel */
+        .stats-panel {
+            width: 100%;
+            background: #0d121c;
+            border: 1px solid var(--border-dark);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 11px;
+            line-height: 1.5;
+            text-align: center;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+        }
+        .stat-line { display: flex; justify-content: space-around; gap: 8px; }
+        .stat-good { color: var(--cap-green); }
+        .stat-warn { color: var(--warrior-gold); }
+        .stat-crit { color: var(--crit-red); }
+        .stat-cyan { color: #38bdf8; }
+
+        /* Control Panel */
+        .control-panel {
+            width: 580px;
+            background: #090d14;
+            border: 1px solid var(--border-dark);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 10px 35px rgba(0,0,0,0.6);
+        }
+        .section-title {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #60a5fa;
+            margin-bottom: 12px;
+            border-bottom: 1px solid var(--border-dark);
+            padding-bottom: 6px;
+        }
+        .preset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+        .ctrl-btn {
+            background: #141b29;
+            color: #cbd5e1;
+            border: 1px solid #28354c;
+            padding: 8px 12px;
+            font-size: 11.5px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .ctrl-btn:hover {
+            background: #1e293d;
+            border-color: #60a5fa;
+            color: #fff;
+        }
+        .ctrl-btn.active {
+            background: #1e3a5f;
+            border-color: #38bdf8;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+        }
+
+        /* Sliders */
+        .slider-row {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+        input[type="range"] {
+            width: 100%;
+            accent-color: #38bdf8;
+        }
+
+        /* Toast notification */
+        #toast {
+            position: fixed;
+            bottom: 24px;
+            background: #10b981;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+            display: none;
+            z-index: 1000;
+            animation: fadeInOut 2.5s forwards;
+        }
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translateY(10px); }
+            15% { opacity: 1; transform: translateY(0); }
+            85% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="badge-header">World of Warcraft 3.3.5a — WotLK Build 12340</div>
+        <h1>Class Warrior <span>(Protection)</span> — WeakAuras Suite</h1>
+        <p class="subtitle">
+            Simulatore interattivo 1:1 della suite per Guerriero Protezione. Rilevamento automatico di salute critica con suggerimento del cooldown difensivo ottimale, advisor per interruzioni (Kick/Pummel/Stun), avvisi di debuff letali sul tank ed Enrage del boss.
+        </p>
+        <div class="action-bar">
+            <button class="nav-btn primary" onclick="copyWaString()">📋 Copia Stringa WeakAuras (!WA:1!)</button>
+            <a href="https://github.com" target="_blank" class="nav-btn">🐙 GitHub Repository</a>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <!-- HUD Visual Simulator -->
+        <div class="sim-wrapper">
+            <div class="sim-title">
+                <div class="sim-dot"></div>
+                Anteprima HUD Interattiva (Scala 1.2)
+            </div>
+
+            <div class="hud-area">
+                
+                <!-- Boss Mechanics / Enrage Alert -->
+                <div id="bossAlert" class="alert-box hidden">
+                    <img id="bossIcon" class="alert-icon" src="https://wow.zamimg.com/images/wow/icons/large/spell_shadow_unholyfrenzy.jpg" alt="Boss Alert">
+                    <div id="bossText" class="alert-text" style="color: #ef4444;">
+                        BOSS ENRAGED!<br>POP SHIELD WALL / TRANQ!
+                    </div>
+                </div>
+
+                <!-- Emergency Low HP & Sword and Board Alert -->
+                <div id="emergencyAlert" class="alert-box hidden">
+                    <img id="emergencyIcon" class="alert-icon" src="https://wow.zamimg.com/images/wow/icons/large/ability_warrior_shieldwall.jpg" alt="Alert">
+                    <div id="emergencyText" class="alert-text" style="color: #ef4444;">
+                        CRIT HP: USE SHIELD WALL (-60% DR)<br>(28% HP)
+                    </div>
+                </div>
+
+                <!-- Kick Advisor Box -->
+                <div id="kickBox" class="kick-box">
+                    <div class="kick-left">
+                        <img id="kickIcon" class="kick-icon" src="https://wow.zamimg.com/images/wow/icons/large/ability_warrior_shieldbash.jpg" alt="Kick">
+                        <div>
+                            <div id="kickTitle" class="kick-title">KICK: SHIELD BASH</div>
+                            <div id="kickSub" class="kick-sub">Bersaglio in cast: Frostbolt [1.8s]</div>
+                        </div>
+                    </div>
+                    <button class="ctrl-btn" style="padding: 4px 8px; font-size: 10px;" onclick="simulateKick()">INTERROMPI</button>
+                </div>
+
+                <!-- Rotational Row -->
+                <div class="rotation-row">
+                    <div id="iconSlam" class="spell-icon glow-sab" title="Shield Slam (Priorità 1)" onclick="useShieldSlam()">
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_shield_05.jpg" alt="Shield Slam">
+                        <span class="spell-tag">SLAM</span>
+                    </div>
+                    <div id="iconRev" class="spell-icon glow-rev" title="Revenge (Priorità 2)" onclick="useRevenge()">
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/ability_warrior_revenge.jpg" alt="Revenge">
+                        <span class="spell-tag">REV</span>
+                    </div>
+                    <div id="iconShock" class="spell-icon" title="Shockwave (Priorità 3)" onclick="useShockwave()">
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/ability_warrior_shockwave.jpg" alt="Shockwave">
+                        <span class="spell-tag">SHOCK</span>
+                    </div>
+                    <div id="iconDev" class="spell-icon" title="Devastate (Filler)" onclick="useDevastate()">
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/inv_sword_11.jpg" alt="Devastate">
+                        <span id="sunderTag" class="spell-tag">5/5</span>
+                    </div>
+                    <div id="iconConc" class="spell-icon" title="Concussion Blow" onclick="useConcussion()">
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/ability_thunderbolt.jpg" alt="Concussion">
+                        <span class="spell-tag">STUN</span>
+                    </div>
+                </div>
+
+                <!-- Bars: Swing, Rage, HP, Castbar -->
+                <div class="bar-container">
+                    <!-- Swing Bar -->
+                    <div class="wow-bar" style="height: 6px;">
+                        <div class="wow-bar-fill swing-bar-fill" id="swingFill"></div>
+                        <span class="wow-bar-text" id="swingText" style="font-size: 8px;">[HS QUEUED]</span>
+                    </div>
+                    <!-- Rage Bar -->
+                    <div class="wow-bar">
+                        <div class="wow-bar-fill rage-bar-fill dump" id="rageFill" style="width: 65%;"></div>
+                        <span class="wow-bar-text" id="rageText">65 (DUMP HS)</span>
+                    </div>
+                    <!-- Health Bar -->
+                    <div class="wow-bar">
+                        <div class="wow-bar-fill hp-bar-fill" id="hpFill" style="width: 82%;"></div>
+                        <span class="wow-bar-text" id="hpText">41,200 / 50,000 (82%)</span>
+                    </div>
+                    <!-- Castbar -->
+                    <div class="wow-bar">
+                        <div class="wow-bar-fill cast-bar-fill" id="castFill" style="width: 45%;"></div>
+                        <span class="wow-bar-text" id="castText">[KICKABLE] Frostbolt</span>
+                    </div>
+                </div>
+
+                <!-- Defensives Row -->
+                <div class="defensives-row">
+                    <div id="defSW" class="def-icon" title="Shield Wall (-60% DR)" onclick="toggleDef('SW')">
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/ability_warrior_shieldwall.jpg" alt="Shield Wall">
+                        <span class="def-tag">SW</span>
+                    </div>
+                    <div id="defLS" class="def-icon" title="Last Stand (+30% HP)" onclick="toggleDef('LS')">
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/spell_nature_shamanrage.jpg" alt="Last Stand">
+                        <span class="def-tag">LS</span>
+                    </div>
+                    <div id="defSB" class="def-icon active" title="Shield Block (100% BLK)" onclick="toggleDef('SB')">
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/ability_defensive.jpg" alt="Shield Block">
+                        <span class="def-tag">SB</span>
+                    </div>
+                    <div id="defER" class="def-icon" title="Enraged Regeneration" onclick="toggleDef('ER')">
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/ability_warrior_enragedregeneration.jpg" alt="Enraged Regen">
+                        <span class="def-tag">ER</span>
+                    </div>
+                    <div id="defSR" class="def-icon" title="Spell Reflection" onclick="toggleDef('SR')">
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/ability_warrior_shieldreflection.jpg" alt="Spell Reflection">
+                        <span class="def-tag">SR</span>
+                    </div>
+                    <div id="defTaunt" class="def-icon" title="Taunt" onclick="toggleDef('Taunt')">
+                        <img src="https://wow.zamimg.com/images/wow/icons/large/spell_nature_reincarnation.jpg" alt="Taunt">
+                        <span class="def-tag">TAUNT</span>
+                    </div>
+                </div>
+
+                <!-- Stats Panel -->
+                <div class="stats-panel" id="statsPanel">
+                    <div class="stat-line">
+                        <span class="stat-good">DEF: 542/540 [IMMUNE]</span>
+                        <span class="stat-cyan">CTC: 102.4% [FULL BLK]</span>
+                    </div>
+                    <div class="stat-line">
+                        <span>ARM: 27.5k (68.2% DR)</span>
+                        <span class="stat-cyan">SBV: 2,180</span>
+                    </div>
+                    <div class="stat-line">
+                        <span class="stat-warn">HIT: 8.2%</span>
+                        <span class="stat-warn">EXP: 26/26</span>
+                        <span class="stat-good">EHP: 118k</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Interactive Testing Controls -->
+        <div class="control-panel">
+            <div class="section-title">⚡ Scenari di Combattimento & Test Presets</div>
+            <div class="preset-grid">
+                <button class="ctrl-btn" onclick="setScenario('normal')">🛡️ Rotazione Standard Tank</button>
+                <button class="ctrl-btn" onclick="setScenario('emergency')">🚨 Emergenza Vita Bassa (&lt;30%)</button>
+                <button class="ctrl-btn" onclick="setScenario('kickable')">⚡ Cast Nemico Interrompibile</button>
+                <button class="ctrl-btn" onclick="setScenario('immune_cast')">🛑 Cast Protetto (Immune a Kick)</button>
+                <button class="ctrl-btn" onclick="setScenario('boss_enrage')">🔥 Boss Enraged / Frenzy!</button>
+                <button class="ctrl-btn" onclick="setScenario('soul_reaper')">💀 Tank Buster (Soul Reaper)</button>
+                <button class="ctrl-btn" onclick="setScenario('sab_proc')">✨ Proc Sword and Board (Free Slam)</button>
+                <button class="ctrl-btn" onclick="setScenario('taunt_fail')">⚠️ Taunt Resisted / Missed!</button>
+            </div>
+
+            <div class="section-title">🎛️ Regolazione Salute & Rabbia</div>
+            <div class="slider-row">
+                <div class="slider-header">
+                    <span>Salute Tank (HP %):</span>
+                    <span id="hpVal">82%</span>
+                </div>
+                <input type="range" id="hpSlider" min="5" max="100" value="82" oninput="onHpChange(this.value)">
+            </div>
+            <div class="slider-row">
+                <div class="slider-header">
+                    <span>Rabbia (Rage):</span>
+                    <span id="rageVal">65</span>
+                </div>
+                <input type="range" id="rageSlider" min="0" max="100" value="65" oninput="onRageChange(this.value)">
+            </div>
+
+            <div class="section-title">📊 Debuff Boss & Stacks</div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="ctrl-btn" onclick="cycleSunder()">Sunder Armor (<span id="sunderCount">5</span>/5)</button>
+                <button class="ctrl-btn" id="btnDemo" onclick="toggleDebuff('demo')">Demoralizing Shout: ATTIVO</button>
+                <button class="ctrl-btn" id="btnThunder" onclick="toggleDebuff('thunder')">Thunder Clap: ATTIVO</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Hidden Textarea for WeakAuras string -->
+    <textarea id="hiddenWaString" style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0;">!WA:1!T3ZcZjoos)Bz5RYwWTtySnpsYv3CvXRKWmjewGmZD1StioGj4lGnLTjpUB38B)RBjzJnyBm2MqsgTPMfWswpA1Qv)wxjEvVR6o9QUdVQ79x1ssqq4QUpCv3s5LeZFi(yOyvOWAtKnnF(6VjByOQB881zBBOBPmWsvxl3vDNJvP93o9Y697CXfWRyOClusVNMPCv3Bn0NpdAfnlfdn5jFvXWek7QwhbDL5a5jkx1smV0vDF8IrJmvSUQf88NS)((Iy1K1gmw3OTo0gWqPrREn6aVRYKrl9isx1Ca06DBID3i5bk)b(BZ)OYnQtuTEQpBg0VUYifnt17v6AbTommhQAoBI8tX8TvJ3Rb1YYqFYeLH1gRozOHIgaWBjEvxbXNVE)NVUXufJBv0g80Zx)RpFnaZhalcpiB0tw7oy5cQNePEFrDWDpFDLH3RAIRoo1OauJcKA401pFDnD9jd1FqZDtveQyrsf7OBjJlRYtE(6QYUBSsqDkXASBMdlqKbfDQ4QALHQvMuTEYZ1SivQ3ydfzlxv6aOshq7p5BvwUNampHdjLEQI8eRXlx(rq5hrkVMSP1nEkteWxefifcdnlyq2wwtzI7AaWxrk8TNHQ2DkWat0D5aCvuYB5sUlhGQIuO6jt0VxHchQQRB5gIkcGurkiT7yvLjdXDptGXrLjkgUbfIaCvKcxpdMnui6qFQhayfl7PbRorhx37zip4ofpaba(ksHVDNPG9AhLrtG9R(HKicGBrk4U7CTHydvXykwfFAya0lsb9v1rkcNRmySSMkIxU8awcwjKyRepOQDlbmDA3NV(3NRm3fgdSbEIUmHuZCtL(dqsnxvf2Cq(c8ut4LbYeD)wLoDAEbSpF68jwQyj2pPk0iw0x)ELXQdGAFd(azcfksJOQPAHFouV)G5Mw6tjDb9BD7FsEk5RMqTQPBaJUp981JMRrE)S5E(ZpFn9pNAEIIvBGEHIrv6wHpfsziS0VgZ(pyze3UPP)q)BiTe0a9uNQesDh4ThXoQM8GXkR(cQJi1MGtniVf0SWR(jNEZASI2ZxBOyn3qJurfOIR0i0U7)bvN((Sx)dpF9nprWWAoKwJ)I8OwYSAr(9eveTM8RNV(VwTXhHWhvsneHQxeWzgQVA1wgAb9buBdafc(ajadFmqhi5aFoKqHcpac)XCdcjn4RkpotL(de(cpyoUGdB7umWgXSRfqWr(MjyrMJ1Npzyna)rFI6qzlYZCnxVeEveUNnZmYIDgSfYf84gxi00TOJCBa)naHX7caOV0e(g2AqG1Z(pnBOpfeT26JGqs9PWY1wFewtQpfOV26twuiVa7B46TqeEr7foY7U4hr919UytAKLFuuBk3R72FpWx6VcUOb5XndF))J(5Zx)Bak)piT6nHJ44maOOndY7SV77SISBMWXLiiHUW)Wgc3T(D8HH3e((qFOarwOxTMliX8zVTyi0wDy04tHw6gqFDy8OV6UdJbD2HjJo7WF6PZsH8VuuAhUTO0((Ks4MEKrkt5Cy6q5CyYPComwuoxL2sQqbTNmi6OvquqxQ0nGcQvmjH6UhJbjuResd1AZjII0HicevZzBRGZZA84mNNmw2SUYuDQqdYtmjedHhSuD6nMjELRQzn2BR57Eah6ziPWgpcJqZSzSiWZm5yGLaXBdzbia8SqW3cfJ(DW5lmGk)8L3XCA)k88IaBK9xvPmFeul4JZ0nvCEcSvguduegiiT0mEAUm0fMfaDOgfpOyHd855hu4WYRJyZcO)YuoziK)tcnokf(fOOIrVfTPu6l(vWnJcqUDjaHhOOFaIdlx8G4pHlT9NtRh3bpwYqEI6)LO)TUaLqlcg0xv1gQoGTlNI)CD29R0oxKrJ8PLzWWaRuhDzJvRJRHsqyJBaAN7JITmMReL3X9r1P)sGZP(GnuMra(hBOJuKow5Ef6(5ppF4Tktv0qfiRpImzXhIvk7(sc7bBySUJaxugg9vipD8QWD3JIvlnWH0QvTP2iqZYkOcUbK)HM(VkwcnvXgSk6MzPOUqUeZuXATCJyDpYSufhw3RgcJ7BUILTUjjSTht9lBLqfmBDdLZ5gAgeZe5IXzfYJC4DxtDse0asAYiDvoB0bOo8Tmt0bZz3)BfoM9LDYWyBKbnNO)GIHdYLPfyhWBZtEywSHxZ0Iv)rWjBzDAjyWKHI0IOAekKbvTrGHG)VpT2QDdykDfJ7wF9MORpCcs7o3grc21UUOsbE5DL4xsFcUPSUMrRNdhIPVcT2ffercTemSf7cz(uaBDGTN0e2EyX2Ubdk23unbJTouP7DQKgyaShSz9pq2Hq8QaJ5ZSuHnIoB1WDPWYno8CrclObMQznWmTe7GBtdneQJMuBghoQsQnxdEkshYRBk6m89mhZYMep)N0thYfrunFbcoiuqdfitFmqnq(EQ9rTDhlptXCS6iRJHNcioeocfjfxv2YIqyvI8thh0aEsbAfOBVbEGcQRG9O2UcaoJHoSP29apB6gp10szAZ6UvyU4b5cfASGxHiYOaC6aS6IRY1NB4mJrOMThMKnJJNkiBooe0tts1Wk1rrE4tSfqAZ(jguNqIJ8O)bEYy(s0hLLomihdSOyywKl4UBM9iFwWJ82ZNovzsiJ5zKk4A8oB1X7mFgVZwmENfXX7a7X7GGhVWbZG3myseOd8lKhczKd7nh4ACpy1X9aFg3dwmUheXXT5doOipegoc4flpiFVsOiiS64g)4bFqqEWpmKhCHI8WkJ9G6tdfZ1PNocnIfSjqPi(5KA3CFjiU8d)qymCovgC3fuKBeoXi8YyrFXpbbpfbh(J4GouyXAvsNHYaDaRheYIsYX7(7O9InTHczw4UCm)LBfhMRRdDHWA8bYAuhGJXOsOJdzt7U)IVKz1k(x(HqWotyPfLWpEeWEY7EGfWzUUR(kq3MNF(LTAaRzmV36JOhKLltKBLnhuZ6iIUywtVSaqshMzwVeq4oQphrvOGW8SSZs)e5qscpyopqmhdH21HGKFVYzjRFDkC06Ti4oG23wzLlMTfytoph6eJjg7uTuzk1S1x7Fc6INtuSm7lumstej2eHYI1YlvPYC02JuRt)yFqLZ7OPTRdAJ18yU2FhDx3LoypvXhzQzRQ(eRqMilF8B8NnloSFlTTk4MxzZjaJuVr1SPTWRP)L0zGt4bQ)XQgk97coYEDfq695dSYKYhO460Uw9RvptefcYxc2HibTJFQxR(kcr7PSikh9G5gN22roqQtG7iltWV2u5hx51ox(XWEte72(1O2Fpqb(cqmGbwm2OPJ5pYAp44P)gHbl)7tYRbuMkukgIygDz0SH1O0XK9URt9v28B)bBRuVc)6RPbSNgzhUeR5dxHTCcd5ddvqIqyoWEcLXT71VEnCzp(IG13Lh4ys8mDpTzJZae4Vv5SZqRYugTkt9o5YSjo)uK5lGmvIqlp3o6qWgVwNM9AwRYzr5fTXAXp3eRRBFGGdW3vilS1G9NvPBpOp6vPfSaK93kGGEydwsb9usWTKHXeqeES8uznmyu2y4(Pnp50xuyUNW)yRJXx9SlQ9faUdKY2d)1xsnCEhvETXG8ZBuV5LN)Ic0PkdFigjnWarHA1KTgWVrRovoPba9704KgTwG13OYzPojh2mZZ8615csQdMr4zVt727cukB4K72x0R5fT(LKcHrre6APRPGIhSPGY2vA1S2wfs6MBMqTcT2DSqO7tbwsezO7gztfy7oWvHm6TnWxD56DivaLiWENfeAItSF1SSMKP0QCeMjYUO1zpnO2AO(qMPTG5tD8hOXdgG8sfKFcyZWhST5j73Sn(JO(M3qdxp6BsiEh13CQQjDvOuEbYeDQS148aFMzrxln7caZ(O9IfO8EkKxOyiSyBrn5odq8BotSFZzG(BSooqLYEZ9lm0brsE89IaCaw5ioDfAvOrOZJaNby)aYk4xLrddbUNfAPp0erk3IFZbNHu5WWy82SuVbzPhH)ZzKSUHmfVQdtHQl1sF0NNHgLUC5cLYfICa2wXr1QJSLT6AbGzn9P3iZEw2YRfCcVFvDT5M(96KcIqBOWCzguEThNbXXPQzeqlhpdKUku5TcY7(S72X0UL1qF0nIDEb07hYsdu3SolauTwNZFn3hHJbgsj3qvwmBFZhc1OIgQwnNoDUg9DCTz7FIBilkKlKxFbzgY3cPMliRq(wi1CbzeY3cPMoKnWVeMc0z0cGpdPw2B3HpdPwYbSHBDVcBZf77HuBpO72)i867A7LZVc5nuS3by7fzH16oBbiFlSwLHRJF(5qoMoOtKXWsgdp566AU9jds1xj(LZMdd)zI53HGEg(k4viQMJjFNeQ0dOjAaw6DikPBa3z5HgN3OdWxAT)D)2DUOwxVj8bAUqW389WdQdTgdzsai24hROE7yl639n1puUu0t8dBuYByHi2BVaphCfNBVfM5yDjqz2diFLaLSd9C6N9PpewWSMBcpe9ixOzNH(z1I6ggJwRLF1rUWLweM7uDp5d(ZACcRW84vX8G6sP(uSlmQZqLwbAiBJBs7ZkMgUQfj2oiGsJlad7tVANJSPBDU9ByahPfaNUpOByB1QQGVrpKUNdoJHL0gActlWVzLoixSHA3S(StWkaoxLgxa3nUA6SKF4kmkitPFW4aJvgjYiYScejZpISlRTordJMlSfj1Jh1UCnQO3N(YEVEDMpAMS98VQ25GsQieta6Udz2tUxinXQJ32kwRCt(fXO1kp4FUWmgjEtZI2fdvY8l5r9VS7MOiqXz3eLVG3n7KuMMNQ9PeboJIXiqexyorrAJfOVNYJwV9b9jEFKTVzd(bHSv2m)5GJH)tsaIThZ)ql7E5fgTh1Og)jXxnHvyQAkPFh0WxUxOnBCkTouAt2kVJtesXB9OWUviKsYLy2gZn3wcDR(bcch3PbOPBBt709SkN)le8pXrMmupyaN7fMWEMnK0ckWL2AeOYdnNLyiJ1iej3mNFthISRMoceZefB(nweAx4)Vp9R7nG9Z)d0hQJEAHaOubv7pJkwAZwTA0PF1l617IZxsiwVfrAS1v(iijb2v9)QqZmDop6QUGM6ah0W8b5NC9yQm4xCzVZA2Qb75UKyUYL9UW(PJLbd6)VCj7TRh)V9)X10NOBqHuqjqgie))fi))I4dTHxdCvprs9eP1dY0JERjBGJiQ9NX(cueStyOV1alPpmVhOsvRGyW1A4tGVkOoOVfK9bbpyAYqqPc2thij4HEXjkUpf(7goqFIdiyFjjplvRaYcS(pUCnFYDDSqat4iCZIgcN3NUKYrwfjZtjUqVk(wh9s8ThYLWgHAjSwelbM(90HOQ2YdDnQsLCPlkC6DVSHkgGFa(3y9hWFpzUcdeIz2XBvw0aZm0rfJcOd3ozrDRYiLA5GpJ6jmIjjs3kvS6fD72)8g1ofna6gRtXILxOtr87(QtrXccPKsfPopsxcwB)l1aeGNoMe1ECDkUv0PitLzu8jwGjgxwmzHcDGrv9kC26Q04cMSSfD36g3HwzkRCrguQoUVfYfYMUsvVO8Iuo0boQ7rY4JvNJb6Rz85vF2W1Lz(cqibw5XfyoBys5oNKxvG4zgDNhie9qyYbfo4Odi2xS8rffokbCHthIUeyH00mbw8uaPNCxatmgxJSm)iPZ10rrOjItF3G9tKrPtgqCFnmNqpgOztIuuIRwNfnQ6H5sSCx3s3J7cO6TFZ43YXbssIWYrIw4V1EJ(T3K3oN3GtPW2RNeOjWuIoSxU50zYyqjrGFs2WZKdhvNoBzajTR8faw(GIhCycbGKEKabHV5gekTLaHhpNgCfTHtcbmXSLpqOyQS9NcU808ba1Go8hBPzxlLbqQ6hX7r(fUtj1Mxl3W(VJQWHcLtZP2BA7X8kst2VA5bkqh12hETZKmLC(2L9fp5rWqyCyj(kc5iWajT7prSereXwdTdzMXWlcWWKyCJ02IiHG6TtTgYRTTVBhnwdrNUaQvGNVEptqp1TVaIVQ6noUrRUn)AJUeE171PsRF)xOQUM1gZNby)zHbP7KrdIpB7v9zY9cBnL38eAmnImLMOkZtIOGGJN0rOOWmtJPX2Yonrc7xuqua006zyqGuPDdW)izgQb2kSuW58rAGP9ljXeoPIaEVYL(A7UGbEEVWjqSQ1PznYktfiQ12BijY1Q9LUWQwnsWd2RYLTW4z7BvAZwWShS74vTxHY6TDxWW77SMN3UYznw3cfl6GGpRvNTO5mI3XRAJwzrlYsCMO1oSFt31ix09o(YUqGybtHlBv70vo63Ev4fgWZnYn3i3HBfsI5T5M5EzZCtmnybNGni07Sq3we8lnR9L(vQ)1MDrdLTHXyGGRymqia7bkTvdXamX2WnhyQBoq25E3Pgs(6Cf5PSlkjQTll2LHKbfFP9R7xoiaUYI9gPrVtnVRmmxA6TXUB5p4o9MGHtPNU9Nopp(LFT2Rw5iq)LYSrBD3poSCK2lP222ra)eXEoSGTPPSWyXV(Hc4F2zQWExahSdNAdSS3PXXN1OwpIKt1QNmU13iZ2edrbfeAiC8XOVy)DIkw(bvepVi9FWlnOCCPp25sF07I2(k6b55bj3XIcDj0H4BrHoy1l)rVvD(rPnZ7hLwV7pkjWDRwUB1(EZTAl64wTr8sD3Tu0DB34SZ6ZooEtfJUGl3QTGB3QvSKBbP3V42nA9xKxI5cuN6cuhphdm1LQ1LdSAhc50S119ku3xLMvzEFgtBsfossW)yAZZEDm5SXJE4nfRIL7sJ9cOj7AmWZ1KPp3KbRSufZvkt69va1lz8Uw5zLIKmvtN1kxRuMo3wcoD2pp6BzJ1prKsz(VeAPGtFlT2lW0ja(Vk16bgCmwAV4Neb2FzLLsIll17czPwRi67yRqFehp7LxBqBMYGwVUGSfFUKJPNlqeF2jXtVG1Was0DoUCs)ox8T0t2zXxgzN9jZoZfF(9Q4ZVjYClLaV)1xUa9p9QZL0DRjRAq5ZEU8QVBLx1Ve9pxK1xdeRwke4wi(jEbfGcFYfMKlmjxyY4kmPZAVdAvh4o7PxyYs6PcTdS8WLQ0DL4Iw(YH1TVuuLTCFPikCPtfxv6YYogNTi14SUUpYcnHhrdIR(yKBLAIwU)lRDz5zrDUiL7wU0o8ar)nRG7BfqUCKBpBE692xKl(47CZDswN5snUZOhL6w4eVkt523KlskxKuU9n54zV1SVjnSAdgpR734Q(GR6JTIQpszNH3Xz3pWrFkLi6tX1vmEOQtbVMW7tULWtrTPSLSuFa394CvPWvLYUt0frPJoOKVcV4AlixxkBpDP4gmZvLY7ivPea5EUEu2HeJsDfP8Bfe2702CvPWvLcxvkCvPWXZEVPkLZ6YvLcxvkBlVi5qhTEu2JxKa5lxmIO7za3NhkgH6ijKKbCQP7JYBx)iXjgm468GRZJDyCPwQCPqTxlz)hxPhBFhiHcO5Q94DOhK4qRNRWJDjLOuvJh1fWm1n31r467GRVdU(o44zVdDDKQC9DW13X2sFhh5KtgOrnthDlcNZi3svLdqrhDUOxLEWfds)Qv24leGIsUUGWLC7KhLlTfUsaA26RmpMUVqjUooEpN0cBcZ4UpOByFVgwvxM8DsQl8dy2VgGkaF)3RAynhC)7N2iH129YWyNngdosPfKKoWFzxwgSGYVKscISHc9UduPr3jYt5A049Kgn8qv)NpTz8kLsa7IdR(bGJy0PbpB99QrLef4mTZvjXlXDgNahr7NdDsCwLZFnPvId54D8aAzDb0cqDIPRdjbQVD8a5Qt7xF(6tHBX8FFUcicR)o2X3A26K(N2T)VFzJlB4vJhYaJ53iBeUspKeDDniwoGBbX9lhDDEa9Ohuo8UNHCh0CqPvV5lTRSKtTflXQUOD1XVue)YHLSrcbNK2T(uOxD9ae7ydGtY)4YM73LO9IQ4KNRxLTKEvUeAOkJgHPKBTBRPp9g8UYIEdmaI0syWhRsJhvnTmZMXISiL5vWTIO5mfm1S9j2uWYcCCQU4ZwE4lLVCS7en9hSL9NDffUXTKZsg6p7mkcFY)hJJwShJ7OvzI8mtgqjlzOVVFDeax2Zg(fB8gYR)bgec0Fqw26X(odJC7wXMvnjeCPqJMM1MByOOr1Gt2mNQyOJ3s94297uSXuwUw1MOiFVsM4pgW0hOdk65YAYlJBkep6dlMBPUG1F)0UFS2zFfoUcpkQ(pINq2GWR44Ko)Xl69ILs5X6rWD6(3jJr801FW1fqIfAlD0fa3(DVxUe0ijWChR3vILr1zQf8xPrM1GGyOfcp7AnG0QE1lp(4UBSVkFOlFv(WanHxQ7RYDKhOkpPFL7LT48CUf45enIMyEp3(xTUaU5yv18KR(DqSgRIxMTyPdimMgFEb0OC2UGDXa54nUDbUZ2XmrJLNbBOvhzDm8ueCHZCjsXRopJhhaoZiIM2P9o5olxA50mmXYPSfSyTKjTyjBQQPjHv1EJNd3vUahm1aM9i39V1vMQJHZG(Cl614gvuHKT(5Zu1xPrOfbxeY0YBAwxrE4kLJfvtwJkRGZAoWeRRkMmMuyidwdxXEnuPBDOFUIfB8uE2Cj7sH2Y2cmzjGeRH5hlB6SKrfZW554cxU0(oJEZmx)U)ItMYJ1UtO2xrxb9Hsjlw7G9H6uYfdiy3q3ZX4zEz9CGDXoFp749Bd)wdI7jFhW6o8aHeiYOFte6rlBD8g7eGj8znJNEXLNm9rO3gQv5nc1bQscefefCUANaMtisL8hAN3SlyZNt(L)KtDWiLH4hcQLPxTNVMbIboq2xsa02yLEFjxIuL0wNUaD8xfg)1BC(fEMbvANJRFjUtbSfu5Kq(I(wZ3akDAFXd3i1oTO(bR4jSo2QEsYjq5pKAmvg5Qkgtrbycpq5VSvDaHPxNk1(sJoPM6N2UAFYj)BtMOC1pTvn552tdc7CdJUZzYaoC2KGddKI99rPrGWBBHnfk3OE7G9tKfBxgFPakuUNoG7J0(DVbqap7yXt2fi)SUEGoW)f127RUvOgwyYm6RD7)PumnsW46vsqsGEM5FhA8pwkrCQZgN)JNVo1S5RjCeL2T5PmYK1L1QDg07nKmQ)aR7ZfVHFQMNaDgBLIlaDtiAWfbGB153lcaSw3qNNWf4U0qCDPHcoU0anbS1tMCC1VI200qroGKoFVkx2Qx)EN2PrLEPN7miTveO0Jw57OOQnqggA8Bf(FcYbBrmWvj488iw9DBQh3ZM(DSezVZqjxsVdzxfFmxAR)HLK(zV8IJmrjDGXqUxAJsSq8g4KW6)7)0GBLcE2u6NQixCnYMqyuKh6I8qxCBLqLel6iaZb0mQejilcoxkv5KgRMhL28Oke63acRqSKyhxHhCODKckzhPGHhzHSQlWmCk5l8alKlquakLFUrAhawSwEQ8JDwo8Uox(XL7ai3PgFyim6)WIEANYg)waqsmwa2SPBaIfOXc2dDi66xEoXBE(aPVZLaZCGJCWihIB3bErHIWapPd4Kp4S0PdVSXCq8UZwgPKYLf5SN9trQZbzdBzeRZACCasf4UK2RwqqYb4QuUKNVCyyfJkgwXiIHvmyZxuYH7FQBXDQI8eRXHW))PnQCwVt3UsaiDycKaWjxHCWs5kKaKaqWwIb8lfS)srAskHlbaxcGGzCLUzjvLb402l16(jdqkiba0pVA4))TdyK1bZgWCmlYS4JSEeA2)wmfqd3jrA0)b0Qf2UsaGoNfk6YhrVCcMd7Lxy0E7bd(VxRtZE)YpCKnWgr5dKXwceTXzMvElluMGGFZS0DcTvg7ffW)TDh7CjM8xIjUVE9ZHetN2MlVexEPKkVuzh5LoIiVunilODtqYkvRs3EBvbLoQu8fuIj1ZHLwEr2hrKkTSismJQWTsYRezKwKedNmXHZxe3eaLn1gP7oYJSZbJ1GuoQMYKLko2IwKL15KiVwtDYRJC64KjONTaBmrxgc8Yr4d0dlrp)c9Ng4tf2NQMqmaoe)2aaU1SojzeA1uZAnWZyHsqcmmgalzCehZ54YtT0bxiw4UepUICpJsDXkf63tf)QAitmZSSgDFwxLJWPniRMqQ4nHFWzuh7wDh5eHPNF5X3R9wzVwAakyawY8kDt1t(iE8Hc4FFV55NFzRgW1eYEMu5IjZKe4rKjtE(imWrxB84J)(xAw7lvQEwQo0FXtPv8eukx)bV)dNNdCsteSCUpiAaeLVTLbk2bMBs71TF7kTACwsf0tkWuTVOKqsmjMKTtXv2oB7l52ex(iXx5aL47iUeFCRI9QKdulFIvFT7y7G9jo9zLLnr8vATC(rfoNmUzhvBHwugr2osMoMw5vnRzaPqKPtNRzlJKlRgKHkrVlR7Kj(wLZAWIEgIfL8WdO(tNOGu(I5C37uEB827OBXLjbZ8jQAkISPT3GuXeY7AS4YVOWFAGVZEM16vdFgeal7ThLTkBqhjYUYpKKCCjIzWMy0Nd)kxIgJs(ngPGa8)Q05C246oIPCWXhKrB7KJoWPS0whGFDR(vYKIXtOvEzA2iIjfPRNvVd9hM3CFYg6fcEOxb6YtB2Zfi1E0E8X1Qji04F1MUeivErrsc4)ACkPiWOv35mxgRAvvxBUj9xkpotXWsLSAG)C8mNPzU4GXeu0mz(hA0)HJcc(e7tj2NfYX5J1h(y5X1X7j2yp0HnwrAuPdBsUdZE2Ibep6DA26ln61xCJdgDxSVIF3vU13ddSPw0OJxLQFw5bLjgp1NnRA)129fK48yUTSQGQLY0M1Td02MA3dxPn6gp1K8y3zTmXcjX(b2DZRjdieqWg7bgSiOJtiKGhn8VkIg(LxF7rf1D5LxkFV(Fxp7lbk(L9lpIf(j2)B6j(AkmM5ELZ7SWy(ihoEL8YXRu4C8kLEC86j9lX549NcoElY54nbqcohVVz44TiNJxohVCoE3ioEL4C8Y54DBXXl4ra2C8wGMI4MOFVc9UuTQUoAZt)479KZU4Rn6cykx0RBQX6R42txVNGjYVjkwM9HmZdNH3DodVcCgEtaKGZW7BggEfcNHx30L485Y5Z9Ny(Cp5SVYz0LZO7wIrx8VR()b</textarea>
+
+    <!-- Toast -->
+    <div id="toast">✅ Stringa WeakAuras copiata negli appunti! Incollala in WoW con /wa</div>
+
+    <script>
+        let currentHp = 82;
+        let currentRage = 65;
+        let sunderStacks = 5;
+        let hasSab = true;
+        let revengeReady = true;
+
+        function copyWaString() {
+            const ta = document.getElementById("hiddenWaString");
+            if (!ta || !ta.value.trim()) {
+                alert("Stringa WeakAuras non ancora caricata.");
+                return;
+            }
+            navigator.clipboard.writeText(ta.value.trim()).then(() => {
+                showToast();
+            }).catch(() => {
+                ta.select();
+                document.execCommand("copy");
+                showToast();
+            });
+        }
+
+        function showToast() {
+            const t = document.getElementById("toast");
+            t.style.display = "block";
+            setTimeout(() => { t.style.display = "none"; }, 2500);
+        }
+
+        function onHpChange(val) {
+            currentHp = parseInt(val);
+            document.getElementById("hpVal").innerText = val + "%";
+            const hpFill = document.getElementById("hpFill");
+            hpFill.style.width = val + "%";
+            document.getElementById("hpText").innerText = `${Math.round(50000 * val / 100)} / 50,000 (${val}%)`;
+
+            const emAlert = document.getElementById("emergencyAlert");
+            if (currentHp <= 35) {
+                hpFill.classList.add("crit");
+                emAlert.classList.remove("hidden");
+                emAlert.classList.remove("golden");
+                document.getElementById("emergencyIcon").src = "https://wow.zamimg.com/images/wow/icons/large/ability_warrior_shieldwall.jpg";
+                document.getElementById("emergencyText").innerHTML = `CRIT HP: USE SHIELD WALL (-60% DR)<br>(${val}% HP)`;
+            } else {
+                hpFill.classList.remove("crit");
+                if (hasSab) {
+                    emAlert.classList.remove("hidden");
+                    emAlert.classList.add("golden");
+                    document.getElementById("emergencyIcon").src = "https://wow.zamimg.com/images/wow/icons/large/ability_warrior_swordandboard.jpg";
+                    document.getElementById("emergencyText").innerHTML = `FREE SHIELD SLAM!<br>Sword and Board Proc Active`;
+                } else {
+                    emAlert.classList.add("hidden");
+                }
+            }
+        }
+
+        function onRageChange(val) {
+            currentRage = parseInt(val);
+            document.getElementById("rageVal").innerText = val;
+            const rageFill = document.getElementById("rageFill");
+            rageFill.style.width = val + "%";
+            const rageText = document.getElementById("rageText");
+            if (val >= 45) {
+                rageFill.className = "wow-bar-fill rage-bar-fill dump";
+                rageText.innerText = `${val} (DUMP HS)`;
+                document.getElementById("swingText").innerText = "[QUEUE HS]";
+            } else if (val < 15) {
+                rageFill.className = "wow-bar-fill rage-bar-fill";
+                rageFill.style.background = "#7f1d1d";
+                rageText.innerText = `${val} (STARVED)`;
+                document.getElementById("swingText").innerText = "";
+            } else {
+                rageFill.className = "wow-bar-fill rage-bar-fill";
+                rageFill.style.background = "linear-gradient(90deg, #b91c1c, #dc2626)";
+                rageText.innerText = `${val}`;
+                document.getElementById("swingText").innerText = "";
+            }
+        }
+
+        function setScenario(sc) {
+            const bossAlert = document.getElementById("bossAlert");
+            const emAlert = document.getElementById("emergencyAlert");
+            const kickBox = document.getElementById("kickBox");
+            const castFill = document.getElementById("castFill");
+            const castText = document.getElementById("castText");
+
+            if (sc === 'normal') {
+                bossAlert.classList.add("hidden");
+                onHpChange(85);
+                onRageChange(55);
+                hasSab = false;
+                document.getElementById("iconSlam").classList.remove("glow-sab");
+                emAlert.classList.add("hidden");
+                kickBox.classList.remove("immune");
+                document.getElementById("kickTitle").innerText = "KICK: SHIELD BASH";
+                document.getElementById("kickIcon").src = "https://wow.zamimg.com/images/wow/icons/large/ability_warrior_shieldbash.jpg";
+                document.getElementById("kickSub").innerText = "Bersaglio in cast: Frostbolt [1.8s]";
+                castFill.className = "wow-bar-fill cast-bar-fill";
+                castText.innerText = "[KICKABLE] Frostbolt";
+            } else if (sc === 'emergency') {
+                bossAlert.classList.add("hidden");
+                document.getElementById("hpSlider").value = 24;
+                onHpChange(24);
+                onRageChange(30);
+            } else if (sc === 'kickable') {
+                kickBox.classList.remove("immune");
+                document.getElementById("kickTitle").innerText = "KICK: SHIELD BASH";
+                document.getElementById("kickIcon").src = "https://wow.zamimg.com/images/wow/icons/large/ability_warrior_shieldbash.jpg";
+                document.getElementById("kickSub").innerText = "Bersaglio in cast: Shadow Bolt [1.2s]";
+                castFill.className = "wow-bar-fill cast-bar-fill";
+                castText.innerText = "[KICKABLE] Shadow Bolt";
+            } else if (sc === 'immune_cast') {
+                kickBox.classList.add("immune");
+                document.getElementById("kickTitle").innerText = "IMMUNE TO KICK!";
+                document.getElementById("kickIcon").src = "https://wow.zamimg.com/images/wow/icons/large/ability_warrior_shieldreflection.jpg";
+                document.getElementById("kickSub").innerText = "Cast Protetto: USA SPELL REFLECT / SHIELD WALL";
+                castFill.className = "wow-bar-fill cast-bar-fill immune";
+                castText.innerText = "[IMMUNE] Soul Blast (Use Reflect)";
+            } else if (sc === 'boss_enrage') {
+                bossAlert.classList.remove("hidden");
+                document.getElementById("bossIcon").src = "https://wow.zamimg.com/images/wow/icons/large/spell_shadow_unholyfrenzy.jpg";
+                document.getElementById("bossText").innerHTML = "BOSS ENRAGED / FRENZY!<br>POP DEFENSIVES / TRANQ!";
+            } else if (sc === 'soul_reaper') {
+                bossAlert.classList.remove("hidden");
+                document.getElementById("bossIcon").src = "https://wow.zamimg.com/images/wow/icons/large/spell_shadow_soulleech_3.jpg";
+                document.getElementById("bossText").innerHTML = "SOUL REAPER (3.5s)!<br>SHIELD BLOCK / SHIELD WALL!";
+            } else if (sc === 'sab_proc') {
+                hasSab = true;
+                document.getElementById("iconSlam").classList.add("glow-sab");
+                emAlert.classList.remove("hidden");
+                emAlert.classList.add("golden");
+                document.getElementById("emergencyIcon").src = "https://wow.zamimg.com/images/wow/icons/large/ability_warrior_swordandboard.jpg";
+                document.getElementById("emergencyText").innerHTML = "FREE SHIELD SLAM!<br>Sword and Board Proc Active";
+            } else if (sc === 'taunt_fail') {
+                bossAlert.classList.remove("hidden");
+                document.getElementById("bossIcon").src = "https://wow.zamimg.com/images/wow/icons/large/spell_nature_reincarnation.jpg";
+                document.getElementById("bossText").innerHTML = "TAUNT RESISTED / MISSED!<br>USE MOCKING BLOW!";
+            }
+        }
+
+        function simulateKick() {
+            const castText = document.getElementById("castText");
+            const castFill = document.getElementById("castFill");
+            castFill.style.width = "0%";
+            castText.innerText = "INTERRUPTED! (Shield Bash)";
+            setTimeout(() => {
+                castFill.style.width = "50%";
+                castText.innerText = "[KICKABLE] Frostbolt";
+            }, 2000);
+        }
+
+        function toggleDef(def) {
+            const el = document.getElementById("def" + def);
+            el.classList.toggle("active");
+        }
+
+        function cycleSunder() {
+            sunderStacks = (sunderStacks % 5) + 1;
+            document.getElementById("sunderCount").innerText = sunderStacks;
+            document.getElementById("sunderTag").innerText = sunderStacks + "/5";
+        }
+
+        function toggleDebuff(name) {
+            if (name === 'demo') {
+                const b = document.getElementById("btnDemo");
+                b.classList.toggle("active");
+                b.innerText = b.classList.contains("active") ? "Demoralizing Shout: ATTIVO" : "Demoralizing Shout: OFF";
+            } else if (name === 'thunder') {
+                const b = document.getElementById("btnThunder");
+                b.classList.toggle("active");
+                b.innerText = b.classList.contains("active") ? "Thunder Clap: ATTIVO" : "Thunder Clap: OFF";
+            }
+        }
+
+        function useShieldSlam() {
+            hasSab = false;
+            document.getElementById("iconSlam").classList.remove("glow-sab");
+            if (currentHp > 35) document.getElementById("emergencyAlert").classList.add("hidden");
+        }
+
+        function useRevenge() {
+            const rev = document.getElementById("iconRev");
+            rev.classList.toggle("glow-rev");
+        }
+
+        function useShockwave() {
+            alert("Shockwave utilizzato: Stun 4s cono frontale AoE!");
+        }
+
+        function useDevastate() {
+            cycleSunder();
+        }
+
+        function useConcussion() {
+            alert("Concussion Blow utilizzato: Stun 5s sul bersaglio!");
+        }
+    </script>
+</body>
+</html>

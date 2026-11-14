@@ -1,0 +1,65 @@
+"""
+Core package per serializzazione, compressione e helper WeakAuras.
+"""
+from builder.core.constants import (
+    PROT_WARRIOR_LOAD,
+    FONT_EXPRESSWAY,
+    TEXTURE_STATUSBAR,
+    TEXTURE_WHITE8X8,
+    COLOR_RAGE,
+    COLOR_RAGE_DUMP,
+    COLOR_RAGE_STARVED,
+    COLOR_RAGE_BG,
+    COLOR_HEALTH_HIGH,
+    COLOR_HEALTH_MED,
+    COLOR_HEALTH_CRIT,
+    COLOR_HEALTH_BG,
+    COLOR_GOLD_SAB,
+    COLOR_REVENGE,
+    COLOR_SHIELD_BLOCK,
+    COLOR_KICK_READY,
+    COLOR_KICK_IMMUNE,
+    COLOR_DANGER_ALERT,
+    DEFENSE_CAP_RAID,
+    DEFENSE_CAP_DUNGEON,
+    HIT_CAP_MELEE,
+    EXPERTISE_SOFT_CAP,
+    EXPERTISE_HARD_CAP,
+    CRITICAL_HEALTH_PCT,
+)
+from builder.core.serializer import ace_serialize
+from builder.core.deflate import libdeflate_encode_for_print
+from builder.core.encoder import generate_wa_string
+from builder.core.helpers import make_subtext, make_glow_action
+
+__all__ = [
+    "PROT_WARRIOR_LOAD",
+    "FONT_EXPRESSWAY",
+    "TEXTURE_STATUSBAR",
+    "TEXTURE_WHITE8X8",
+    "COLOR_RAGE",
+    "COLOR_RAGE_DUMP",
+    "COLOR_RAGE_STARVED",
+    "COLOR_RAGE_BG",
+    "COLOR_HEALTH_HIGH",
+    "COLOR_HEALTH_MED",
+    "COLOR_HEALTH_CRIT",
+    "COLOR_HEALTH_BG",
+    "COLOR_GOLD_SAB",
+    "COLOR_REVENGE",
+    "COLOR_SHIELD_BLOCK",
+    "COLOR_KICK_READY",
+    "COLOR_KICK_IMMUNE",
+    "COLOR_DANGER_ALERT",
+    "DEFENSE_CAP_RAID",
+    "DEFENSE_CAP_DUNGEON",
+    "HIT_CAP_MELEE",
+    "EXPERTISE_SOFT_CAP",
+    "EXPERTISE_HARD_CAP",
+    "CRITICAL_HEALTH_PCT",
+    "ace_serialize",
+    "libdeflate_encode_for_print",
+    "generate_wa_string",
+    "make_subtext",
+    "make_glow_action",
+]

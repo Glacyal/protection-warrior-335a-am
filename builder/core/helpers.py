@@ -1,0 +1,63 @@
+"""
+Helper & Factory per SubRegions WeakAuras (Testi, Glow, Bordi)
+=============================================================
+Fornisce funzioni di utilità per costruire sub-regioni conformi alle specifiche
+di WeakAuras 5.21.8+ (internalVersion 90) e retrocompatibili per WotLK 3.3.5a.
+"""
+
+def make_subtext(
+    text: str,
+    justify: str = "CENTER",
+    anchor_point: str = "INNER_BOTTOM",
+    font_size: int = 12,
+    y_offset: int = 0,
+    x_offset: int = 0,
+    extra_props: dict = None
+) -> dict:
+    """
+    Genera la struttura dizionario per una subRegion di tipo subtext con font Expressway OUTLINE.
+    Include chiavi native e alias per massima compatibilità tra WeakAuras 4.0.0 e 5.21.8+.
+    """
+    res = {
+        "type": "subtext",
+        "text_text": text,
+        "text_justify": justify,
+        "anchor_point": anchor_point,
+        "anchorPoint": anchor_point,
+        "text_anchorPoint": anchor_point,
+        "text_fontSize": font_size,
+        "text_font": "Expressway",
+        "text_fontType": "OUTLINE",
+        "text_selfPoint": "AUTO",
+        "text_shadowXOffset": 0,
+        "text_shadowYOffset": 0,
+        "text_shadowColor": [0, 0, 0, 1],
+        "text_color": [1, 1, 1, 1],
+        "text_text_format_p_format": "timed",
+        "text_text_format_p_time_precision": 1,
+        "text_text_format_p_time_dynamic_threshold": 60,
+        "text_visible": True,
+        "anchorXOffset": x_offset,
+        "anchorYOffset": y_offset,
+        "text_anchorXOffset": x_offset,
+        "text_anchorYOffset": y_offset,
+        "text_xOffset": x_offset,
+        "text_yOffset": y_offset,
+    }
+    if extra_props:
+        res.update(extra_props)
+    return res
+
+
+def make_glow_action(color: list = None) -> dict:
+    """Restituisce la configurazione standard per l'azione di Glow tipo Pixel Glow."""
+    return {
+        "do_glow": True,
+        "glow_action": "show",
+        "glow_type": "Pixel",
+        "glow_color": color if color is not None else [1.0, 0.84, 0.0, 1.0],
+        "glow_lines": 8,
+        "glow_frequency": 0.25,
+        "glow_length": 10,
+        "glow_thickness": 2,
+    }
