@@ -1,140 +1,248 @@
 """
-Modulo Componente: 04 & 20 - Rotational Bar, Priority Engine & Swing Timer (Warrior Protection)
-================================================================================================
-Gestisce:
-1. 04 - Rotational Bar warTank (Icone d'azione a Y = +2):
-   - Shield Slam (ID 47488): Priorità 1. Ricarica, fuori raggio e Glow dorato reattivo se Sword and Board è attivo!
-   - Revenge (ID 57823): Priorità 2. Attivazione dinamica reattiva a Blocco/Schivata/Parata con Glow arancione fuoco.
-   - Shockwave (ID 46968): Priorità 3. CD 20s, cono frontale AoE e stun.
-   - Devastate (ID 47498): Priorità 4. Filler, mostra il conteggio stack Sunder Armor (1-5) direttamente sull'icona.
-   - Concussion Blow (ID 12809): Priorità 5. Stun singolo 5s con CD 45s.
-2. 20 - Swing & HS Queue warTank:
-   - Swing Timer della mano primaria (MH).
-   - Glow ambra/oro quando Heroic Strike o Cleave è accodato sul prossimo attacco in mischia.
-   - Indicatore di scarico rabbia (Rage >= 45).
+Modulo Componente: 15 - Rotational Bar (Swing Timer & Heroic Strike Queued)
+===========================================================================
+Gestisce la barra orizzontale centrale composita a y = -7 (278x7px):
+1. Background Frame (278x7px, scuro semitrasparente).
+2. Swing Timer Melee Mano Primaria (MH) con timing %c (es. 1.8s) e avanzamento swipe.
+3. Indicatore Heroic Strike / Cleave Queued:
+   - Rileva in tempo reale se Heroic Strike (47450) o Cleave (47520) è accodato tramite IsCurrentSpell().
+   - Illuminazione cromatica dinamica su tutta la barra (278x7px) e Pixel Glow dedicato (Oro per Heroic Strike, Verde Smeraldo per Cleave).
 """
-import copy
-from builder.core.constants import PROT_WARRIOR_LOAD, FONT_EXPRESSWAY, TEXTURE_STATUSBAR
-from builder.core.helpers import make_subtext, make_glow_action
+from builder.core.helpers import make_subtext
+from builder.core.constants import TEXTURE_STATUSBAR, TEXTURE_WHITE8X8
+
+
+SHARED_SWING_TIMER_LUA = r"""_G.PWHUD_GetSwing = function()
+    _G.PWHUD_Swing = _G.PWHUD_Swing or {
+        mhStart = 0,
+        mhDur = 2.6,
+        hsQueued = false,
+        cleaveQueued = false,
+    }
+    local sw = _G.PWHUD_Swing
+
+    local f = _G.PWHUD_SwingFrame
+    if not f then
+        f = CreateFrame("Frame")
+        rawset(_G, "PWHUD_SwingFrame", f)
+
+        local playerGUID = nil
+        local function handleCLEU(...)
+            local ts, ev, srcGUID = select(1, ...), select(2, ...), select(3, ...)
+            if not playerGUID then playerGUID = UnitGUID("player") end
+            if srcGUID ~= playerGUID then return end
+
+            local now = GetTime()
+            local mhSpeed = UnitAttackSpeed("player") or 2.6
+
+            if ev == "SWING_DAMAGE" or ev == "SWING_MISSED" then
+                sw.mhStart = now
+                sw.mhDur = mhSpeed
+            elseif ev == "SPELL_DAMAGE" or ev == "SPELL_MISSED" then
+                local sId = select(9, ...)
+                local sName = select(10, ...)
+                if sId == 47450 or sName == "Heroic Strike" or sName == "Colpo Eroico" then
+                    sw.mhStart = now
+                    sw.mhDur = mhSpeed
+                    sw.hsQueued = false
+                elseif sId == 47520 or sName == "Cleave" or sName == "Fendente" then
+                    sw.mhStart = now
+                    sw.mhDur = mhSpeed
+                    sw.cleaveQueued = false
+                end
+            elseif ev == "SPELL_EXTRA_ATTACKS" then
+                sw.mhStart = now
+                sw.mhDur = mhSpeed
+            end
+        end
+
+        f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+        f:RegisterEvent("UNIT_ATTACK_SPEED")
+        f:RegisterEvent("PLAYER_ENTERING_WORLD")
+        f:SetScript("OnEvent", function(self, event, ...)
+            if event == "COMBAT_LOG_EVENT_UNFILTERED" then
+                handleCLEU(...)
+            elseif event == "UNIT_ATTACK_SPEED" then
+                local u = select(1, ...)
+                if u == "player" then
+                    local mh = UnitAttackSpeed("player")
+                    if mh and mh > 0 then sw.mhDur = mh end
+                end
+            elseif event == "PLAYER_ENTERING_WORLD" then
+                local mh = UnitAttackSpeed("player")
+                if mh and mh > 0 then sw.mhDur = mh end
+            end
+        end)
+    end
+
+    local isHS = IsCurrentSpell(47450) or IsCurrentSpell("Heroic Strike") or IsCurrentSpell("Colpo Eroico")
+    local isCL = IsCurrentSpell(47520) or IsCurrentSpell("Cleave") or IsCurrentSpell("Fendente")
+    sw.hsQueued = isHS
+    sw.cleaveQueued = isCL
+    return sw
+end"""
 
 
 def build_rotational_auras() -> list[dict]:
-    """Costruisce le aure della barra rotazionale e swing timer."""
-    auras = []
-
-    # 04 - Rotational Bar warTank (Icona principale Shield Slam)
-    auras.append({
-        "id": "04 - Rotational Bar warTank",
-        "uid": "PWHUD_ROTATION_BAR",
-        "regionType": "icon",
-        "internalVersion": 90,
-        "width": 42,
-        "height": 42,
-        "xOffset": -65,
-        "yOffset": 2,
-        "anchorPoint": "CENTER",
-        "selfPoint": "CENTER",
-        "displayIcon": "Interface\\Icons\\INV_Shield_05",
-        "load": copy.deepcopy(PROT_WARRIOR_LOAD),
-        "triggers": {
-            "1": {
-                "trigger": {
-                    "type": "custom",
-                    "custom_type": "status",
-                    "check": "update",
-                    "custom": r"""function()
-                        if _G.PWHUD_InitCore then _G.PWHUD_InitCore() end
-                        return true
-                    end""",
-                    "customDuration": r"""function()
-                        -- If Sword and Board active, CD is virtually 0
-                        local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
-                        if buffs and (buffs.bySpellId[50227] or buffs.byName["Sword and Board"]) then
-                            return 0, 0
-                        end
-                        local start, duration = GetSpellCooldown("Shield Slam")
-                        if start and duration and duration > 1.5 then
-                            return duration, start + duration
-                        end
-                        return 0, 0
-                    end""",
-                    "customIcon": r"""function()
-                        return "Interface\\Icons\\INV_Shield_05"
-                    end""",
-                    "customText": r"""function()
-                        local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
-                        if buffs and (buffs.bySpellId[50227] or buffs.byName["Sword and Board"]) then
-                            return "|cFFFFD700FREE|r"
-                        end
-                        return ""
-                    end"""
+    """
+    Costruisce e restituisce le aure del gruppo Rotational Bar:
+    - 15 - Rotational Bar (Group 278x7px a y = -7)
+    - Rotational Bar - Background
+    - Rotational Bar - MH Swing
+    - Rotational Bar - Queue Glow
+    """
+    return [
+        # Gruppo contenitore (278x7px a y = -7)
+        {
+            "id": "15 - Rotational Bar",
+            "uid": "PWHUD_ROTCENTER_GRP",
+            "parent": "Class Warrior (Protection)",
+            "regionType": "group",
+            "internalVersion": 90,
+            "xOffset": 0,
+            "yOffset": -7,
+            "controlledChildren": [
+                "Rotational Bar - Background",
+                "Rotational Bar - MH Swing",
+                "Rotational Bar - Queue Glow",
+            ],
+            "actions": {
+                "init": {
+                    "do_custom": True,
+                    "custom": SHARED_SWING_TIMER_LUA,
                 },
-                "untrigger": {"type": "custom", "custom": "function() return false end"}
-            }
+                "start": {},
+                "finish": {},
+            },
         },
-        "subRegions": [
-            make_subtext("%p", "CENTER", "CENTER", 13, 0, 0),
-            make_subtext("%c", "CENTER", "INNER_BOTTOM", 10, 2, 0),
-            make_subtext("SLAM", "RIGHT", "INNER_BOTTOMRIGHT", 8, 2, -2)
-        ],
-        "conditions": [
-            {
-                "check": {"trigger": 1, "variable": "show", "value": 1},
-                "changes": []
-            }
-        ]
-    })
-
-    # 20 - Swing & HS Queue warTank
-    auras.append({
-        "id": "20 - Swing & HS Queue warTank",
-        "uid": "PWHUD_SWING_HS_QUEUE",
-        "regionType": "aurabar",
-        "internalVersion": 90,
-        "width": 210,
-        "height": 6,
-        "xOffset": 0,
-        "yOffset": -6,
-        "anchorPoint": "CENTER",
-        "selfPoint": "CENTER",
-        "barColor": [0.9, 0.75, 0.2, 1.0],
-        "barColor2": [0.15, 0.15, 0.15, 0.85],
-        "texture": TEXTURE_STATUSBAR,
-        "load": copy.deepcopy(PROT_WARRIOR_LOAD),
-        "triggers": {
-            "1": {
-                "trigger": {
-                    "type": "custom",
-                    "custom_type": "status",
-                    "check": "update",
-                    "custom": r"""function()
-                        if _G.PWHUD_InitCore then _G.PWHUD_InitCore() end
-                        return UnitAffectingCombat("player") or UnitExists("target")
-                    end""",
-                    "customDuration": r"""function()
-                        local speed = UnitAttackSpeed("player") or 2.6
-                        local now = GetTime()
-                        _G.PWHUD_LastSwing = _G.PWHUD_LastSwing or now
-                        local elapsed = (now - _G.PWHUD_LastSwing) % speed
-                        return speed, now + (speed - elapsed)
-                    end""",
-                    "customText": r"""function()
-                        local isQueued = IsCurrentSpell("Heroic Strike") or IsCurrentSpell("Cleave")
-                        local rage = UnitMana("player") or 0
-                        if isQueued then
-                            return "|cFFFFD700[HS/CLV QUEUED]|r"
-                        elseif rage >= 45 then
-                            return "|cFFFF9000[QUEUE HS]|r"
-                        end
-                        return ""
-                    end"""
+        # Background Frame (278x7px)
+        {
+            "id": "Rotational Bar - Background",
+            "uid": "PWHUD_ROTCENTER_BG",
+            "parent": "15 - Rotational Bar",
+            "regionType": "texture",
+            "internalVersion": 90,
+            "xOffset": 0,
+            "yOffset": 0,
+            "width": 278,
+            "height": 7,
+            "texture": TEXTURE_WHITE8X8,
+            "color": [0.08, 0.04, 0.04, 0.85],
+            "selfPoint": "CENTER",
+            "anchorPoint": "CENTER",
+            "triggers": {
+                1: {
+                    "trigger": {
+                        "type": "custom",
+                        "custom_type": "status",
+                        "check": "event",
+                        "events": "PLAYER_ENTERING_WORLD,PLAYER_ALIVE",
+                        "custom": "function() return true end",
+                    },
+                    "untrigger": {
+                        "custom": "function() return false end",
+                    }
                 },
-                "untrigger": {"type": "custom", "custom": "function() return false end"}
-            }
+                "activeTriggerMode": -10,
+            },
         },
-        "subRegions": [
-            make_subtext("%c", "CENTER", "CENTER", 9, 0, 0)
-        ]
-    })
-
-    return auras
+        # MH Swing (278x5px a x = 0) con etichetta timing %c
+        {
+            "id": "Rotational Bar - MH Swing",
+            "uid": "PWHUD_ROTCENTER_MH",
+            "parent": "15 - Rotational Bar",
+            "regionType": "aurabar",
+            "internalVersion": 90,
+            "width": 274,
+            "height": 5,
+            "xOffset": 0,
+            "yOffset": 0,
+            "barColor": [0.85, 0.45, 0.15, 1.0],
+            "backgroundColor": [0.12, 0.06, 0.04, 0.6],
+            "texture": TEXTURE_STATUSBAR,
+            "inverse": False,
+            "triggers": {
+                1: {
+                    "trigger": {
+                        "type": "custom",
+                        "custom_type": "status",
+                        "check": "update",
+                        "custom": "function() return true end",
+                        "customDuration": r"""function()
+                            if _G.PWHUD_GetSwing then _G.PWHUD_GetSwing() end
+                            local sw = _G.PWHUD_Swing
+                            local now = GetTime()
+                            local start = sw and sw.mhStart or 0
+                            local dur = sw and sw.mhDur or UnitAttackSpeed("player") or 2.6
+                            local exp = start + dur
+                            if exp > now and start > 0 then
+                                return dur, exp
+                            end
+                            return dur, now + dur
+                        end""",
+                        "customText": r"""function()
+                            if _G.PWHUD_GetSwing then _G.PWHUD_GetSwing() end
+                            local now = GetTime()
+                            local sw = _G.PWHUD_Swing
+                            local remStr = ""
+                            if sw and sw.mhStart and sw.mhStart > 0 then
+                                local rem = (sw.mhStart + (sw.mhDur or 2.6)) - now
+                                if rem > 0 then remStr = string.format("%.1fs", rem) end
+                            end
+                            if sw and sw.hsQueued then
+                                return string.format("|cFFFFD700[HS QUEUED] %s|r", remStr)
+                            elseif sw and sw.cleaveQueued then
+                                return string.format("|cFF00FF00[CLEAVE QUEUED] %s|r", remStr)
+                            end
+                            return remStr
+                        end"""
+                    },
+                    "untrigger": {"type": "custom", "custom": "function() return false end"}
+                },
+                "activeTriggerMode": -10,
+            },
+            "subRegions": [
+                make_subtext("%c", justify="CENTER", anchor_point="CENTER", font_size=9, y_offset=0),
+            ],
+        },
+        # Rotational Bar - Queue Glow (Retroilluminazione additiva quando HS o Cleave è accodato)
+        {
+            "id": "Rotational Bar - Queue Glow",
+            "uid": "PWHUD_ROTCENTER_GLOW",
+            "parent": "15 - Rotational Bar",
+            "regionType": "texture",
+            "internalVersion": 90,
+            "xOffset": 0,
+            "yOffset": 0,
+            "width": 278,
+            "height": 7,
+            "texture": TEXTURE_WHITE8X8,
+            "color": [1.0, 0.84, 0.0, 0.35],
+            "selfPoint": "CENTER",
+            "anchorPoint": "CENTER",
+            "triggers": {
+                1: {
+                    "trigger": {
+                        "type": "custom",
+                        "custom_type": "status",
+                        "check": "update",
+                        "custom": r"""function()
+                            local isHS = IsCurrentSpell(47450) or IsCurrentSpell("Heroic Strike") or IsCurrentSpell("Colpo Eroico")
+                            local isCL = IsCurrentSpell(47520) or IsCurrentSpell("Cleave") or IsCurrentSpell("Fendente")
+                            return (isHS or isCL)
+                        end""",
+                    },
+                    "untrigger": {"type": "custom", "custom": "function() return false end"}
+                },
+                "activeTriggerMode": -10,
+            },
+            "conditions": [
+                {
+                    "check": {"trigger": 1, "variable": "show", "value": 1},
+                    "changes": [
+                        {"property": "color", "value": [1.0, 0.84, 0.0, 0.45]}
+                    ]
+                }
+            ],
+        },
+    ]

@@ -7,7 +7,7 @@
 [![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-gray.svg?logo=paypal&logoColor=white&labelColor=0079c1)](https://www.paypal.me/AMantmar)
 
 Suite WeakAuras completa, modulare e avanzata per **Warrior Protection (Tank) Livello 80** in World of Warcraft 3.3.5a (*Wrath of the Lich King - Build 12340*).  
-Progettata per garantire la massima sopravvivenza in raid e dungeon, un monitoraggio impeccabile dei cooldown difensivi, gestione intelligente delle **Interruzioni (Kick / Shield Bash / Pummel / Stun)**, allarmi per colpi critici/tank buster, supporto automatico al **Taunt swap** e calcolo real-time di tutte le metriche tanking (CTC, Difesa 540, SBV, Armatura DR ed EHP).
+Progettata per garantire la massima conformità visiva, geometrica e prestazionale con le suite **Class Warrior (Fury)** e **Class Mage (TTW Fire)**: barre centrali sincronizzate a **278px**, riga utility dinamica a $y = -45$, gruppo procs orizzontale a $y = 52$, pannello statistiche $88 \times 60\text{px}$ a $x = -190$ e tracker Sunder Armor a $x = 160$.
 
 ---
 
@@ -15,84 +15,77 @@ Progettata per garantire la massima sopravvivenza in raid e dungeon, un monitora
 
 Visualizza e interagisci con l'HUD direttamente dal browser senza installare nulla:  
 👉 **[Apri il Simulatore Web su GitHub Pages](https://glacyal.github.io/protection-warrior-335a-am/)**  
+- **Visuale 1:1 Identica a Fury Warrior**: proporzioni native, barre a 278px, swing timer reattivo con Glow additivo e animazioni clock swipe.
 - **Allerta Emergenza Salute Critica (&lt;35% HP)**: suggerimento dinamico prioritizzato del miglior cooldown difensivo pronto (*Shield Wall* > *Last Stand* > *Shield Block* > *Enraged Regen* > *Pozione/Pietra della Salute*).
-- **Kick Advisor Dinamico**: monitoraggio del cast nemico con rilevamento nativo di cast interrompibili vs cast immuni/protetti (`notInterruptible`), con indicazione esatta dell'abilità da usare in base a postura e scudo.
-- **Rotazione & Priorità con Sword and Board**: Glow dorato su Shield Slam a costo 0 rabbia e reset del CD; Revenge reattivo post-blocco/schivata/parata con Glow arancione fuoco.
-- **Pannello Statistiche Tank Live**: calcolo real-time di Combat Table Coverage (CTC), immunità ai critici dei boss Lv.83 (**540 Difesa**), Armor DR%, Shield Block Value (SBV), Hit/Exp e Vita Effettiva (EHP).
+- **Kick Advisor Dinamico Integrato**: la castbar ($278 \times 20\text{px}$ a $y = +8$) rileva lo stato di interruzione (`notInterruptible`) e consiglia la spell ottimale (*Shield Bash*, *Pummel*, *Stun* o allerta cast *Immune*).
+- **Pannello Statistiche Tank Live**: calcolo real-time di Combat Table Coverage (CTC), immunità ai critici dei boss Lv.83 (**540 Difesa**), Armor DR%, Shield Block Value (SBV), Hit/Exp ed EHP.
 
 ---
 
 ## 🌟 Architettura dell'HUD (20 Nodi Ordinati)
 
-La suite è strutturata in 20 nodi sequenziali controllati dal gruppo principale `Class Warrior (Protection)`:
+La suite è strutturata in 20 nodi sequenziali controllati dal gruppo principale `Class Warrior (Protection)` ($x = 0, y = -190$, scala $1.2$):
 
-### 1. Emergenza & Allarmi Centrali (`01 - Emergency & Procs warTank`)
-- **Salute Critica (&lt;35% HP)**: Allarme visivo centrale e lampeggiante con raccomandazione contestuale dell'azione salvavita:
-  1. *Shield Wall* (-60% danni subiti, priorità assoluta per mitigare colpi letali).
-  2. *Last Stand* (+30% HP massimi e correnti se Shield Wall è in ricarica).
-  3. *Shield Block* (+100% chance di blocco e +100% SBV per assorbire raffiche fisiche).
-  4. *Enraged Regeneration* (+30% cura nel tempo se il tank è sotto effetto Enrage/Bloodrage).
-  5. *Healthstone / Pozione* (se tutti i cooldown di classe sono in ricarica).
-- **Sword and Board (Spell ID 50227)**: Icona centrale con bordo dorato pulsante e conto alla rovescia di 5 secondi: Shield Slam azzerato e a 0 costo di rabbia!
+### 1. Gruppo Dinamico Procs (`01 - Procs warTank`)
+Posizionato nella parte superiore dell'HUD ($y = 52$), gestisce fino a 7 icone ($34 \times 34\text{px}$, space $6\text{px}$) con riposizionamento orizzontale centrato:
+1. **Sword and Board (Buff 50227)**: Shield Slam a costo 0 rabbia e azzeramento del CD, con Pixel Glow dorato pulsante e conto alla rovescia di 5 secondi.
+2. **Revenge Ready**: Si attiva con bordo luminoso arancione vivo post Schivata/Parata/Blocco.
+3. **Shield Block Active (Buff 2565)**: Durata attiva di 10 secondi con conto alla rovescia ed etichetta `100%`.
+4. **Victory Rush**: Proc *Victorious* con countdown di 20 secondi.
+5. **Emergency Low HP Alert**: Icona con Pixel Glow rosso lampeggiante quando la salute scende sotto il 35%, mostrando l'icona del cooldown consigliato pronto (*Shield Wall* o *Last Stand*).
+6. **Boss Enrage Alert**: Segnalazione immediata con Glow rosso quando il boss entra in Enrage/Frenzy/Berserk per attivare mitigazioni pesanti o chiamare il Tranq Shot.
+7. **Tank Buster Alert**: Notifica con Glow rosso in caso di debuff letali sul tank (*Soul Reaper*, *Impale* $\ge 2$ stacks, *Gastric Bloat* $\ge 8$ stacks) per coordinare lo swap del Taunt.
 
-### 2. Interruzioni & Riflessione Magica (`02 - Kick Advisor` & `17 - Spell Reflect`)
-- **Rilevamento Intelligente Cast Bersaglio**:
-  - Intercetta i lanci nemici (`UNIT_SPELLCAST_START` e `CHANNEL`).
-  - **Cast Interrompibile**:
-    * Postura Difensiva o Battaglia con scudo: Suggerisce **`KICK: SHIELD BASH`** (Spell ID 72).
-    * Postura Berserker: Suggerisce **`KICK: PUMMEL`** (Spell ID 6552).
-    * Se Shield Bash è in ricarica: Suggerisce **`STANCE DANCE -> PUMMEL`** oppure gli stun **`STUN: CONCUSSION BLOW`** / **`STUN: SHOCKWAVE`**.
-  - **Cast Protetto / Immune (`notInterruptible == true`)**:
-    * Evidenzia chiaramente **`IMMUNE TO KICK!`** suggerendo di attivare **`SPELL REFLECT`** o un cooldown di mitigazione.
-- **Spell Reflection (Spell ID 23920)**: Monitora il buff attivo (5s) e la ricarica rapida (8s con talento).
+### 2. Buff di Classe & Postura Difensiva (`02`, `03`, `04`)
+Posizionati a sinistra a $x = -222, -190, -158$ e $y = 0$:
+- **02 - Battle Shout**: Compare con timer solo se in scadenza ($\le 30\text{s}$) o desaturato con scritta `OFF` se manca sia Battle Shout che *Blessing of Might* del Paladino.
+- **03 - Commanding Shout**: Compare con timer solo se in scadenza ($\le 30\text{s}$) o desaturato con scritta `OFF` se manca sia Commanding Shout che *Blood Pact* dell'Imp.
+- **04 - Defensive Stance**: Allerta immediata ad alta visibilità con Glow rosso ed etichetta `STANCE` se il guerriero si trova fuori dalla *Defensive Stance* durante il combattimento.
 
-### 3. Cooldown Difensivi Maggiori (`03`, `14`, `15`, `16`)
-- **14 - Shield Wall Alert warTank**: Spell ID 871 (-60% DR per 12s, CD 2m con talento/glifo).
-- **15 - Last Stand Alert warTank**: Spell ID 12975 (+30% HP per 20s, CD 2m/3m).
-- **16 - Shield Block Tracker warTank**: Spell ID 2565 (10s di durata con 100% blocco e ricarica rapida 30s/40s).
-- **03 - Defensive Cooldowns warTank**: Monitoraggio di *Enraged Regeneration* (Spell ID 55694).
+### 3. Riga Utility Inferiore (`05` - `13`, a $y = -45$)
+Centratura automatica orizzontale adattiva sotto la barra della rabbia con icone $28 \times 28\text{px}$:
+- **05 - Trinket 1 warTank** & **06 - Trinket 2 warTank**: Slot 13 e 14 con rilevamento automatico monili tank (*Sindragosa's Flawless Fang*, *Glyph of Indomitability*, *Corpse Tongue Coin*, *Satrina's Impeding Scarab*, *Corroded Skeleton Key*, ecc.).
+- **06b - Ring warTank**: Rilevamento anello tanking (*Ashen Band of Endless Courage*).
+- **07 - Cloak warTank**: Paracadute/Flexweave e incanti mantello.
+- **08 - Tier Set warTank**: Tracciamento bonus set T9 e T10 Prot (*Ymirjar Lord* 2P/4P).
+- **09 - Enchants warTank**: Incanti arma tanking (*Blade Ward*, *Blood Draining*, *Mongoose*).
+- **10 - Gloves warTank**: *Reticulated Armor Webbing* (+885 Armatura) o *Acceleratori Ipersonici*.
+- **11 - Shield Wall**: Spell 871 (-60% DR per 12s, swipe durata e CD).
+- **12 - Last Stand**: Spell 12975 (+30% HP per 20s, swipe durata e CD).
+- **13 - Boots warTank**: *Acceleratori a Nitro* (Ingegneria) o *Enraged Regeneration*.
 
-### 4. Barra Rotazionale & Swing Timer (`04` & `20`)
-- **Shield Slam (Spell ID 47488)**: Priorità n. 1, cooldown swipe, raggio e Glow dorato reattivo a Sword and Board.
-- **Revenge (Spell ID 57823)**: Priorità n. 2, si attiva con Glow arancione fuoco dopo aver parato, schivato o bloccato un colpo (gestione colpi doppi con *Improved Revenge*).
-- **Shockwave (Spell ID 46968)**: Priorità n. 3, stun ad area frontale 4s e threat AoE massiccio.
-- **Devastate (Spell ID 47498)**: Priorità n. 4, filler principale che mostra il conteggio stack Sunder Armor (1-5) direttamente sull'icona.
-- **Concussion Blow (Spell ID 12809)**: Priorità n. 5, stun singolo 5s.
-- **20 - Swing & HS Queue warTank**: Swing timer della mano primaria con Glow ambra/oro quando *Heroic Strike* o *Cleave* è accodato sul colpo successivo, e indicatore di scarico sicuro quando la rabbia supera i 45 punti.
+### 4. Barre Centrali Sincronizzate a 278px (`14`, `15`, `16`)
+- **14 - Rage Bar ($278 \times 14\text{px}$ a $y = -20$)**: Valore numerico esatto al centro (%p) con colorazione a 3 stadi: rosso scuro sotto 25 punti (starvation), crimson pieno tra 25 e 44 punti e ambra/oro sopra i 45 punti (soglia scarico sicuro Heroic Strike/Cleave).
+- **15 - Rotational Bar ($278 \times 7\text{px}$ a $y = -7$)**: Barra centrale con swing timer della mano primaria e retroilluminazione dinamica additiva (Pixel Glow dorato quando *Heroic Strike* è accodato, verde smeraldo quando *Cleave* è accodato).
+- **16 - Castbar warTank ($278 \times 20\text{px}$ a $y = +8$)**: Barra di lancio sincronizzata con il bersaglio (o player). Mostra icona a sinistra, nome incantesimo con **Kick Advisor** integrato a sinistra (es. `Frostbolt [KICK: SHIELD BASH]` in ciano, o `[IMMUNE]` in grigio) e tempo residuo a destra (%p).
 
-### 5. Controllo Postura & Debuff Boss (`05` & `18`)
-- **05 - Debuffs & Stance warTank**:
-  - Verifica Postura Difensiva: allarme sonoro e visivo immediato se il tank entra in combattimento fuori da *Defensive Stance*.
-  - Verifica *Thunder Clap* (-20% Attack Speed nemico) e *Demoralizing Shout* (-575 AP nemico): notifica se il boss non ha il debuff applicato!
-- **18 - Sunder Armor Tracker warTank**:
-  - Tracciamento delle cariche di Sunder Armor / Expose Armor (da 1 a 5 cariche) con barra durata e colorazione (Rosso = 0, Giallo = 1-4, Verde = 5/5).
+### 5. Avvisi Testuali Centrali (`17 - Alerts warTank`)
+Gruppo posizionato a $y = 78$ appena sopra i procs:
+- **Alert - Sword and Board**: Scritta `SHIELD SLAM READY!` in giallo dorato con suono Tamburi di Guerra (*Drums*).
+- **Alert - Emergency CD**: Notifica critica `CRIT HP: USE SHIELD WALL!` con allarme sonoro.
+- **Alert - Kick Now**: Indicazione `INTERRUPT: SHIELD BASH!`.
+- **Alert - Boss Enraged**: Notifica `BOSS ENRAGED! POP CD!`.
 
-### 6. Taunt & Threat Utility (`06`)
-- Cooldown timer per *Taunt* (8s), *Mocking Blow* (2m) e *Challenging Shout* (10m).
-- **Allarme Taunt Miss / Resist**: Intercetta tramite combat log i fallimenti del Taunt avvisando immediatamente il tank di usare il taunt di riserva (*Mocking Blow*) o coordinare lo swap.
-
-### 7. Barre Centrali (`07`, `08`, `09`)
-- **07 - Rage Bar**: Valore numerico esatto con colorazione a soglie: rosso scuro (<15 starvation), crimson (15-44 normale), ambra/oro (>=45 scarico sicuro).
-- **08 - Health Bar**: Percentuale e vita numerica con soglie cromatiche (verde >65%, ambra 35-65%, rosso lampeggiante <35%).
-- **09 - Castbar warTank**: Castbar del bersaglio con differenziazione cromatica ciano (interrompibile) vs grigio (protetto).
-
-### 8. Pannello Statistiche Tanking (`10 - Stats Panel warTank`)
-Visualizzazione a 3 righe a centro schermo ($y = -120$):
+### 6. Pannello Statistiche Tanking (`18 - Stats Panel warTank`)
+Box compatto $88 \times 60\text{px}$ a $x = -190, y = -45$ (sul lato sinistro della riga utility):
 ```text
-DEF: 542/540 [IMMUNE]    CTC: 102.4% [FULL BLK]
-ARM: 27.5k (68.2% DR)    SBV: 2,180
-HIT: 8.2%   EXP: 26/26   EHP: 118k
+DEF: 542 (CAP)
+CTC: 102.4% (MAX)
+ARM: 27.5k (68.2%)
+SBV: 2,180
+H: 8.2%  E: 26
 ```
 - **DEF**: Verifica del raggiungimento del cap di **540 Difesa** per l'immunità dai colpi critici dei boss di raid livello 83.
-- **CTC**: Combat Table Coverage (Schivata% + Parata% + Blocco% + Miss%) con indicazione di blocco totale / uncrushable.
-- **ARM & DR%**: Armatura effettiva e percentuale di riduzione danno fisico calcolata con la formula ufficiale di WotLK 3.3.5a: $\text{DR} = \frac{\text{Armor}}{\text{Armor} + 16635}$.
+- **CTC**: Combat Table Coverage (Schivata% + Parata% + Blocco% + Miss%) con indicazione di copertura totale.
+- **ARM**: Armatura effettiva e percentuale di riduzione danno fisico ($\text{DR} = \frac{\text{Armor}}{\text{Armor} + 16635}$).
 - **SBV**: Shield Block Value per il calcolo del danno e del threat di Shield Slam.
-- **HIT & EXP**: Controllo cap 8% Melee Hit (263 rating) e soft cap 26 Perizia (214 rating).
-- **EHP**: Effective Health Pool $(\frac{\text{Max HP}}{1 - \text{DR}})$.
+- **H/E**: Cap 8% Melee Hit (263 rating) e soft cap 26 Perizia (214 rating).
 
-### 9. Monili & Equipaggiamento (`11`, `12`, `13`)
-- Monitoraggio automatico di Monili Tanking nello Slot 13 e 14 (*Sindragosa's Flawless Fang*, *Glyph of Indomitability*, *Corpse Tongue Coin*, *Satrina's Impeding Scarab*, *Corroded Skeleton Key*, ecc.).
-- Rilevamento di incanti Ingegneria su Guanti (*Reticulated Armor Webbing* +885 Armatura / *Hyperspeed Accelerators*) e Stivali (*Nitro Boosts*).
+### 7. Sunder Armor Tracker (`19 - Sunder Armor Tracker`)
+Posizionato sul lato destro delle barre ($x = 160, y = -7$, $32 \times 32\text{px}$):
+- Tracciamento delle cariche di Sunder Armor (1-5 cariche, stack count verde `x5`) o *Expose Armor* del Ladro (`EA` in ciano).
+- Timer numerico di scadenza alla base.
+- Allerta rossa `OFF` quando il debuff manca sul bersaglio corrente in combattimento.
 
 ---
 
@@ -107,7 +100,6 @@ HIT: 8.2%   EXP: 26/26   EHP: 118k
 
 ## 🛠️ Manutenzione & Compilazione
 
-La suite utilizza un compilatore Python deterministico:
 - **Compilazione Stringa**:
   ```bash
   python generate.py

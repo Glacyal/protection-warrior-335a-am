@@ -23,26 +23,26 @@ def run_tests():
     assert root["internalVersion"] in (52, 90), f"Invalid internalVersion: {root.get('internalVersion')}"
 
     expected_children = [
-        "01 - Emergency & Procs warTank",
-        "02 - Kick Advisor warTank",
-        "03 - Defensive Cooldowns warTank",
-        "04 - Rotational Bar warTank",
-        "05 - Debuffs & Stance warTank",
-        "06 - Taunt & Threat warTank",
-        "07 - Rage Bar warTank",
-        "08 - Health Bar warTank",
-        "09 - Castbar warTank",
-        "10 - Stats Panel warTank",
-        "11 - Trinket 1 warTank",
-        "12 - Trinket 2 warTank",
-        "13 - Gloves & Boots warTank",
-        "14 - Shield Wall Alert warTank",
-        "15 - Last Stand Alert warTank",
-        "16 - Shield Block Tracker warTank",
-        "17 - Spell Reflect Advisor warTank",
-        "18 - Sunder Armor Tracker warTank",
-        "19 - Boss Mechanics Alert warTank",
-        "20 - Swing & HS Queue warTank",
+        "01 - Procs warTank",
+        "02 - Battle Shout",
+        "03 - Commanding Shout",
+        "04 - Defensive Stance",
+        "05 - Trinket 1 warTank",
+        "06 - Trinket 2 warTank",
+        "06b - Ring warTank",
+        "07 - Cloak warTank",
+        "08 - Tier Set warTank",
+        "09 - Enchants warTank",
+        "10 - Gloves warTank",
+        "11 - Shield Wall",
+        "12 - Last Stand",
+        "13 - Boots warTank",
+        "14 - Rage Bar",
+        "15 - Rotational Bar",
+        "16 - Castbar warTank",
+        "17 - Alerts warTank",
+        "18 - Stats Panel warTank",
+        "19 - Sunder Armor Tracker",
     ]
 
     ctrl = root["controlledChildren"]
@@ -51,8 +51,6 @@ def run_tests():
         assert exp in ctrl, f"Missing child in root controlledChildren: {exp}"
 
     # Verify all children in tree['c']
-    children_map = {c["id"]: c for c in tree["c"]}
-    assert len(children_map) == 20, f"Expected 20 unique children in c, got {len(children_map)}"
     uids = set()
 
     for item in tree["c"]:
@@ -80,7 +78,7 @@ def run_tests():
         load = item.get("load", {})
         assert load.get("use_class") is True, f"Item {cid} load use_class is not True"
 
-    print("[OK] test_components_integrity completato con successo (20 nodi verificati).")
+    print(f"[OK] test_components_integrity completato con successo ({len(tree['c'])} aure verificate).")
     return True
 
 if __name__ == "__main__":

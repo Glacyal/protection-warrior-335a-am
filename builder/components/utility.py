@@ -1,18 +1,24 @@
 """
-Modulo Componente: 11-13 - Utility, Trinkets & Core Bootstrap (Warrior Protection)
-==================================================================================
-Fornisce il bootstrap globale Lua (_G.PWHUD_*) e i tracker per:
-1. 11 - Trinket 1 warTank (Slot 13: Sindragosa's Fang, Glyph of Indomitability, Coin, Scarab, ecc.)
-2. 12 - Trinket 2 warTank (Slot 14: Corroded Skeleton Key, Black Heart, Onyxia Talisman, ecc.)
-3. 13 - Gloves & Boots warTank (Slot 10: Reticulated Armor Webbing / Hyperspeed, Slot 8: Nitro Boosts)
+Modulo Componente: 05-13 - Utility Row (Warrior Protection)
+===========================================================
+Gestisce la riga orizzontale di utilità a y = -45 con riposizionamento dinamico
+centrato naturale (da 3 a 10 icone) in base all'equipaggiamento e alle abilità:
+1. 05 - Trinket 1 warTank (Slot 13: Fang, Indomitability, Coin, Scarab, Skeleton Key, Black Heart, ecc.)
+2. 06 - Trinket 2 warTank (Slot 14: Fang, Indomitability, Coin, Scarab, Skeleton Key, Black Heart, ecc.)
+3. 06b - Ring warTank (Slot 11/12: Ashen Band of Endless Courage +Armor/Dodge proc, 60s ICD)
+4. 07 - Cloak warTank (Slot 15: Flexweave / Paracadute / Incanti)
+5. 08 - Tier Set warTank (T9/T10 Prot: Ymirjar Lord 2P/4P, Triumph 2P/4P)
+6. 09 - Enchants warTank (Slot 16/17: Blade Ward, Blood Draining, Mongoose con tracking)
+7. 10 - Gloves warTank (Slot 10: Reticulated Armor Webbing +885 Armor / Acceleratori Ipersonici)
+8. 11 - Shield Wall (Spell 871: durata attiva 12s, ricarica e glow emergenza)
+9. 12 - Last Stand (Spell 12975: durata attiva 20s, ricarica e glow emergenza)
+10. 13 - Boots warTank (Slot 8: Acceleratori a Nitro Boosts / Enraged Regeneration)
 """
-import copy
-from builder.core.constants import PROT_WARRIOR_LOAD, FONT_EXPRESSWAY
 from builder.core.helpers import make_subtext
 
 
 # =============================================================================
-# LOGICA LUA CONDIVISA CENTRALIZZATA (BOOTSTRAP TANK WARRIOR)
+# LOGICA LUA CONDIVISA CENTRALIZZATA (BOOTSTRAP UTILITY TANK WARRIOR)
 # =============================================================================
 SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
     _G.PWHUD_GetPlayerBuffs = _G.PWHUD_GetPlayerBuffs or function()
@@ -25,12 +31,11 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
             if not name then break end
             local b = {
                 name = name,
-                rank = rank,
                 icon = icon,
                 count = count or 0,
                 duration = duration or 0,
                 expirationTime = expirationTime or 0,
-                spellId = spellId
+                spellId = spellId,
             }
             c.list[#c.list + 1] = b
             if spellId then c.bySpellId[spellId] = b end
@@ -50,65 +55,17 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
             if not name then break end
             local d = {
                 name = name,
+                icon = icon,
                 count = count or 0,
                 duration = duration or 0,
                 expirationTime = expirationTime or 0,
                 spellId = spellId,
-                icon = icon
             }
             c.list[#c.list + 1] = d
             if spellId then c.bySpellId[spellId] = d end
             if name then c.byName[name] = d end
         end
         _G.PWHUD_PlayerDebuffCache = c
-        return c
-    end
-
-    _G.PWHUD_GetTargetDebuffs = _G.PWHUD_GetTargetDebuffs or function()
-        local now_td = GetTime()
-        local c = _G.PWHUD_TargetDebuffCache
-        if c and c.time == now_td then return c end
-        c = { time = now_td, bySpellId = {}, byName = {}, list = {}, sunderCount = 0, sunderExp = 0, hasDemo = false, demoExp = 0, hasThunder = false, thunderExp = 0 }
-        if not UnitExists("target") then
-            _G.PWHUD_TargetDebuffCache = c
-            return c
-        end
-        for i = 1, 40 do
-            local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitDebuff("target", i)
-            if not name then break end
-            local d = {
-                name = name,
-                count = count or 0,
-                duration = duration or 0,
-                expirationTime = expirationTime or 0,
-                spellId = spellId
-            }
-            c.list[#c.list + 1] = d
-            if spellId then c.bySpellId[spellId] = d end
-            if name then c.byName[name] = d end
-
-            -- Sunder Armor / Expose Armor check
-            if name == "Sunder Armor" or spellId == 47437 or spellId == 7386 then
-                c.sunderCount = count > 0 and count or 1
-                c.sunderExp = expirationTime or 0
-            elseif name == "Expose Armor" or spellId == 8647 then
-                c.sunderCount = 5
-                c.sunderExp = expirationTime or 0
-            end
-
-            -- Demoralizing Shout / Vindication check (-AP)
-            if name == "Demoralizing Shout" or name == "Demoralizing Roar" or name == "Vindication" or spellId == 47436 then
-                c.hasDemo = true
-                c.demoExp = expirationTime or 0
-            end
-
-            -- Thunder Clap / Frost Fever / Judgements of the Just (-20% atk speed)
-            if name == "Thunder Clap" or name == "Frost Fever" or name == "Judgements of the Just" or name == "Infected Wounds" or spellId == 47502 then
-                c.hasThunder = true
-                c.thunderExp = expirationTime or 0
-            end
-        end
-        _G.PWHUD_TargetDebuffCache = c
         return c
     end
 
@@ -124,7 +81,6 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         for i = 1, 40 do
             local name, rank, icon, count, debuffType, duration, expirationTime, unitCaster, isStealable, shouldConsolidate, spellId = UnitBuff("target", i)
             if not name then break end
-            c.list[#c.list + 1] = { name = name, spellId = spellId }
             local lowerName = string.lower(name)
             if string.find(lowerName, "enrage") or string.find(lowerName, "frenzy") or string.find(lowerName, "berserk") or string.find(lowerName, "bloodlust") then
                 c.hasEnrage = true
@@ -137,10 +93,8 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
 
     _G.PWHUD_GetKickInfo = _G.PWHUD_GetKickInfo or function()
         local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo("target")
-        local isChannel = false
         if not spell then
             spell, rank, displayName, icon, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo("target")
-            isChannel = (spell ~= nil)
         end
         if not spell then return nil end
 
@@ -151,58 +105,37 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         local shieldBashReady = (sDur == nil or sDur <= 1.5 or (sStart + sDur <= now))
         local pStart, pDur = GetSpellCooldown("Pummel")
         local pummelReady = (pDur == nil or pDur <= 1.5 or (pStart + pDur <= now))
-        local cStart, cDur = GetSpellCooldown("Concussion Blow")
-        local concReady = (cDur == nil or cDur <= 1.5 or (cStart + cDur <= now))
-        local swStart, swDur = GetSpellCooldown("Shockwave")
-        local shockwaveReady = (swDur == nil or swDur <= 1.5 or (swStart + swDur <= now))
 
         local res = {
             spellName = spell,
             icon = icon,
             notInterruptible = notInterruptible,
             remaining = (endTime and (endTime / 1000 - now)) or 0,
-            recommended = "Shield Bash",
-            recommendedIcon = "Interface\\Icons\\Ability_Warrior_ShieldBash",
+            recommended = "SHIELD BASH",
             canKick = true,
-            reason = "OK"
         }
 
         if notInterruptible then
             res.canKick = false
-            res.recommended = "IMMUNE (Reflect/Wall)"
-            res.recommendedIcon = "Interface\\Icons\\Ability_Warrior_ShieldReflection"
-            res.reason = "IMMUNE"
+            res.recommended = "IMMUNE"
             return res
         end
 
         if (form == 2 or form == 1) and hasShield and shieldBashReady then
-            res.recommended = "Shield Bash"
-            res.recommendedIcon = "Interface\\Icons\\Ability_Warrior_ShieldBash"
+            res.recommended = "SHIELD BASH"
         elseif form == 3 and pummelReady then
-            res.recommended = "Pummel"
-            res.recommendedIcon = "Interface\\Icons\\INV_Gauntlets_04"
+            res.recommended = "PUMMEL"
         elseif form == 2 and not shieldBashReady and pummelReady then
-            res.recommended = "Stance Dance -> Pummel"
-            res.recommendedIcon = "Interface\\Icons\\INV_Gauntlets_04"
-        elseif concReady then
-            res.recommended = "Stun: Concussion Blow"
-            res.recommendedIcon = "Interface\\Icons\\Ability_ThunderBolt"
-        elseif shockwaveReady then
-            res.recommended = "Stun: Shockwave"
-            res.recommendedIcon = "Interface\\Icons\\Ability_Warrior_Shockwave"
+            res.recommended = "STANCE -> PUMMEL"
         else
-            res.recommended = "Kicks on Cooldown!"
-            res.recommendedIcon = "Interface\\Icons\\Spell_Fire_SelfDestruct"
-            res.canKick = false
-            res.reason = "ON_CD"
+            res.recommended = "STUN / CD"
         end
         return res
     end
 
     _G.PWHUD_GetEmergencyCD = _G.PWHUD_GetEmergencyCD or function()
-        local curHP = UnitHealth("player")
-        local maxHP = UnitHealthMax("player")
-        if maxHP == 0 then return nil end
+        local curHP = UnitHealth("player") or 0
+        local maxHP = UnitHealthMax("player") or 1
         local pct = (curHP / maxHP) * 100
         if pct > 35 then return nil end
 
@@ -213,78 +146,16 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         end
 
         if isReady("Shield Wall") then
-            return {
-                action = "SHIELD WALL (-60% DR)",
-                icon = "Interface\\Icons\\Ability_Warrior_ShieldWall",
-                urgency = "CRITICAL",
-                pct = pct
-            }
+            return { action = "SHIELD WALL", icon = "Interface\\Icons\\Ability_Warrior_ShieldWall", pct = pct }
         elseif isReady("Last Stand") then
-            return {
-                action = "LAST STAND (+30% HP)",
-                icon = "Interface\\Icons\\Spell_Nature_ShamanRage",
-                urgency = "HIGH",
-                pct = pct
-            }
+            return { action = "LAST STAND", icon = "Interface\\Icons\\Spell_Nature_ShamanRage", pct = pct }
         elseif isReady("Shield Block") then
-            return {
-                action = "SHIELD BLOCK (100% BLK)",
-                icon = "Interface\\Icons\\Ability_Defensive",
-                urgency = "MEDIUM",
-                pct = pct
-            }
+            return { action = "SHIELD BLOCK", icon = "Interface\\Icons\\Ability_Defensive", pct = pct }
         elseif isReady("Enraged Regeneration") then
-            return {
-                action = "ENRAGED REGEN (+30% HEAL)",
-                icon = "Interface\\Icons\\Ability_Warrior_EnragedRegeneration",
-                urgency = "MEDIUM",
-                pct = pct
-            }
+            return { action = "ENRAGED REGEN", icon = "Interface\\Icons\\Ability_Warrior_EnragedRegeneration", pct = pct }
         else
-            return {
-                action = "HEALTHSTONE / POTION!",
-                icon = "Interface\\Icons\\INV_Stone_04",
-                urgency = "PANIC",
-                pct = pct
-            }
+            return { action = "HEALTHSTONE / POT", icon = "Interface\\Icons\\INV_Stone_04", pct = pct }
         end
-    end
-
-    _G.PWHUD_GetTankStats = _G.PWHUD_GetTankStats or function()
-        local baseDef, armorDef = UnitDefense("player")
-        local totalDef = (baseDef or 0) + (armorDef or 0)
-        local dodge = GetDodgeChance() or 0
-        local parry = GetParryChance() or 0
-        local block = GetBlockChance() or 0
-        local miss = 5.0 + math.max(0, (totalDef - 400) * 0.04)
-        local ctc = dodge + parry + block + miss
-        local sbv = GetShieldBlock() or 0
-        local baseArmor, effectiveArmor, armorVal, posBuff, negBuff = UnitArmor("player")
-        effectiveArmor = effectiveArmor or baseArmor or 0
-        local armorDR = (effectiveArmor / (effectiveArmor + 16635)) * 100
-        local hitRating = GetCombatRating(6) or 0
-        local hitBonus = GetCombatRatingBonus(6) or 0
-        local exp = GetExpertise() or 0
-        local hpMax = UnitHealthMax("player") or 1
-        local ehp = hpMax / math.max(0.01, (1 - (armorDR / 100)))
-
-        return {
-            defense = totalDef,
-            isCritImmune = (totalDef >= 540),
-            dodge = dodge,
-            parry = parry,
-            block = block,
-            miss = miss,
-            ctc = ctc,
-            sbv = sbv,
-            armor = effectiveArmor,
-            armorDR = armorDR,
-            hitBonus = hitBonus,
-            hitRating = hitRating,
-            expertise = exp,
-            hpMax = hpMax,
-            ehp = ehp
-        }
     end
 
     _G.PWHUD_CoreInitDone = true
@@ -292,23 +163,24 @@ end"""
 
 
 def build_utility_auras() -> list[dict]:
-    """Costruisce le aure per la riga di utilità (Trinkets, Gloves, Boots)."""
+    """Costruisce le 10 aure della riga di utilità (05-13)."""
     auras = []
 
-    # 11 - Trinket 1 warTank
+    # 05 - Trinket 1 warTank (Slot 13)
     auras.append({
-        "id": "11 - Trinket 1 warTank",
-        "uid": "PWHUD_TRINKET_1",
+        "id": "05 - Trinket 1 warTank",
+        "uid": "PWHUD_UTIL_TRINKET1",
+        "parent": "Class Warrior (Protection)",
         "regionType": "icon",
         "internalVersion": 90,
-        "width": 30,
-        "height": 30,
-        "xOffset": -60,
+        "width": 28,
+        "height": 28,
+        "xOffset": -140,
         "yOffset": -45,
-        "anchorPoint": "CENTER",
-        "selfPoint": "CENTER",
-        "displayIcon": "Interface\\Icons\\INV_Jewelry_TrinketPVP_02",
-        "load": copy.deepcopy(PROT_WARRIOR_LOAD),
+        "displayIcon": "Interface\\Icons\\INV_Misc_Ornament_02",
+        "cooldown": True,
+        "cooldownSwipe": True,
+        "cooldownEdge": True,
         "triggers": {
             "1": {
                 "trigger": {
@@ -317,8 +189,7 @@ def build_utility_auras() -> list[dict]:
                     "check": "update",
                     "custom": r"""function()
                         if _G.PWHUD_InitCore then _G.PWHUD_InitCore() end
-                        local itemID = GetInventoryItemID("player", 13)
-                        return (itemID ~= nil)
+                        return (GetInventoryItemID("player", 13) ~= nil)
                     end""",
                     "customDuration": r"""function()
                         local start, duration = GetInventoryItemCooldown("player", 13)
@@ -328,32 +199,33 @@ def build_utility_auras() -> list[dict]:
                         return 0, 0
                     end""",
                     "customIcon": r"""function()
-                        return GetInventoryItemTexture("player", 13) or "Interface\\Icons\\INV_Jewelry_TrinketPVP_02"
+                        return GetInventoryItemTexture("player", 13) or "Interface\\Icons\\INV_Misc_Ornament_02"
                     end"""
                 },
                 "untrigger": {"type": "custom", "custom": "function() return false end"}
             }
         },
         "subRegions": [
-            make_subtext("%p", "CENTER", "CENTER", 11, 0, 0),
-            make_subtext("T1", "RIGHT", "INNER_BOTTOMRIGHT", 9, 2, -2)
-        ]
+            make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
+            make_subtext("T1", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
+        ],
     })
 
-    # 12 - Trinket 2 warTank
+    # 06 - Trinket 2 warTank (Slot 14)
     auras.append({
-        "id": "12 - Trinket 2 warTank",
-        "uid": "PWHUD_TRINKET_2",
+        "id": "06 - Trinket 2 warTank",
+        "uid": "PWHUD_UTIL_TRINKET2",
+        "parent": "Class Warrior (Protection)",
         "regionType": "icon",
         "internalVersion": 90,
-        "width": 30,
-        "height": 30,
-        "xOffset": -25,
+        "width": 28,
+        "height": 28,
+        "xOffset": -105,
         "yOffset": -45,
-        "anchorPoint": "CENTER",
-        "selfPoint": "CENTER",
-        "displayIcon": "Interface\\Icons\\INV_Jewelry_TrinketPVP_02",
-        "load": copy.deepcopy(PROT_WARRIOR_LOAD),
+        "displayIcon": "Interface\\Icons\\INV_Misc_Ornament_02",
+        "cooldown": True,
+        "cooldownSwipe": True,
+        "cooldownEdge": True,
         "triggers": {
             "1": {
                 "trigger": {
@@ -362,8 +234,7 @@ def build_utility_auras() -> list[dict]:
                     "check": "update",
                     "custom": r"""function()
                         if _G.PWHUD_InitCore then _G.PWHUD_InitCore() end
-                        local itemID = GetInventoryItemID("player", 14)
-                        return (itemID ~= nil)
+                        return (GetInventoryItemID("player", 14) ~= nil)
                     end""",
                     "customDuration": r"""function()
                         local start, duration = GetInventoryItemCooldown("player", 14)
@@ -373,32 +244,32 @@ def build_utility_auras() -> list[dict]:
                         return 0, 0
                     end""",
                     "customIcon": r"""function()
-                        return GetInventoryItemTexture("player", 14) or "Interface\\Icons\\INV_Jewelry_TrinketPVP_02"
+                        return GetInventoryItemTexture("player", 14) or "Interface\\Icons\\INV_Misc_Ornament_02"
                     end"""
                 },
                 "untrigger": {"type": "custom", "custom": "function() return false end"}
             }
         },
         "subRegions": [
-            make_subtext("%p", "CENTER", "CENTER", 11, 0, 0),
-            make_subtext("T2", "RIGHT", "INNER_BOTTOMRIGHT", 9, 2, -2)
-        ]
+            make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
+            make_subtext("T2", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
+        ],
     })
 
-    # 13 - Gloves & Boots warTank
+    # 06b - Ring warTank (Slot 11/12)
     auras.append({
-        "id": "13 - Gloves & Boots warTank",
-        "uid": "PWHUD_GLOVES_BOOTS",
+        "id": "06b - Ring warTank",
+        "uid": "PWHUD_UTIL_RING",
+        "parent": "Class Warrior (Protection)",
         "regionType": "icon",
         "internalVersion": 90,
-        "width": 30,
-        "height": 30,
-        "xOffset": 10,
+        "width": 28,
+        "height": 28,
+        "xOffset": -70,
         "yOffset": -45,
-        "anchorPoint": "CENTER",
-        "selfPoint": "CENTER",
-        "displayIcon": "Interface\\Icons\\INV_Gauntlets_04",
-        "load": copy.deepcopy(PROT_WARRIOR_LOAD),
+        "displayIcon": "Interface\\Icons\\INV_Jewelry_Ring_84",
+        "cooldown": True,
+        "cooldownSwipe": True,
         "triggers": {
             "1": {
                 "trigger": {
@@ -406,9 +277,170 @@ def build_utility_auras() -> list[dict]:
                     "custom_type": "status",
                     "check": "update",
                     "custom": r"""function()
-                        if _G.PWHUD_InitCore then _G.PWHUD_InitCore() end
-                        local itemID = GetInventoryItemID("player", 10)
-                        return (itemID ~= nil)
+                        local id1 = GetInventoryItemID("player", 11)
+                        local id2 = GetInventoryItemID("player", 12)
+                        return (id1 == 50403 or id1 == 50404 or id2 == 50403 or id2 == 50404)
+                    end""",
+                    "customIcon": r"""function()
+                        return "Interface\\Icons\\INV_Jewelry_Ring_84"
+                    end"""
+                },
+                "untrigger": {"type": "custom", "custom": "function() return false end"}
+            }
+        },
+        "subRegions": [
+            make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
+            make_subtext("RING", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
+        ],
+    })
+
+    # 07 - Cloak warTank (Slot 15)
+    auras.append({
+        "id": "07 - Cloak warTank",
+        "uid": "PWHUD_UTIL_CLOAK",
+        "parent": "Class Warrior (Protection)",
+        "regionType": "icon",
+        "internalVersion": 90,
+        "width": 28,
+        "height": 28,
+        "xOffset": -35,
+        "yOffset": -45,
+        "displayIcon": "Interface\\Icons\\INV_Misc_Cape_18",
+        "cooldown": True,
+        "cooldownSwipe": True,
+        "triggers": {
+            "1": {
+                "trigger": {
+                    "type": "custom",
+                    "custom_type": "status",
+                    "check": "update",
+                    "custom": r"""function()
+                        return (GetInventoryItemID("player", 15) ~= nil)
+                    end""",
+                    "customDuration": r"""function()
+                        local start, duration = GetInventoryItemCooldown("player", 15)
+                        if start and duration and duration > 1.5 then
+                            return duration, start + duration
+                        end
+                        return 0, 0
+                    end""",
+                    "customIcon": r"""function()
+                        return GetInventoryItemTexture("player", 15) or "Interface\\Icons\\INV_Misc_Cape_18"
+                    end"""
+                },
+                "untrigger": {"type": "custom", "custom": "function() return false end"}
+            }
+        },
+        "subRegions": [
+            make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
+            make_subtext("CLK", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
+        ],
+    })
+
+    # 08 - Tier Set warTank (T9/T10 Prot)
+    auras.append({
+        "id": "08 - Tier Set warTank",
+        "uid": "PWHUD_UTIL_TIER",
+        "parent": "Class Warrior (Protection)",
+        "regionType": "icon",
+        "internalVersion": 90,
+        "width": 28,
+        "height": 28,
+        "xOffset": 0,
+        "yOffset": -45,
+        "displayIcon": "Interface\\Icons\\INV_Chest_Plate_13",
+        "cooldown": True,
+        "cooldownSwipe": True,
+        "triggers": {
+            "1": {
+                "trigger": {
+                    "type": "custom",
+                    "custom_type": "status",
+                    "check": "update",
+                    "custom": r"""function()
+                        local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
+                        return (buffs and (buffs.bySpellId[70844] or buffs.bySpellId[70843] or buffs.byName["Shield Block"]))
+                    end""",
+                    "customIcon": r"""function()
+                        return "Interface\\Icons\\INV_Chest_Plate_13"
+                    end"""
+                },
+                "untrigger": {"type": "custom", "custom": "function() return false end"}
+            }
+        },
+        "subRegions": [
+            make_subtext("T10", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
+        ],
+    })
+
+    # 09 - Enchants warTank (Blade Ward / Blood Draining / Mongoose)
+    auras.append({
+        "id": "09 - Enchants warTank",
+        "uid": "PWHUD_UTIL_ENCHANTS",
+        "parent": "Class Warrior (Protection)",
+        "regionType": "icon",
+        "internalVersion": 90,
+        "width": 28,
+        "height": 28,
+        "xOffset": 35,
+        "yOffset": -45,
+        "displayIcon": "Interface\\Icons\\Spell_Holy_BlessingOfProtection",
+        "cooldown": True,
+        "cooldownSwipe": True,
+        "triggers": {
+            "1": {
+                "trigger": {
+                    "type": "custom",
+                    "custom_type": "status",
+                    "check": "update",
+                    "custom": r"""function()
+                        local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
+                        if not buffs then return false end
+                        return (buffs.bySpellId[64440] or buffs.bySpellId[64568] or buffs.bySpellId[28093] or buffs.byName["Blade Ward"] or buffs.byName["Blood Draining"] or buffs.byName["Lightning Speed"])
+                    end""",
+                    "customDuration": r"""function()
+                        local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
+                        local b = buffs and (buffs.bySpellId[64440] or buffs.bySpellId[64568] or buffs.bySpellId[28093])
+                        if b and b.duration and b.duration > 0 then
+                            return b.duration, b.expirationTime
+                        end
+                        return 0, 0
+                    end""",
+                    "customIcon": r"""function()
+                        return "Interface\\Icons\\Spell_Holy_BlessingOfProtection"
+                    end"""
+                },
+                "untrigger": {"type": "custom", "custom": "function() return false end"}
+            }
+        },
+        "subRegions": [
+            make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
+            make_subtext("ENC", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
+        ],
+    })
+
+    # 10 - Gloves warTank (Slot 10)
+    auras.append({
+        "id": "10 - Gloves warTank",
+        "uid": "PWHUD_UTIL_GLOVES",
+        "parent": "Class Warrior (Protection)",
+        "regionType": "icon",
+        "internalVersion": 90,
+        "width": 28,
+        "height": 28,
+        "xOffset": 70,
+        "yOffset": -45,
+        "displayIcon": "Interface\\Icons\\INV_Gauntlets_04",
+        "cooldown": True,
+        "cooldownSwipe": True,
+        "triggers": {
+            "1": {
+                "trigger": {
+                    "type": "custom",
+                    "custom_type": "status",
+                    "check": "update",
+                    "custom": r"""function()
+                        return (GetInventoryItemID("player", 10) ~= nil)
                     end""",
                     "customDuration": r"""function()
                         local start, duration = GetInventoryItemCooldown("player", 10)
@@ -425,9 +457,162 @@ def build_utility_auras() -> list[dict]:
             }
         },
         "subRegions": [
-            make_subtext("%p", "CENTER", "CENTER", 11, 0, 0),
-            make_subtext("GLV", "RIGHT", "INNER_BOTTOMRIGHT", 9, 2, -2)
-        ]
+            make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
+            make_subtext("GLV", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
+        ],
+    })
+
+    # 11 - Shield Wall (Spell 871)
+    auras.append({
+        "id": "11 - Shield Wall",
+        "uid": "PWHUD_UTIL_SHIELD_WALL",
+        "parent": "Class Warrior (Protection)",
+        "regionType": "icon",
+        "internalVersion": 90,
+        "width": 28,
+        "height": 28,
+        "xOffset": 105,
+        "yOffset": -45,
+        "displayIcon": "Interface\\Icons\\Ability_Warrior_ShieldWall",
+        "cooldown": True,
+        "cooldownSwipe": True,
+        "triggers": {
+            "1": {
+                "trigger": {
+                    "type": "custom",
+                    "custom_type": "status",
+                    "check": "update",
+                    "custom": r"""function() return true end""",
+                    "customDuration": r"""function()
+                        local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
+                        local b = buffs and (buffs.bySpellId[871] or buffs.byName["Shield Wall"])
+                        if b and b.duration and b.duration > 0 then
+                            return b.duration, b.expirationTime
+                        end
+                        local start, duration = GetSpellCooldown("Shield Wall")
+                        if start and duration and duration > 1.5 then
+                            return duration, start + duration
+                        end
+                        return 0, 0
+                    end""",
+                    "customIcon": r"""function()
+                        return "Interface\\Icons\\Ability_Warrior_ShieldWall"
+                    end""",
+                    "customText": r"""function()
+                        local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
+                        local b = buffs and (buffs.bySpellId[871] or buffs.byName["Shield Wall"])
+                        if b then return "|cFF00FF00-60%|r" end
+                        return ""
+                    end"""
+                },
+                "untrigger": {"type": "custom", "custom": "function() return false end"}
+            }
+        },
+        "subRegions": [
+            make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
+            make_subtext("SW", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
+        ],
+    })
+
+    # 12 - Last Stand (Spell 12975)
+    auras.append({
+        "id": "12 - Last Stand",
+        "uid": "PWHUD_UTIL_LAST_STAND",
+        "parent": "Class Warrior (Protection)",
+        "regionType": "icon",
+        "internalVersion": 90,
+        "width": 28,
+        "height": 28,
+        "xOffset": 140,
+        "yOffset": -45,
+        "displayIcon": "Interface\\Icons\\Spell_Nature_ShamanRage",
+        "cooldown": True,
+        "cooldownSwipe": True,
+        "triggers": {
+            "1": {
+                "trigger": {
+                    "type": "custom",
+                    "custom_type": "status",
+                    "check": "update",
+                    "custom": r"""function() return true end""",
+                    "customDuration": r"""function()
+                        local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
+                        local b = buffs and (buffs.bySpellId[12975] or buffs.byName["Last Stand"])
+                        if b and b.duration and b.duration > 0 then
+                            return b.duration, b.expirationTime
+                        end
+                        local start, duration = GetSpellCooldown("Last Stand")
+                        if start and duration and duration > 1.5 then
+                            return duration, start + duration
+                        end
+                        return 0, 0
+                    end""",
+                    "customIcon": r"""function()
+                        return "Interface\\Icons\\Spell_Nature_ShamanRage"
+                    end""",
+                    "customText": r"""function()
+                        local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
+                        local b = buffs and (buffs.bySpellId[12975] or buffs.byName["Last Stand"])
+                        if b then return "|cFF00FF00+30%|r" end
+                        return ""
+                    end"""
+                },
+                "untrigger": {"type": "custom", "custom": "function() return false end"}
+            }
+        },
+        "subRegions": [
+            make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
+            make_subtext("LS", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
+        ],
+    })
+
+    # 13 - Boots warTank (Slot 8 / Enraged Regeneration)
+    auras.append({
+        "id": "13 - Boots warTank",
+        "uid": "PWHUD_UTIL_BOOTS",
+        "parent": "Class Warrior (Protection)",
+        "regionType": "icon",
+        "internalVersion": 90,
+        "width": 28,
+        "height": 28,
+        "xOffset": 175,
+        "yOffset": -45,
+        "displayIcon": "Interface\\Icons\\Ability_Warrior_EnragedRegeneration",
+        "cooldown": True,
+        "cooldownSwipe": True,
+        "triggers": {
+            "1": {
+                "trigger": {
+                    "type": "custom",
+                    "custom_type": "status",
+                    "check": "update",
+                    "custom": r"""function() return true end""",
+                    "customDuration": r"""function()
+                        local start, duration = GetInventoryItemCooldown("player", 8)
+                        if start and duration and duration > 1.5 then
+                            return duration, start + duration
+                        end
+                        local s2, d2 = GetSpellCooldown("Enraged Regeneration")
+                        if s2 and d2 and d2 > 1.5 then
+                            return d2, s2 + d2
+                        end
+                        return 0, 0
+                    end""",
+                    "customIcon": r"""function()
+                        local start, duration = GetInventoryItemCooldown("player", 8)
+                        if start and duration and duration > 1.5 then
+                            return GetInventoryItemTexture("player", 8) or "Interface\\Icons\\Ability_Warrior_EnragedRegeneration"
+                        end
+                        return "Interface\\Icons\\Ability_Warrior_EnragedRegeneration"
+                    end"""
+                },
+                "untrigger": {"type": "custom", "custom": "function() return false end"}
+            }
+        },
+        "subRegions": [
+            make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
+            make_subtext("BOT", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
+        ],
     })
 
     return auras

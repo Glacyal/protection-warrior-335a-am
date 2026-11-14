@@ -1,53 +1,39 @@
 """
 Costruttore dell'Albero Gerarchico Completo WeakAuras — Class Warrior (Protection)
 ==================================================================================
-Assembla i moduli indipendenti sotto il gruppo master 'Class Warrior (Protection)',
-applicando le condizioni di caricamento di classe Guerriero su tutti i nodi foglia.
+Assembla modularmente i componenti sotto il gruppo master 'Class Warrior (Protection)',
+conformandosi al layout grafico, visivo e dimensionale (278px) di Fury Warrior e Fire Mage.
 """
 import copy
 from builder.core.constants import PROT_WARRIOR_LOAD
 from builder.components.utility import SHARED_WARRIOR_CORE_BOOTSTRAP_LUA
 from builder.components import (
-    build_alerts_auras,
-    build_interrupt_auras,
-    build_defensive_auras,
-    build_rotational_auras,
-    build_debuff_auras,
-    build_taunt_auras,
-    build_bars_auras,
-    build_stats_auras,
+    build_procs_auras,
+    build_buffs_auras,
     build_utility_auras,
+    build_bars_auras,
+    build_rotational_auras,
+    build_alerts_auras,
+    build_stats_auras,
+    build_sunder_auras,
 )
 
 
 def build_wa_tree(target_version: str = "5.21.8") -> dict:
     """
     Costruisce e restituisce l'albero gerarchico completo per WeakAuras Protection Warrior.
-    Supporta:
-    - target_version='5.21.8': WeakAuras 5.21.8+ nativo (internalVersion 90) [PREDETERMINATO]
-    - target_version='4.0.0': WeakAuras 4.0.0 legacy (internalVersion 52)
+    Supporta WeakAuras 5.21.8+ nativo (internalVersion 90, Zero Warning).
     
-    Assembla modularmente i 20 componenti:
-    1. 01 - Emergency & Procs warTank (Suggerimento Cooldown Emergenza <35% HP & Sword and Board Proc)
-    2. 02 - Kick Advisor warTank (Interruzione intelligente: Shield Bash vs Pummel vs Stun vs Immune)
-    3. 03 - Defensive Cooldowns warTank (Enraged Regeneration CD/durata)
-    4. 04 - Rotational Bar warTank (Shield Slam con Glow dorato SAB, Revenge reattivo, Devastate)
-    5. 05 - Debuffs & Stance warTank (Check Postura Difensiva & debuff boss mancanti Demo/TC)
-    6. 06 - Taunt & Threat warTank (Taunt CD & Allerta Taunt Miss/Resist)
-    7. 07 - Rage Bar warTank (Rabbia con soglia scarico HS >= 45)
-    8. 08 - Health Bar warTank (Salute real-time con soglie cromatiche <35% / 65%)
-    9. 09 - Castbar warTank (Castbar nemica con indicatore kickable vs immune)
-    10. 10 - Stats Panel warTank (Difesa vs 540, CTC, Armatura DR, SBV, Hit/Exp, EHP)
-    11. 11 - Trinket 1 warTank
-    12. 12 - Trinket 2 warTank
-    13. 13 - Gloves & Boots warTank
-    14. 14 - Shield Wall Alert warTank (-60% DR)
-    15. 15 - Last Stand Alert warTank (+30% HP)
-    16. 16 - Shield Block Tracker warTank (100% Blocco)
-    17. 17 - Spell Reflect Advisor warTank
-    18. 18 - Sunder Armor Tracker warTank (1-5 cariche sul target)
-    19. 19 - Boss Mechanics Alert warTank (Enrage boss & Tank Buster su player)
-    20. 20 - Swing & HS Queue warTank (Swing timer & Heroic Strike / Cleave Queued)
+    Assembla modularmente i 20 nodi controllati principali:
+    1. 01 - Procs warTank (Dynamic Group con Sword & Board, Revenge, Shield Block, Emergency CD, Boss Enrage, Tank Buster)
+    2. 02 - Battle Shout, 03 - Commanding Shout, 04 - Defensive Stance (x = -222, -190, -158, y = 0)
+    3. 05-13 - Utility Row (Monili Slot 13/14, Ring, Cloak, Tier, Enchants, Gloves, Shield Wall, Last Stand, Boots) a y = -45
+    4. 14 - Rage Bar (278x14px a y = -20)
+    5. 15 - Rotational Bar (Composite Swing Timer 278x7px a y = -7 con retroilluminazione HS/Cleave Queue)
+    6. 16 - Castbar warTank (278x20px a y = +8 con Kick Advisor integrato)
+    7. 17 - Alerts warTank (Gruppo avvisi testuali e sonori a y = 78)
+    8. 18 - Stats Panel warTank (Pannello difensivo 88x60px a x = -190, y = -45)
+    9. 19 - Sunder Armor Tracker (32x32px a x = 160, y = -7)
     """
     internal_ver = 90 if target_version == "5.21.8" else 52
     w_ver = "5.21.8" if target_version == "5.21.8" else "4.0.0"
@@ -70,26 +56,26 @@ def build_wa_tree(target_version: str = "5.21.8") -> dict:
             "displayIcon": "Interface\\Icons\\Ability_Warrior_DefensiveStance",
             "icon": "Interface\\Icons\\Ability_Warrior_DefensiveStance",
             "controlledChildren": [
-                "01 - Emergency & Procs warTank",
-                "02 - Kick Advisor warTank",
-                "03 - Defensive Cooldowns warTank",
-                "04 - Rotational Bar warTank",
-                "05 - Debuffs & Stance warTank",
-                "06 - Taunt & Threat warTank",
-                "07 - Rage Bar warTank",
-                "08 - Health Bar warTank",
-                "09 - Castbar warTank",
-                "10 - Stats Panel warTank",
-                "11 - Trinket 1 warTank",
-                "12 - Trinket 2 warTank",
-                "13 - Gloves & Boots warTank",
-                "14 - Shield Wall Alert warTank",
-                "15 - Last Stand Alert warTank",
-                "16 - Shield Block Tracker warTank",
-                "17 - Spell Reflect Advisor warTank",
-                "18 - Sunder Armor Tracker warTank",
-                "19 - Boss Mechanics Alert warTank",
-                "20 - Swing & HS Queue warTank",
+                "01 - Procs warTank",
+                "02 - Battle Shout",
+                "03 - Commanding Shout",
+                "04 - Defensive Stance",
+                "05 - Trinket 1 warTank",
+                "06 - Trinket 2 warTank",
+                "06b - Ring warTank",
+                "07 - Cloak warTank",
+                "08 - Tier Set warTank",
+                "09 - Enchants warTank",
+                "10 - Gloves warTank",
+                "11 - Shield Wall",
+                "12 - Last Stand",
+                "13 - Boots warTank",
+                "14 - Rage Bar",
+                "15 - Rotational Bar",
+                "16 - Castbar warTank",
+                "17 - Alerts warTank",
+                "18 - Stats Panel warTank",
+                "19 - Sunder Armor Tracker",
             ],
             "load": copy.deepcopy(PROT_WARRIOR_LOAD),
             "actions": {
@@ -105,20 +91,18 @@ def build_wa_tree(target_version: str = "5.21.8") -> dict:
     }
 
     # Assemblaggio ordinato dei componenti
-    data["c"].extend(build_alerts_auras())
-    data["c"].extend(build_interrupt_auras())
-    data["c"].extend(build_defensive_auras())
-    data["c"].extend(build_rotational_auras())
-    data["c"].extend(build_debuff_auras())
-    data["c"].extend(build_taunt_auras())
-    data["c"].extend(build_bars_auras())
-    data["c"].extend(build_stats_auras())
+    data["c"].extend(build_procs_auras())
+    data["c"].extend(build_buffs_auras())
     data["c"].extend(build_utility_auras())
+    data["c"].extend(build_bars_auras())
+    data["c"].extend(build_rotational_auras())
+    data["c"].extend(build_alerts_auras())
+    data["c"].extend(build_stats_auras())
+    data["c"].extend(build_sunder_auras())
 
-    # Applicazione dell'internalVersion a tutti i figli
+    # Applicazione uniforme delle condizioni di caricamento e versione interna
     for item in data["c"]:
+        item["load"] = copy.deepcopy(PROT_WARRIOR_LOAD)
         item["internalVersion"] = internal_ver
-        if "load" in item:
-            item["load"] = copy.deepcopy(PROT_WARRIOR_LOAD)
 
     return data

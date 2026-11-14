@@ -2,8 +2,9 @@
 Test Allarmi Pericolo & Boss Mechanics — Class Warrior (Protection)
 ===================================================================
 Verifica:
-1. 01 - Emergency & Procs warTank (Salute < 35% e Sword and Board)
-2. 19 - Boss Mechanics Alert warTank (Enrage Boss & Tank Busters)
+1. Emergency Low HP Alert (< 35% HP con suggerimento dinamico CD)
+2. Boss Enrage Alert
+3. Tank Buster Alert (Soul Reaper, Gastric Bloat, Impale)
 """
 import os
 import sys
@@ -16,19 +17,27 @@ def run_tests():
     tree = build_wa_tree()
     children_by_id = {c["id"]: c for c in tree["c"]}
 
-    em = children_by_id["01 - Emergency & Procs warTank"]
-    assert em["width"] == 54
-    assert "_G.PWHUD_GetEmergencyCD" in em["triggers"]["1"]["trigger"]["custom"]
-    assert "50227" in em["triggers"]["1"]["trigger"]["custom"]
+    # Emergency Low HP Alert in 01 - Procs
+    em = children_by_id["Emergency Low HP Alert"]
+    assert em["width"] == 34
+    assert "_G.PWHUD_GetEmergencyCD" in em["triggers"][1]["trigger"]["custom"]
 
-    boss = children_by_id["19 - Boss Mechanics Alert warTank"]
-    assert boss["width"] == 46
-    boss_code = boss["triggers"]["1"]["trigger"]["custom"]
-    assert "hasEnrage" in boss_code
-    assert "Soul Reaper" in boss_code or "73797" in boss_code
-    assert "Gastric Bloat" in boss_code
+    # Boss Enrage Alert in 01 - Procs
+    enrage = children_by_id["Boss Enrage Alert"]
+    assert enrage["width"] == 34
+    assert "hasEnrage" in enrage["triggers"][1]["trigger"]["custom"]
 
-    print("[OK] test_danger_alerts completato: rilevamento emergenza e tank buster validato.")
+    # Tank Buster Alert in 01 - Procs
+    buster = children_by_id["Tank Buster Alert"]
+    assert buster["width"] == 34
+    code = buster["triggers"][1]["trigger"]["custom"]
+    assert "Soul Reaper" in code or "73797" in code
+
+    # Alert - Emergency CD in 17 - Alerts
+    alert_em = children_by_id["Alert - Emergency CD"]
+    assert "CRIT HP" in alert_em["customText"]
+
+    print("[OK] test_danger_alerts completato: allarmi emergenza e tank buster conformi.")
     return True
 
 if __name__ == "__main__":

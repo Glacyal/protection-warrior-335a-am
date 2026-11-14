@@ -1,8 +1,8 @@
 """
 Test Kick Advisor — Class Warrior (Protection)
 ==============================================
-Verifica la logica dell'interruzione cast:
-Shield Bash vs Pummel vs Stuns vs Immune.
+Verifica la logica dell'interruzione cast integrata in 16 - Castbar warTank e 17 - Alerts:
+Shield Bash vs Pummel vs notInterruptible check.
 """
 import os
 import sys
@@ -15,21 +15,24 @@ def run_tests():
     tree = build_wa_tree()
     children_by_id = {c["id"]: c for c in tree["c"]}
 
-    kick = children_by_id["02 - Kick Advisor warTank"]
-    assert kick["regionType"] == "icon"
-    assert kick["width"] == 50
+    # 16 - Castbar warTank
+    castbar = children_by_id["16 - Castbar warTank"]
+    assert castbar["regionType"] == "aurabar"
+    assert castbar["width"] == 278
+    assert castbar["height"] == 20
 
-    # Verifica presenza notInterruptible check nel custom trigger
-    custom_code = kick["triggers"]["1"]["trigger"]["custom"]
-    assert "_G.PWHUD_GetKickInfo" in custom_code
+    # Verifica presenza notInterruptible e kick advisor nel customText
+    custom_text = castbar["triggers"][1]["trigger"]["customText"]
+    assert "IMMUNE" in custom_text
+    assert "KICKABLE" in custom_text
+    assert "_G.PWHUD_GetKickInfo" in custom_text
 
-    # Verifica castbar interattiva
-    castbar = children_by_id["09 - Castbar warTank"]
-    cast_custom = castbar["triggers"]["1"]["trigger"]["customText"]
-    assert "IMMUNE" in cast_custom
-    assert "KICKABLE" in cast_custom
+    # Alert - Kick Now in 17 - Alerts warTank
+    alert_kick = children_by_id["Alert - Kick Now"]
+    assert alert_kick["regionType"] == "text"
+    assert "INTERRUPT" in alert_kick["customText"]
 
-    print("[OK] test_interrupts completato: Kick Advisor e Castbar con validazione notInterruptible.")
+    print("[OK] test_interrupts completato: Castbar 278px e Kick Advisor validati.")
     return True
 
 if __name__ == "__main__":
