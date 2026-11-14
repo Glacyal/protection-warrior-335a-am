@@ -19,10 +19,13 @@ from builder.components import (
 )
 
 
-def build_wa_tree(target_version: str = "5.21.8") -> dict:
+def build_wa_tree(target_version: str = "5.21.8", load_override: dict = None) -> dict:
     """
     Costruisce e restituisce l'albero gerarchico completo per WeakAuras Protection Warrior.
-    Supporta WeakAuras 5.21.8+ nativo (internalVersion 90, Zero Warning).
+    Supporta:
+    - target_version='5.21.8': WeakAuras 5.21.8+ nativo (internalVersion 90)
+    - target_version='4.0.0': WeakAuras 4.0.0 legacy (internalVersion 52)
+    - load_override: dizionario di condizioni di caricamento opzionale (es. per test su altre classi)
     
     Assembla modularmente i 20 nodi controllati principali:
     1. 01 - Procs warTank (Dynamic Group con Sword & Board, Revenge, Shield Block, Emergency CD, Boss Enrage, Tank Buster)
@@ -37,6 +40,7 @@ def build_wa_tree(target_version: str = "5.21.8") -> dict:
     """
     internal_ver = 90 if target_version == "5.21.8" else 52
     w_ver = "5.21.8" if target_version == "5.21.8" else "4.0.0"
+    load_cond = copy.deepcopy(load_override) if load_override is not None else copy.deepcopy(PROT_WARRIOR_LOAD)
 
     data = {
         "m": "d",
@@ -77,7 +81,7 @@ def build_wa_tree(target_version: str = "5.21.8") -> dict:
                 "18 - Stats Panel warTank",
                 "19 - Sunder Armor Tracker",
             ],
-            "load": copy.deepcopy(PROT_WARRIOR_LOAD),
+            "load": copy.deepcopy(load_cond),
             "actions": {
                 "init": {
                     "do_custom": True,
@@ -102,7 +106,7 @@ def build_wa_tree(target_version: str = "5.21.8") -> dict:
 
     # Applicazione uniforme delle condizioni di caricamento e versione interna
     for item in data["c"]:
-        item["load"] = copy.deepcopy(PROT_WARRIOR_LOAD)
+        item["load"] = copy.deepcopy(load_cond)
         item["internalVersion"] = internal_ver
 
     return data
