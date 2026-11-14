@@ -63,6 +63,14 @@ def run_tests():
         assert uid.startswith("PWHUD_"), f"UID {uid} does not start with 'PWHUD_'"
         assert item.get("internalVersion") in (52, 90), f"Item {cid} internalVersion not in (52, 90)"
 
+        # Check triggers integrity (integer keys and activeTriggerMode)
+        trigs = item.get("triggers", {})
+        if trigs:
+            assert "activeTriggerMode" in trigs, f"Item {cid} triggers dict missing activeTriggerMode"
+            for k in trigs.keys():
+                if k != "activeTriggerMode":
+                    assert isinstance(k, int), f"Item {cid} has non-integer trigger key: {repr(k)} ({type(k)})"
+
         # Check subRegions dual-key structure for subtext
         for sr in item.get("subRegions", []):
             if sr.get("type") == "subtext":

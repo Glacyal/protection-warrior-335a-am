@@ -133,6 +133,7 @@ def build_buffs_auras() -> list[dict]:
                 "activeTriggerMode": -10,
             },
             "subRegions": [
+                {"type": "subbackground"},
                 make_subtext("%p", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=12, y_offset=0),
             ],
         },
@@ -166,6 +167,7 @@ def build_buffs_auras() -> list[dict]:
                 "activeTriggerMode": -10,
             },
             "subRegions": [
+                {"type": "subbackground"},
                 make_subtext("OFF", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=11, y_offset=0, extra_props={"text_color": [1, 0.2, 0.2, 1]}),
             ],
         },
@@ -234,6 +236,7 @@ def build_buffs_auras() -> list[dict]:
                 "activeTriggerMode": -10,
             },
             "subRegions": [
+                {"type": "subbackground"},
                 make_subtext("%p", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=12, y_offset=0),
             ],
         },
@@ -267,6 +270,7 @@ def build_buffs_auras() -> list[dict]:
                 "activeTriggerMode": -10,
             },
             "subRegions": [
+                {"type": "subbackground"},
                 make_subtext("OFF", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=11, y_offset=0, extra_props={"text_color": [1, 0.2, 0.2, 1]}),
             ],
         },
@@ -313,6 +317,7 @@ def build_buffs_auras() -> list[dict]:
                 "activeTriggerMode": -10,
             },
             "subRegions": [
+                {"type": "subbackground"},
                 make_subtext("DEF", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=9, y_offset=0),
             ],
         },
@@ -346,6 +351,7 @@ def build_buffs_auras() -> list[dict]:
                 "activeTriggerMode": -10,
             },
             "subRegions": [
+                {"type": "subbackground"},
                 make_subtext("STANCE", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=8, y_offset=0, extra_props={"text_color": [1.0, 0.1, 0.1, 1.0]}),
             ],
         },

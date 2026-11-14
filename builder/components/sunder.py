@@ -99,6 +99,7 @@ def build_sunder_auras() -> list[dict]:
                 "activeTriggerMode": -10,
             },
             "subRegions": [
+                {"type": "subbackground"},
                 make_subtext("%c1", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=0),
                 make_subtext("%c2", justify="CENTER", anchor_point="CENTER", font_size=12, y_offset=0),
             ],

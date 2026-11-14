@@ -182,7 +182,7 @@ def build_utility_auras() -> list[dict]:
         "cooldownSwipe": True,
         "cooldownEdge": True,
         "triggers": {
-            "1": {
+            1: {
                 "trigger": {
                     "type": "custom",
                     "custom_type": "status",
@@ -203,9 +203,11 @@ def build_utility_auras() -> list[dict]:
                     end"""
                 },
                 "untrigger": {"type": "custom", "custom": "function() return false end"}
-            }
+            },
+            "activeTriggerMode": -10,
         },
         "subRegions": [
+            {"type": "subbackground"},
             make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
             make_subtext("T1", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
         ],
@@ -227,7 +229,7 @@ def build_utility_auras() -> list[dict]:
         "cooldownSwipe": True,
         "cooldownEdge": True,
         "triggers": {
-            "1": {
+            1: {
                 "trigger": {
                     "type": "custom",
                     "custom_type": "status",
@@ -248,9 +250,11 @@ def build_utility_auras() -> list[dict]:
                     end"""
                 },
                 "untrigger": {"type": "custom", "custom": "function() return false end"}
-            }
+            },
+            "activeTriggerMode": -10,
         },
         "subRegions": [
+            {"type": "subbackground"},
             make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
             make_subtext("T2", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
         ],
@@ -271,7 +275,7 @@ def build_utility_auras() -> list[dict]:
         "cooldown": True,
         "cooldownSwipe": True,
         "triggers": {
-            "1": {
+            1: {
                 "trigger": {
                     "type": "custom",
                     "custom_type": "status",
@@ -286,9 +290,11 @@ def build_utility_auras() -> list[dict]:
                     end"""
                 },
                 "untrigger": {"type": "custom", "custom": "function() return false end"}
-            }
+            },
+            "activeTriggerMode": -10,
         },
         "subRegions": [
+            {"type": "subbackground"},
             make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
             make_subtext("RING", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
         ],
@@ -309,7 +315,7 @@ def build_utility_auras() -> list[dict]:
         "cooldown": True,
         "cooldownSwipe": True,
         "triggers": {
-            "1": {
+            1: {
                 "trigger": {
                     "type": "custom",
                     "custom_type": "status",
@@ -329,9 +335,11 @@ def build_utility_auras() -> list[dict]:
                     end"""
                 },
                 "untrigger": {"type": "custom", "custom": "function() return false end"}
-            }
+            },
+            "activeTriggerMode": -10,
         },
         "subRegions": [
+            {"type": "subbackground"},
             make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
             make_subtext("CLK", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
         ],
@@ -352,7 +360,7 @@ def build_utility_auras() -> list[dict]:
         "cooldown": True,
         "cooldownSwipe": True,
         "triggers": {
-            "1": {
+            1: {
                 "trigger": {
                     "type": "custom",
                     "custom_type": "status",
@@ -366,9 +374,11 @@ def build_utility_auras() -> list[dict]:
                     end"""
                 },
                 "untrigger": {"type": "custom", "custom": "function() return false end"}
-            }
+            },
+            "activeTriggerMode": -10,
         },
         "subRegions": [
+            {"type": "subbackground"},
             make_subtext("T10", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
         ],
     })
@@ -388,7 +398,7 @@ def build_utility_auras() -> list[dict]:
         "cooldown": True,
         "cooldownSwipe": True,
         "triggers": {
-            "1": {
+            1: {
                 "trigger": {
                     "type": "custom",
                     "custom_type": "status",
@@ -411,9 +421,11 @@ def build_utility_auras() -> list[dict]:
                     end"""
                 },
                 "untrigger": {"type": "custom", "custom": "function() return false end"}
-            }
+            },
+            "activeTriggerMode": -10,
         },
         "subRegions": [
+            {"type": "subbackground"},
             make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
             make_subtext("ENC", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
         ],
@@ -434,7 +446,7 @@ def build_utility_auras() -> list[dict]:
         "cooldown": True,
         "cooldownSwipe": True,
         "triggers": {
-            "1": {
+            1: {
                 "trigger": {
                     "type": "custom",
                     "custom_type": "status",
@@ -454,9 +466,11 @@ def build_utility_auras() -> list[dict]:
                     end"""
                 },
                 "untrigger": {"type": "custom", "custom": "function() return false end"}
-            }
+            },
+            "activeTriggerMode": -10,
         },
         "subRegions": [
+            {"type": "subbackground"},
             make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
             make_subtext("GLV", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
         ],
@@ -477,7 +491,7 @@ def build_utility_auras() -> list[dict]:
         "cooldown": True,
         "cooldownSwipe": True,
         "triggers": {
-            "1": {
+            1: {
                 "trigger": {
                     "type": "custom",
                     "custom_type": "status",
@@ -506,9 +520,11 @@ def build_utility_auras() -> list[dict]:
                     end"""
                 },
                 "untrigger": {"type": "custom", "custom": "function() return false end"}
-            }
+            },
+            "activeTriggerMode": -10,
         },
         "subRegions": [
+            {"type": "subbackground"},
             make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
             make_subtext("SW", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
         ],
@@ -529,7 +545,7 @@ def build_utility_auras() -> list[dict]:
         "cooldown": True,
         "cooldownSwipe": True,
         "triggers": {
-            "1": {
+            1: {
                 "trigger": {
                     "type": "custom",
                     "custom_type": "status",
@@ -558,9 +574,11 @@ def build_utility_auras() -> list[dict]:
                     end"""
                 },
                 "untrigger": {"type": "custom", "custom": "function() return false end"}
-            }
+            },
+            "activeTriggerMode": -10,
         },
         "subRegions": [
+            {"type": "subbackground"},
             make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
             make_subtext("LS", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
         ],
@@ -581,7 +599,7 @@ def build_utility_auras() -> list[dict]:
         "cooldown": True,
         "cooldownSwipe": True,
         "triggers": {
-            "1": {
+            1: {
                 "trigger": {
                     "type": "custom",
                     "custom_type": "status",
@@ -607,9 +625,11 @@ def build_utility_auras() -> list[dict]:
                     end"""
                 },
                 "untrigger": {"type": "custom", "custom": "function() return false end"}
-            }
+            },
+            "activeTriggerMode": -10,
         },
         "subRegions": [
+            {"type": "subbackground"},
             make_subtext("%p", justify="CENTER", anchor_point="CENTER", font_size=11, y_offset=0),
             make_subtext("BOT", justify="RIGHT", anchor_point="INNER_BOTTOMRIGHT", font_size=8, y_offset=-2, x_offset=2),
         ],
