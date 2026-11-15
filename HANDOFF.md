@@ -90,3 +90,34 @@ protection-warrior-335a-am/
      ```
 5. **Commit & Push (`CP`)**:
    - Esegui lo staging e il commit dei file di codice e documentazione pubblica.
+
+---
+
+## 4. Specifiche Tecniche Recenti
+
+### 4.1 Load Condition Specifica [Devastate]
+- Indice lineare WeakAuras: **`103`** (calcolato come $(3 - 1) \times 40 + 23$, corrispondente al Tab 3 Protection, Tier 8 Colonna 1, Spell ID `20243`).
+- Configurazione in `builder/core/constants.py`:
+  ```python
+  PROT_WARRIOR_LOAD = {
+      "use_class": True,
+      "class": {"single": "WARRIOR", "multi": {"WARRIOR": True}},
+      "use_talent": True,
+      "talent": {"single": 103, "multi": {103: True}},
+      "use_vehicle": False,
+  }
+  ```
+- Propagata uniformemente su root e su tutte le 43 aure figlie.
+
+### 4.2 Notifica Postura Errata in Combattimento (Wrong Stance Alert)
+- Doppio livello di allarme attivo quando `UnitAffectingCombat("player") and GetShapeshiftForm() ~= 2`:
+  1. Indicatore `Defensive Stance - Warning` (X: -158, Y: 0) con Pixel Glow rosso e label `STANCE`.
+  2. Banner centrale `Alert - Wrong Stance` (X: 0, Y: +64) a 20pt `>> DEFENSIVE STANCE REQUIRED! <<` con audio `RaidWarning.ogg`.
+
+### 4.3 Motore Statistiche Tanking Stile Fury Warrior & Buff/Debuff Non-Stacking
+- Formattazione a 5 righe con etichette bianche `|cFFFFFFFFLabel:|r <Valore>`:
+  1. `Def:` (540 Cap per Lv.83, 535 per Lv.82).
+  2. `Armor:` con Physical DR% contro boss Lv.83 ($K=16635$, hard cap 75%).
+  3. `CTC:` Combat Table Coverage con motore non-stacking per *Insect Swarm* e *Scorpid Sting* (+3.0% Miss max).
+  4. `Block:` con % di blocco e Shield Block Value (SBV).
+  5. `Hit:` con Draenei *Heroic Presence* (+1.0%) ed `Exp:` con Soft Cap 26 ed Hard Cap 56.

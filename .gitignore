@@ -14,12 +14,6 @@ venv/
 *.swp
 *.swo
 
-# Local Context & Documentation Policy
-# Docs markdown files are kept locally for development context but excluded from Git
-docs/*.md
-!docs/README.md
-!docs/index.html
-
 # Distribution & Temporary Artifacts
 *.tmp
 *.bak

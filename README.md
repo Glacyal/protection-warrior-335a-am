@@ -9,6 +9,8 @@
 Suite WeakAuras completa, modulare e avanzata per **Warrior Protection (Tank) Livello 80** in World of Warcraft 3.3.5a (*Wrath of the Lich King - Build 12340*).  
 Progettata per garantire la massima conformità visiva, geometrica e prestazionale con le suite **Class Warrior (Fury)** e **Class Mage (TTW Fire)**: barre centrali sincronizzate a **278px**, riga utility dinamica a $y = -45$, gruppo procs orizzontale a $y = 52$, pannello statistiche $88 \times 60\text{px}$ a $x = -190$ e tracker Sunder Armor a $x = 160$.
 
+La suite è condizionata al caricamento esclusivo su guerrieri con il talento **[Devastate]** (Devastazione, Indice WeakAuras `103`, Tab 3 Protezione, Posizione 23), disattivandosi automaticamente su spec Arms o Fury.
+
 ---
 
 ## 🌐 Anteprima Online (Live Simulator)
@@ -65,21 +67,22 @@ Gruppo posizionato a $y = 78$ appena sopra i procs:
 - **Alert - Emergency CD**: Notifica critica `CRIT HP: USE SHIELD WALL!` con allarme sonoro.
 - **Alert - Kick Now**: Indicazione `INTERRUPT: SHIELD BASH!`.
 - **Alert - Boss Enraged**: Notifica `BOSS ENRAGED! POP CD!`.
+- **Alert - Wrong Stance**: Allarme visivo prioritario a $y = 64$ `>> DEFENSIVE STANCE REQUIRED! <<` con suono `RaidWarning.ogg` attivo in combattimento quando fuori da Stance 2.
 
-### 6. Pannello Statistiche Tanking (`18 - Stats Panel warTank`)
-Box compatto $88 \times 60\text{px}$ a $x = -190, y = -45$ (sul lato sinistro della riga utility):
+### 6. Pannello Statistiche Tanking Stile Fury Warrior (`18 - Stats Panel warTank`)
+Box compatto $88 \times 60\text{px}$ a $x = -190, y = -45$ (sul lato sinistro della riga utility) con etichette bianche `Label:` e valori colorati con soglie dinamiche:
 ```text
-DEF: 542 (CAP)
-CTC: 102.4% (MAX)
-ARM: 27.5k (68.2%)
-SBV: 2,180
-H: 8.2%  E: 26
+Def:   540 (CAP)
+Armor: 32.4k (66.1%)
+CTC:   102.4% (MAX)
+Block: 38.2% (2450 SBV)
+Hit:   8.0% | Exp: 26
 ```
-- **DEF**: Verifica del raggiungimento del cap di **540 Difesa** per l'immunità dai colpi critici dei boss di raid livello 83.
-- **CTC**: Combat Table Coverage (Schivata% + Parata% + Blocco% + Miss%) con indicazione di copertura totale.
-- **ARM**: Armatura effettiva e percentuale di riduzione danno fisico ($\text{DR} = \frac{\text{Armor}}{\text{Armor} + 16635}$).
-- **SBV**: Shield Block Value per il calcolo del danno e del threat di Shield Slam.
-- **H/E**: Cap 8% Melee Hit (263 rating) e soft cap 26 Perizia (214 rating).
+- **Def**: Rilevamento dinamico livello bersaglio (**540 Cap** per Boss Raid Lv.83, **535 Cap** per Dungeon Eroici Lv.82).
+- **Armor**: Armatura effettiva e percentuale di riduzione fisica ($\text{DR} = \frac{\text{Armor}}{\text{Armor} + 16635}$, cap 75%) con inclusione automatica di *Inspiration/Ancestral Fortitude* (+25%), *Devotion/Stoneskin* e debuff *Sunder/Acid/Faerie Fire/Melt Armor*.
+- **CTC**: Combat Table Coverage ($\text{Dodge} + \text{Parry} + \text{Block} + \text{BossMiss}$) con motore non-stacking per *Insect Swarm* e *Scorpid Sting* (+3.0% Miss max) e soglia Unhittable a $\ge 102.4\%$.
+- **Block**: Percentuale di blocco e Shield Block Value (SBV) effettivo per la stima del danno/threat di *Shield Slam*.
+- **Hit / Exp**: Rilevamento aura Draenei *Heroic Presence* (+1.0% Hit fisico) con cap 8% e verifica Soft Cap 26 ed Hard Cap 56 di Perizia (azzeramento *Parry-Haste*).
 
 ### 7. Sunder Armor Tracker (`19 - Sunder Armor Tracker`)
 Posizionato sul lato destro delle barre ($x = 160, y = -7$, $32 \times 32\text{px}$):
