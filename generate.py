@@ -22,3 +22,4 @@ if __name__ == "__main__":
         f.write(wa_string)
 
     print(f"[SUCCESS] Generato '{TARGET_V5_FILE}' con successo! Dimensione: {len(wa_string)} caratteri.")
+
