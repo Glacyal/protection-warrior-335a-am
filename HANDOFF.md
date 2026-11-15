@@ -121,3 +121,22 @@ protection-warrior-335a-am/
   3. `CTC:` Combat Table Coverage con motore non-stacking per *Insect Swarm* e *Scorpid Sting* (+3.0% Miss max).
   4. `Block:` con % di blocco e Shield Block Value (SBV).
   5. `Hit:` con Draenei *Heroic Presence* (+1.0%) ed `Exp:` con Soft Cap 26 ed Hard Cap 56.
+
+---
+
+## 5. Glossario & Riferimento Sigle Tecniche Tanking (WotLK 3.3.5a)
+
+| Sigla | Termine Completo | Descrizione Meccanica e Formule WotLK |
+| :--- | :--- | :--- |
+| **`DEF`** | **Defense Skill** | Skill di difesa (`base + rating`). Cap **540** per immunità dai colpi critici dei boss Lv.83 (-5.6% crit subito), **535** in Eroiche Lv.82. |
+| **`ARM`** | **Effective Armor & Physical DR%** | Armatura effettiva del player. Calcola la riduzione del danno fisico contro boss Lv.83: $\text{DR}\% = \frac{\text{Armor}}{\text{Armor} + 16635} \times 100$. Hard cap al 75.0% (49.905 armatura). |
+| **`CTC`** | **Combat Table Coverage** | Copertura totale della tabella colpi: $\text{Dodge} + \text{Parry} + \text{Block} + \text{BossMiss}$. A $\ge \mathbf{102.4\%}$ il tank è *Unhittable* (nessun colpo normale subito). Include debuff non-stacking (*Insect Swarm* / *Scorpid Sting* max +3%). |
+| **`Block`** | **Block Chance** | Percentuale di blocco con lo scudo. Raggiunge il 100% durante l'abilità attiva *Shield Block* (10s). |
+| **`SBV`** | **Shield Block Value** | Quantità fissa di danno assorbito per singolo blocco. Moltiplicatore primario che scala danno e threat di *Shield Slam*. |
+| **`Hit`** | **Melee Hit Chance** | Percentuale di colpo a segno con attacchi speciali e Taunt. Cap a **8.0%** (263 rating), ridotto al 7.0% con *Heroic Presence* Draenei. |
+| **`Exp`** | **Expertise** | Riduce le schivate e parate del boss. **Soft Cap 26** (214 rating, azzera schivate frontali), **Hard Cap 56** (azzera parate frontali ed elimina il rischio *Parry-Haste*). |
+| **`Avoid`** | **Avoidance Pura** | Somma di $\text{Dodge} + \text{Parry} + \text{Miss}$ (percentuale di colpi in cui si incassano **zero danni**). |
+| **`DR%`** | **Damage Reduction %** | Percentuale passiva di mitigazione fisica garantita dall'armatura effettiva. |
+| **`EHP`** | **Effective Health Pool** | Salute effettiva: $\text{Salute Massima} / (1 - \text{DR}\%)$. |
+| **`GCD`** | **Global Cooldown** | Finestra standard di 1.5 secondi tra abilità. |
+| **`ICD`** | **Internal Cooldown** | Tempo di ricarica interno dei proc monili (45s o 50s). |

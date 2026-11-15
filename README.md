@@ -78,11 +78,22 @@ CTC:   102.4% (MAX)
 Block: 38.2% (2450 SBV)
 Hit:   8.0% | Exp: 26
 ```
-- **Def**: Rilevamento dinamico livello bersaglio (**540 Cap** per Boss Raid Lv.83, **535 Cap** per Dungeon Eroici Lv.82).
-- **Armor**: Armatura effettiva e percentuale di riduzione fisica ($\text{DR} = \frac{\text{Armor}}{\text{Armor} + 16635}$, cap 75%) con inclusione automatica di *Inspiration/Ancestral Fortitude* (+25%), *Devotion/Stoneskin* e debuff *Sunder/Acid/Faerie Fire/Melt Armor*.
-- **CTC**: Combat Table Coverage ($\text{Dodge} + \text{Parry} + \text{Block} + \text{BossMiss}$) con motore non-stacking per *Insect Swarm* e *Scorpid Sting* (+3.0% Miss max) e soglia Unhittable a $\ge 102.4\%$.
-- **Block**: Percentuale di blocco e Shield Block Value (SBV) effettivo per la stima del danno/threat di *Shield Slam*.
-- **Hit / Exp**: Rilevamento aura Draenei *Heroic Presence* (+1.0% Hit fisico) con cap 8% e verifica Soft Cap 26 ed Hard Cap 56 di Perizia (azzeramento *Parry-Haste*).
+
+#### 📖 Glossario & Spiegazione delle Sigle Statistiche Tank
+| Sigla | Nome Esteso | Significato e Rilevanza Tattica in WotLK 3.3.5a |
+| :--- | :--- | :--- |
+| **`DEF`** | **Defense Skill** *(Abilità di Difesa)* | Punteggio totale di difesa (`base + bonus`). A livello 80 il valore base è 400. Raggiungere **540 Difesa** garantisce la completa **immunità ai colpi critici** dei Boss di Raid Lv.83 (-5.6% crit subito). In dungeon eroici (mob Lv.82) il cap è **535 Difesa**. |
+| **`ARM`** | **Armor & Physical DR%** *(Armatura & Riduzione Danno)* | Quantità di armatura effettiva. La percentuale tra parentesi indica la riduzione del danno fisico contro boss Lv.83 ($\text{DR}\% = \frac{\text{Armor}}{\text{Armor} + 16635} \times 100$). L'hard cap è al **75.0%** (pari a 49.905 armatura). Include buff (*Inspiration/Ancestral Fortitude* +25%) e debuff. |
+| **`CTC`** | **Combat Table Coverage** *(Copertura Tabella Colpi)* | Somma di tutte le probabilità difensive: $\text{Dodge} + \text{Parry} + \text{Block} + \text{BossMiss}$. A $\ge \mathbf{102.4\%}$ il tank è **Unhittable**: nessun colpo bianco del boss può andare a segno come colpo normale (vengono tutti schivati, parati, bloccati o mancati). Include debuff non-stacking (*Insect Swarm* / *Scorpid Sting* +3%). |
+| **`Block`** | **Block Chance** *(Probabilità di Blocco)* | Percentuale di parare un colpo con lo scudo. Durante l'abilità attiva *Shield Block* (+100%), il valore sale al 100%, portando istantaneamente il CTC oltre il 102.4%. |
+| **`SBV`** | **Shield Block Value** *(Valore di Blocco con Scudo)* | Quantità netta di danno fisico assorbito da ciascun blocco riuscito. In WotLK 3.3.5a è anche il moltiplicatore primario che scala il danno e la minaccia generata da **Shield Slam** (Colpo di Scudo). |
+| **`Hit`** | **Melee Hit Rating** *(Precisione Attacchi Fisici)* | Probabilità di colpire con colpi speciali e *Taunt*. Il cap contro boss Lv.83 è **8.0%** (263 rating), ridotto a 7.0% (230 rating) se nel gruppo è presente un Draenei (*Heroic Presence* +1%). |
+| **`Exp`** | **Expertise** *(Perizia / Competenza)* | Riduce la probabilità che il boss schivi o pari gli attacchi del guerriero. **Soft Cap 26** (214 rating, elimina le Schivate del boss dal fronte). **Hard Cap 56** (elimina le Parate, azzerando il rischio di *Parry-Haste* su Sindragosa, Halion, Lady Deathwhisper). |
+| **`Avoid`** | **Avoidance Pura** *(Evitamento Assoluto)* | Somma di $\text{Dodge} + \text{Parry} + \text{Miss}$: rappresenta la percentuale di colpi in cui il tank subisce **zero danni** (a differenza del blocco in cui il danno viene parzialmente mitigato). |
+| **`DR%`** | **Damage Reduction %** *(Riduzione Danno)* | Percentuale di riduzione passiva del danno fisico calcolata in base all'armatura effettiva. |
+| **`EHP`** | **Effective Health Pool** *(Salute Effettiva)* | Quantità di danno fisico grezzo che il tank può assorbire prima di morire: $\text{EHP} = \frac{\text{Salute Massima}}{1 - (\text{DR}\% / 100)}$. |
+| **`GCD`** | **Global Cooldown** *(Tempo di Recupero Globale)* | Finestra standard di 1.5 secondi tra l'attivazione di un'abilità e la successiva. |
+| **`ICD`** | **Internal Cooldown** *(Tempo di Ricarica Interno)* | Tempo di attesa obbligatorio (es. 45s o 50s) prima che l'effetto proc di un monile possa riattivarsi. |
 
 ### 7. Sunder Armor Tracker (`19 - Sunder Armor Tracker`)
 Posizionato sul lato destro delle barre ($x = 160, y = -7$, $32 \times 32\text{px}$):

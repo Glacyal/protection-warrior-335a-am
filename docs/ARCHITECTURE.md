@@ -133,6 +133,14 @@ In combattimento raid ad alta intensità (es. Lich King 25HC), il motore Lua di 
 2. **`_G.PWHUD_DebuffCache`**:
    - Cache dei debuff target/player per monitorare i colpi letali dei boss (Soul Reaper, Impale, Gastric Bloat, Fusion Punch) senza eseguire scansioni ripetute dell'API `UnitDebuff`.
 
+3. **Motore di Calcolo e Glossario Sigle Statistiche Tank (`_G.PWHUD_LastStatsText`)**:
+   - Caching a 10 Hz (0.1s) per evitare ricalcoli costosi su ogni frame.
+   - **`DEF` (Defense Skill)**: Cap **540** per immunità critici boss Lv.83 (-5.6% crit subito), **535** in Eroiche Lv.82.
+   - **`ARM` (Armor & Physical DR%)**: Armatura effettiva con formula mitigazione Lv.83: $\text{DR}\% = \frac{\text{Armor}}{\text{Armor} + 16635} \times 100$ (Cap 75%).
+   - **`CTC` (Combat Table Coverage)**: Copertura tabella colpi: $\text{Dodge} + \text{Parry} + \text{Block} + \text{BossMiss}$. A $\ge \mathbf{102.4\%}$ il tank è *Unhittable*. Include debuff non-stacking (*Insect Swarm* / *Scorpid Sting* max +3%).
+   - **`Block` & `SBV` (Shield Block Value)**: Probabilità di blocco e assorbimento netto; scala danno e minaccia di *Shield Slam*.
+   - **`Hit` & `Exp` (Expertise)**: Melee Hit (Cap 8% con *Heroic Presence* Draenei +1%), Soft Cap 26 (0% dodge del boss) ed Hard Cap 56 (0% parry del boss per azzerare *Parry-Haste*).
+
 ---
 
 ## 6. Condizioni di Caricamento (Load Conditions) — Spec Protection Only

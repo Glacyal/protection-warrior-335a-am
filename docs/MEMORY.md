@@ -116,3 +116,22 @@ In WeakAuras 3.3.5a, la funzione `WeakAuras.CheckTalentByIndex(index)` non usa s
   1. Icona `04 - Defensive Stance - Warning` (X: -158, Y: 0) con Pixel Glow rosso e label `STANCE`.
   2. Testo centrale `Alert - Wrong Stance` (Y: +64) con `>> DEFENSIVE STANCE REQUIRED! <<` e suono `RaidWarning.ogg`.
 - Trigger event-driven su `PLAYER_REGEN_DISABLED, PLAYER_REGEN_ENABLED, UPDATE_SHAPESHIFT_FORM`. Zero polling su `OnUpdate`.
+
+---
+
+## 5. Glossario Dettagliato delle Sigle Statistiche Tank (WotLK 3.3.5a)
+
+| Sigla | Termine Esteso | Definizione Meccanica & Ruolo nel Tanking WotLK |
+| :--- | :--- | :--- |
+| **`DEF`** | **Defense Skill** | Abilità di difesa del personaggio (`base + rating`). Base a Lv.80 = 400. Raggiungere **540 Difesa** (+140 da rating/talenti) garantisce la completa **immunità ai colpi critici** dei Boss Raid Lv.83 (-5.6% crit subito). In Dungeon Eroici (mob Lv.82) il cap è **535**. |
+| **`ARM`** | **Effective Armor & Physical DR%** | Armatura effettiva istantanea del guerriero. La percentuale tra parentesi è il **Physical Damage Reduction** contro boss Lv.83: $\text{DR}\% = \min(75.0, \frac{\text{Armor}}{\text{Armor} + 16635} \times 100)$. Hard cap al 75% (49.905 armatura). Include buff (*Inspiration/Ancestral Fortitude* +25%, *Stoneskin/Devotion*) e debuff (*Sunder/Acid/Faerie Fire/Melt Armor*). |
+| **`CTC`** | **Combat Table Coverage** | Copertura totale della tabella colpi: $\text{Dodge} + \text{Parry} + \text{Block} + \text{BossMiss}$. A $\ge \mathbf{102.4\%}$ il tank è **Unhittable**: nessun colpo bianco del boss può andare a segno normale (vengono tutti schivati, parati, bloccati o mancati). Gestisce debuff non-stacking (*Insect Swarm* o *Scorpid Sting* max +3% Miss). |
+| **`Block`** | **Block Chance** | Probabilità di bloccare un attacco fisico con lo scudo. Durante l'abilità attiva *Shield Block* (10s) raggiunge il 100%, portando istantaneamente il CTC oltre il 102.4%. |
+| **`SBV`** | **Shield Block Value** | Quantità di danno fisico assorbito da ciascun blocco riuscito. In WotLK 3.3.5a è anche il moltiplicatore primario che scala il danno e la minaccia generata da **Shield Slam** (Colpo di Scudo). |
+| **`Hit`** | **Melee Hit Chance** | Precisione degli attacchi speciali e di *Taunt*. Cap contro boss Lv.83 a **8.0%** (263 rating), ridotto al 7.0% con *Heroic Presence* Draenei (+1%). |
+| **`Exp`** | **Expertise** | Perizia/Competenza: **Soft Cap 26** (214 rating, azzera le Schivate del boss dal fronte). **Hard Cap 56** (azzera le Parate del boss dal fronte, fondamentale per eliminare il rischio di *Parry-Haste* su Sindragosa, Halion, Lady Deathwhisper). |
+| **`Avoid`** | **Avoidance Pura** | Somma di $\text{Dodge} + \text{Parry} + \text{Miss}$: percentuale di colpi in cui il tank incassa **zero danni** (a differenza del blocco dove il danno viene solo assorbito parzialmente). |
+| **`DR%`** | **Damage Reduction %** | Percentuale passiva di mitigazione fisica garantita dall'armatura effettiva. |
+| **`EHP`** | **Effective Health Pool** | Salute effettiva: $\text{EHP} = \frac{\text{Max HP}}{1 - (\text{DR}\% / 100)}$. |
+| **`GCD`** | **Global Cooldown** | Finestra standard di recupero tra abilità (1.5s). |
+| **`ICD`** | **Internal Cooldown** | Tempo di ricarica interno dei proc dei monili (tipicamente 45s o 50s). |
