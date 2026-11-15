@@ -407,9 +407,14 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         [51220] = true, [51221] = true, [51222] = true, [51223] = true, [51224] = true,
     }
     _G.PWHUD_T9_Pieces = {
+        -- Alliance T9 Protection (232, 245, 258)
         [48590] = true, [48591] = true, [48592] = true, [48593] = true, [48594] = true,
+        [48588] = true, [48587] = true, [48564] = true, [48589] = true, [48586] = true,
+        [48584] = true, [48583] = true, [48581] = true, [48585] = true, [48582] = true,
+        -- Horde T9 Protection (232, 245, 258)
         [48595] = true, [48596] = true, [48597] = true, [48598] = true, [48599] = true,
-        [48564] = true, [48566] = true, [48568] = true, [48576] = true, [48587] = true,
+        [48571] = true, [48572] = true, [48573] = true, [48574] = true, [48575] = true,
+        [48578] = true, [48577] = true, [48576] = true, [48579] = true, [48580] = true,
     }
     _G.PWHUD_T8_Pieces = {
         [46162] = true, [46163] = true, [46164] = true, [46166] = true, [46167] = true,
@@ -929,16 +934,42 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
             return "ACTIVE", rem, dur, 1, "Interface\\Icons\\INV_Shield_05", "T10 (2P)"
         end
 
+        -- T8 Prot 4P: Shield Block magic reduction active (Spell 2565)
+        if t8 >= 4 then
+            local sbBuff = buffs and (buffs.bySpellId[2565] or buffs.byName["Shield Block"])
+            if sbBuff and sbBuff.expirationTime and sbBuff.expirationTime > now_tk then
+                local rem = sbBuff.expirationTime - now_tk
+                local dur = (sbBuff.duration and sbBuff.duration > 0) and sbBuff.duration or 10
+                return "ACTIVE", rem, dur, 1, "Interface\\Icons\\Ability_Defensive", "T8 (4P)"
+            end
+        end
+
         if t10 >= 4 then
             return "READY", 0, 0, 0, "Interface\\Icons\\Ability_Racial_BloodRage", "T10 (4P)"
+        elseif t10 >= 2 and t9 >= 2 then
+            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Shield_05", "T10/T9"
+        elseif t10 >= 2 and t8 >= 2 then
+            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Shield_05", "T10/T8"
+        elseif t10 >= 2 and t7 >= 2 then
+            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Shield_05", "T10/T7"
         elseif t10 >= 2 then
             return "READY", 0, 0, 0, "Interface\\Icons\\INV_Shield_05", "T10 (2P)"
         elseif t9 >= 4 then
             return "READY", 0, 0, 0, "Interface\\Icons\\INV_Helmet_05", "T9 (4P)"
+        elseif t9 >= 2 and t8 >= 2 then
+            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Helmet_05", "T9/T8"
+        elseif t9 >= 2 and t7 >= 2 then
+            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Helmet_05", "T9/T7"
         elseif t9 >= 2 then
             return "READY", 0, 0, 0, "Interface\\Icons\\INV_Helmet_05", "T9 (2P)"
+        elseif t8 >= 4 then
+            return "READY", 0, 0, 0, "Interface\\Icons\\Spell_Nature_BloodLust", "T8 (4P)"
+        elseif t8 >= 2 and t7 >= 2 then
+            return "READY", 0, 0, 0, "Interface\\Icons\\Spell_Nature_BloodLust", "T8/T7"
         elseif t8 >= 2 then
             return "READY", 0, 0, 0, "Interface\\Icons\\Spell_Nature_BloodLust", "T8 (2P)"
+        elseif t7 >= 4 then
+            return "READY", 0, 0, 0, "Interface\\Icons\\Ability_Warrior_ShieldWall", "T7 (4P)"
         elseif t7 >= 2 then
             return "READY", 0, 0, 0, "Interface\\Icons\\Ability_Warrior_ShieldWall", "T7 (2P)"
         end
