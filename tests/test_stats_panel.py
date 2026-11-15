@@ -34,11 +34,23 @@ def run_tests():
     dodge = 28.5
     parry = 22.0
     block = 26.5
-    miss = 5.0 + max(0, (542 - 400) * 0.04) # 542 defense
+    miss = 4.4 + max(0, (542 - 400) * 0.04) + 3.0 # 542 defense + Insect Swarm/Scorpid Sting
     ctc = dodge + parry + block + miss
     assert ctc >= 85.0, f"CTC inatteso: {ctc}"
 
-    print(f"[OK] test_stats_panel completato: Armor DR={armor_dr:.1f}%, EHP={ehp:.0f}, CTC={ctc:.1f}%.")
+    # Verifica presenza etichette stile Fury Warrior e buff/debuff
+    from builder.components.stats import make_stats_custom_text
+    lua_code = make_stats_custom_text()
+    assert "|cFFFFFFFFDef:|r" in lua_code
+    assert "|cFFFFFFFFArmor:|r" in lua_code
+    assert "|cFFFFFFFFCTC:|r" in lua_code
+    assert "|cFFFFFFFFBlock:|r" in lua_code
+    assert "|cFFFFFFFFHit:|r" in lua_code
+    assert "Insect Swarm" in lua_code
+    assert "Scorpid Sting" in lua_code
+    assert "Heroic Presence" in lua_code
+
+    print(f"[OK] test_stats_panel completato: Armor DR={armor_dr:.1f}%, EHP={ehp:.0f}, CTC={ctc:.1f}% e stile Fury Warrior verificati.")
     return True
 
 if __name__ == "__main__":

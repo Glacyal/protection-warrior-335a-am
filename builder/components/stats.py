@@ -13,54 +13,104 @@ from builder.core.constants import TEXTURE_WHITE8X8, FONT_EXPRESSWAY
 
 
 def make_stats_custom_text() -> str:
-    """Funzione Lua che calcola in tempo reale le statistiche del Protection Warrior."""
+    """Funzione Lua che calcola in tempo reale le statistiche del Protection Warrior con logica WotLK 3.3.5a completa."""
     return r"""function()
     local now = GetTime()
     if _G.PWHUD_LastStatsText and (now - (_G.PWHUD_LastStatsTime or 0)) < 0.1 then
         return _G.PWHUD_LastStatsText
     end
 
-    -- 1. DEFENSE SKILL & CRIT IMMUNITY (540 Cap per Lv.83 boss)
-    local baseDef, armorDef = UnitDefense("player")
-    local totalDef = (baseDef or 0) + (armorDef or 0)
-    local defStr = ""
-    if totalDef >= 540 then
-        defStr = string.format("|cFF40FF40DEF: %d (CAP)|r", totalDef)
-    else
-        defStr = string.format("|cFFFF2020DEF: %d/540|r", totalDef)
+    -- 0. CONTESTO BERSAGLIO & DEBUFFS (Insect Swarm, Scorpid Sting -> Non-stacking +3.0% Boss Miss)
+    local targetLevel = 83
+    local targetMissBonus = 0
+    if UnitExists("target") and not UnitIsDead("target") and UnitCanAttack("player", "target") then
+        local lvl = UnitLevel("target")
+        if lvl and lvl > 0 then
+            targetLevel = lvl
+        elseif lvl == -1 or UnitClassification("target") == "worldboss" then
+            targetLevel = 83
+        end
+
+        for i = 1, 40 do
+            local name, _, _, _, _, _, _, _, _, _, spellId = UnitDebuff("target", i)
+            if not name then break end
+            -- Insect Swarm (Druido: -3% hit) o Scorpid Sting (Cacciatore: -3% hit)
+            -- Regola di precedenza WotLK: NON STACKANO! Massimo +3.0%
+            if spellId == 5570 or spellId == 27013 or spellId == 24974 or spellId == 24975 or
+               spellId == 24976 or spellId == 24977 or spellId == 48468 or spellId == 3043 or
+               name == "Insect Swarm" or name == "Sciame d'Insetti" or
+               name == "Scorpid Sting" or name == "Puntura dello Scorpide" then
+                targetMissBonus = 3.0
+                break
+            end
+        end
     end
 
-    -- 2. COMBAT TABLE COVERAGE (CTC = Dodge + Parry + Block + Miss)
+    -- 1. DEFENSE SKILL & CRIT IMMUNITY (Cap: 540 per Boss Raid Lv.83, 535 per Eroiche Lv.82)
+    local baseDef, armorDef = UnitDefense("player")
+    local totalDef = (baseDef or 0) + (armorDef or 0)
+    local reqDef = (targetLevel >= 83) and 540 or ((targetLevel == 82) and 535 or 400)
+    local defStr
+    if totalDef >= reqDef then
+        defStr = string.format("|cFF22C55E%d (CAP)|r", totalDef)
+    elseif totalDef >= 535 then
+        defStr = string.format("|cFFFFD700%d (HC)|r", totalDef)
+    else
+        defStr = string.format("|cFFFF2020%d/%d|r", totalDef, reqDef)
+    end
+
+    -- 2. ARMOR & PHYSICAL DAMAGE REDUCTION (DR%)
+    -- EffectiveArmor include tutti i buff attivi (Inspiration/Ancestral Fortitude +25%, Stoneskin/Devotion)
+    -- e i debuff (Sunder, Acid Spit, Faerie Fire, Melt Armor)
+    local baseArmor, effectiveArmor = UnitArmor("player")
+    effectiveArmor = effectiveArmor or baseArmor or 0
+    local k = (targetLevel >= 83) and 16635 or (400 + 85 * targetLevel + 4.5 * 85 * (targetLevel - 59))
+    local armorDR = math.min(75.0, (effectiveArmor / (effectiveArmor + k)) * 100)
+    local armColor = armorDR >= 75.0 and "|cFF22C55E" or "|cFFFFFFFF"
+    local armStr = string.format("%s%.1fk|r |cFF80D0FF(%.1f%%)|r", armColor, effectiveArmor / 1000, armorDR)
+
+    -- 3. COMBAT TABLE COVERAGE (CTC = Dodge + Parry + Block + BossMiss)
     local dodge = GetDodgeChance() or 0
     local parry = GetParryChance() or 0
     local block = GetBlockChance() or 0
-    local miss = 5.0 + math.max(0, (totalDef - 400) * 0.04)
+    local baseBossMiss = (targetLevel >= 83) and 4.4 or (5.0 - (targetLevel - 80) * 0.2)
+    local miss = math.max(0, baseBossMiss + math.max(0, (totalDef - 400) * 0.04) + targetMissBonus)
     local ctc = dodge + parry + block + miss
-    local ctcStr = ""
+    local ctcStr
     if ctc >= 102.4 then
-        ctcStr = string.format("|cFF00FFFFCTC: %.1f%% (MAX)|r", ctc)
+        ctcStr = string.format("|cFF00FFFF%.1f%% (MAX)|r", ctc)
     else
-        ctcStr = string.format("|cFFFFD700CTC: %.1f%%|r", ctc)
+        ctcStr = string.format("|cFFFFD700%.1f%%|r", ctc)
     end
 
-    -- 3. ARMOR & PHYSICAL DR% (Formula WotLK: Armor / (Armor + 16635))
-    local baseArmor, effectiveArmor = UnitArmor("player")
-    effectiveArmor = effectiveArmor or baseArmor or 0
-    local armorDR = (effectiveArmor / (effectiveArmor + 16635)) * 100
-    local armStr = string.format("ARM: %.1fk (%.1f%%)", effectiveArmor / 1000, armorDR)
-
-    -- 4. SHIELD BLOCK VALUE (SBV)
+    -- 4. BLOCK & SHIELD BLOCK VALUE (SBV)
     local sbv = GetShieldBlock() or 0
-    local sbvStr = string.format("|cFF80D0FFSBV: %d|r", sbv)
+    local blockStr = string.format("|cFF80D0FF%.1f%%|r |cFFFFD700(%d SBV)|r", block, sbv)
 
-    -- 5. HIT & EXPERTISE
+    -- 5. HIT & EXPERTISE (Melee Hit: CR 6, Draenei Heroic Presence +1%; Soft Cap 26, Hard Cap 56)
+    local hasHeroicPresence = false
+    for i = 1, 40 do
+        local name, _, _, _, _, _, _, _, _, _, spellId = UnitBuff("player", i)
+        if not name then break end
+        if spellId == 28878 or spellId == 6562 or name == "Heroic Presence" or name == "Presenza Eroica" then
+            hasHeroicPresence = true
+            break
+        end
+    end
+
     local hitBonus = GetCombatRatingBonus(6) or 0
-    local exp = GetExpertise() or 0
-    local hitColor = (hitBonus >= 8.0) and "|cFF40FF40" or "|cFFFFD700"
-    local expColor = (exp >= 26) and "|cFF40FF40" or "|cFFFFD700"
-    local capStr = string.format("%sH:%.1f%%|r %sE:%d|r", hitColor, hitBonus, expColor, exp)
+    local totalHit = hitBonus + (hasHeroicPresence and 1.0 or 0.0)
+    local exp = GetExpertise and GetExpertise() or 0
 
-    local res = string.format("%s\n%s\n%s\n%s\n%s", defStr, ctcStr, armStr, sbvStr, capStr)
+    local hitColor = (totalHit >= 8.0) and "|cFF22C55E" or "|cFFFFFFFF"
+    local expColor = (exp >= 56) and "|cFF00FFFF" or ((exp >= 26) and "|cFF22C55E" or "|cFFFFFFFF")
+    local hitExpStr = string.format("%s%.1f%%|r | %s%d Exp|r", hitColor, totalHit, expColor, exp)
+
+    -- FORMATTAZIONE FINALE A 5 RIGHE CON STILE FURY WARRIOR (|cFFFFFFFFLabel:|r <Valore>)
+    local res = string.format(
+        "|cFFFFFFFFDef:|r %s\n|cFFFFFFFFArmor:|r %s\n|cFFFFFFFFCTC:|r %s\n|cFFFFFFFFBlock:|r %s\n|cFFFFFFFFHit:|r %s",
+        defStr, armStr, ctcStr, blockStr, hitExpStr
+    )
     _G.PWHUD_LastStatsText = res
     _G.PWHUD_LastStatsTime = now
     return res
@@ -69,7 +119,7 @@ end"""
 
 def build_stats_auras() -> list[dict]:
     """Costruisce il gruppo 18 - Stats Panel warTank."""
-    stats_events = "PLAYER_ENTERING_WORLD,UNIT_STATS,UNIT_AURA,PLAYER_EQUIPMENT_CHANGED,COMBAT_RATING_UPDATE"
+    stats_events = "PLAYER_ENTERING_WORLD,UNIT_STATS,UNIT_AURA,PLAYER_EQUIPMENT_CHANGED,COMBAT_RATING_UPDATE,PLAYER_TARGET_CHANGED,UNIT_TARGET,RAID_ROSTER_UPDATE,PARTY_MEMBERS_CHANGED"
 
     return [
         {
