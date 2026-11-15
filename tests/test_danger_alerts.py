@@ -37,7 +37,17 @@ def run_tests():
     alert_em = children_by_id["Alert - Emergency CD"]
     assert "CRIT HP" in alert_em["customText"]
 
-    print("[OK] test_danger_alerts completato: allarmi emergenza e tank buster conformi.")
+    # Alert - Wrong Stance in 17 - Alerts warTank (Task 2)
+    alert_stance = children_by_id["Alert - Wrong Stance"]
+    assert "DEFENSIVE STANCE REQUIRED" in alert_stance["displayText"]
+    assert "GetShapeshiftForm() ~= 2" in alert_stance["triggers"][1]["trigger"]["custom"]
+    assert "PLAYER_REGEN_DISABLED" in alert_stance["triggers"][1]["trigger"]["events"]
+
+    # Defensive Stance - Warning in 04 - Defensive Stance
+    stance_warn = children_by_id["Defensive Stance - Warning"]
+    assert "GetShapeshiftForm() ~= 2" in stance_warn["triggers"][1]["trigger"]["custom"]
+
+    print("[OK] test_danger_alerts completato: allarmi emergenza, tank buster e wrong stance conformi.")
     return True
 
 if __name__ == "__main__":

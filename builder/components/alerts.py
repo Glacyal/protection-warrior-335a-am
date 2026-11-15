@@ -35,6 +35,7 @@ def build_alerts_auras() -> list[dict]:
                 "Alert - Emergency CD",
                 "Alert - Kick Now",
                 "Alert - Boss Enraged",
+                "Alert - Wrong Stance",
             ],
         },
         # 1. Alert - Sword and Board (SHIELD SLAM READY!)
@@ -192,6 +193,54 @@ def build_alerts_auras() -> list[dict]:
                         end""",
                     },
                     "untrigger": {"type": "custom", "custom": "function() return false end"}
+                },
+                "activeTriggerMode": -10,
+            },
+        },
+        # 5. Alert - Wrong Stance (DEFENSIVE STANCE REQUIRED!)
+        {
+            "id": "Alert - Wrong Stance",
+            "uid": "PWHUD_ALERT_WRONG_STANCE",
+            "parent": "17 - Alerts warTank",
+            "regionType": "text",
+            "internalVersion": 90,
+            "displayText": "|cFFFF1010>> DEFENSIVE STANCE REQUIRED! <<|r",
+            "fontSize": 20,
+            "font": FONT_EXPRESSWAY,
+            "outline": "OUTLINE",
+            "justify": "CENTER",
+            "color": [1, 0.1, 0.1, 1],
+            "selfPoint": "CENTER",
+            "anchorPoint": "CENTER",
+            "xOffset": 0,
+            "yOffset": 64,
+            "actions": {
+                "init": {"do_custom": False},
+                "start": {
+                    "do_sound": True,
+                    "sound": "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RaidWarning.ogg",
+                    "sound_path": "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\RaidWarning.ogg",
+                    "sound_channel": "Master",
+                },
+                "finish": {"do_sound": False},
+            },
+            "triggers": {
+                1: {
+                    "trigger": {
+                        "type": "custom",
+                        "custom_type": "status",
+                        "check": "event",
+                        "events": "PLAYER_REGEN_DISABLED,PLAYER_REGEN_ENABLED,UPDATE_SHAPESHIFT_FORM,PLAYER_ENTERING_WORLD",
+                        "custom": r"""function()
+                            return UnitAffectingCombat("player") and (GetShapeshiftForm() ~= 2)
+                        end""",
+                    },
+                    "untrigger": {
+                        "type": "custom",
+                        "custom": r"""function()
+                            return not UnitAffectingCombat("player") or (GetShapeshiftForm() == 2)
+                        end""",
+                    },
                 },
                 "activeTriggerMode": -10,
             },

@@ -53,7 +53,18 @@ def run_tests():
     alerts = children_by_id["17 - Alerts warTank"]
     assert alerts["yOffset"] == 78
 
-    print("[OK] test_tree_layout completato: conformità geometrica 1:1 verificata.")
+    # Verifica Load Conditions: Classe Warrior + Talento Devastate (ID 103)
+    assert root["load"]["use_class"] is True
+    assert root["load"]["class"]["single"] == "WARRIOR"
+    assert root["load"]["use_talent"] is True
+    assert root["load"]["talent"]["single"] == 103
+    assert root["load"]["talent"]["multi"][103] is True
+
+    for child in tree["c"]:
+        assert child["load"]["use_talent"] is True
+        assert child["load"]["talent"]["single"] == 103
+
+    print("[OK] test_tree_layout completato: conformità geometrica 1:1 e Load Condition Devastate verificate.")
     return True
 
 if __name__ == "__main__":

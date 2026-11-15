@@ -6,10 +6,12 @@ e le impostazioni grafiche condivise (font, texture, palette colori, cap difensi
 """
 
 # Condizioni di Caricamento (Load Conditions):
-# Classe Guerriero (Class: WARRIOR)
+# Classe Guerriero (Class: WARRIOR) e talento Devastate (Talent ID: 103 - Ramo Protezione, Tab 3 Talento 23)
 PROT_WARRIOR_LOAD = {
     "use_class": True,
     "class": {"single": "WARRIOR", "multi": {"WARRIOR": True}},
+    "use_talent": True,
+    "talent": {"single": 103, "multi": {103: True}},
     "use_vehicle": False,
 }
 
