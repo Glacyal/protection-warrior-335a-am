@@ -67,7 +67,11 @@ Adaptive horizontal centering below the rage bar featuring $28 \times 28\text{px
 
 ### 4. Synchronized 278px Center Bars (`14`, `15`, `16`)
 - **14 - Rage Bar warTank ($278 \times 14\text{px}$ at $y = -20$)**: Precise numeric value centered with 3-tier dynamic color shifts: dark red under 25 points (starvation), deep crimson between 25 and 44 points, and bright amber/gold above 45 points (safe rage-dumping threshold for Heroic Strike / Cleave).
-- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ at $y = -7$)**: Static rotational queue indicator occupying the full 278px width without scroll/swipe animation and without remaining time countdown. Features dynamic additive illumination and LibCustomGlow-1.0 Pixel Glow (Gold for *Heroic Strike*, Emerald Green for *Cleave*), fully aligned with the Fury Warrior queueing mechanics.
+- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ at $y = -7$)**: Real-time static rotational queue indicator occupying the full 278px width without swipe/scroll animation and without countdown numbers. Driven by frame-accurate `OnUpdate` polling and universal `GetSpellInfo()` name resolution:
+  - Base solid bar in Warrior copper/bronze (`[0.65, 0.35, 0.12, 0.90]`) at resting state.
+  - Radiant Gold bar (`[1.0, 0.84, 0.0, 1.0]`) with golden `LibCustomGlow-1.0` Pixel Glow instantly upon queueing *Heroic Strike*.
+  - Radiant Emerald Green bar (`[0.1, 0.95, 0.2, 1.0]`) with green `LibCustomGlow-1.0` Pixel Glow instantly upon queueing *Cleave*.
+  - Instantaneous recovery to neutral copper when attacks land or are cancelled.
 - **16 - Castbar warTank ($278 \times 20\text{px}$ at $y = +8$)**: Target (or player) castbar. Features left spell icon, contextual **Kick Advisor** spell label (e.g. `Frostbolt [KICK: SHIELD BASH]` in cyan, or `[IMMUNE]` in dark gray), and remaining cast time on the right.
 
 ### 5. Central Text Alerts (`17 - Alerts warTank`)

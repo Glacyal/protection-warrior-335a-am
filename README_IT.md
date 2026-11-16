@@ -67,7 +67,11 @@ Centratura automatica orizzontale adattiva sotto la barra della rabbia con icone
 
 ### 4. Barre Centrali Sincronizzate a 278px (`14`, `15`, `16`)
 - **14 - Rage Bar warTank ($278 \times 14\text{px}$ a $y = -20$)**: Valore numerico esatto al centro (%p) con colorazione a 3 stadi: rosso scuro sotto 25 punti (starvation), crimson pieno tra 25 e 44 punti e ambra/oro sopra i 45 punti (soglia scarico sicuro Heroic Strike/Cleave).
-- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ a $y = -7$)**: Indicatore statico di accodamento rotazionale a piena larghezza (278px) senza scorrimento/swipe e senza conto alla rovescia del tempo rimanente. Dotato di retroilluminazione additiva e Pixel Glow LibCustomGlow-1.0 (Oro per *Colpo Eroico*, Verde Smeraldo per *Fendente*), perfettamente allineato alla logica di queuing di Fury Warrior.
+- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ a $y = -7$)**: Indicatore statico di accodamento rotazionale a piena larghezza (278px) senza animazione di scorrimento/swipe e senza numeri di tempo rimanente. Gestito con polling frame-accurate `OnUpdate` e risoluzione universale `GetSpellInfo()`:
+  - Barra solida copper/bronze (`[0.65, 0.35, 0.12, 0.90]`) a riposo.
+  - Barra Oro brillante (`[1.0, 0.84, 0.0, 1.0]`) con Pixel Glow dorato `LibCustomGlow-1.0` all'accodamento di *Heroic Strike*.
+  - Barra Verde Smeraldo brillante (`[0.1, 0.95, 0.2, 1.0]`) con Pixel Glow verde `LibCustomGlow-1.0` all'accodamento di *Cleave*.
+  - Ritorno immediato all'aspetto neutro al rilascio del colpo o alla cancellazione.
 - **16 - Castbar warTank ($278 \times 20\text{px}$ a $y = +8$)**: Barra di lancio sincronizzata con il bersaglio (o player). Mostra icona a sinistra, nome incantesimo con **Kick Advisor** integrato a sinistra (es. `Frostbolt [KICK: SHIELD BASH]` in ciano, o `[IMMUNE]` in grigio) e tempo residuo a destra (%p).
 
 ### 5. Avvisi Testuali Centrali (`17 - Alerts warTank`)

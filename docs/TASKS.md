@@ -369,3 +369,24 @@
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione CP (Commit & Push su `origin/master`).
 
+- [x] **Task 23: Fix e Rifattorizzazione Architetturale '15 - Rotational Bar warTank' (Accodamento Reattivo Heroic Strike & Cleave con Frame-Rate Update e Pixel Glow)**:
+  - [x] Root cause analysis del malfunzionamento:
+    - In WotLK 3.3.5a, `IsCurrentSpell` accetta esclusivamente il nome stringa dell'abilità (`"Heroic Strike"`, `"Cleave"`) e non lo Spell ID numerico (interpretato dal client come slot dell'indice del grimorio, risultando in `nil`).
+    - Il controllo ad eventi (`check: "event"`) su abilità "al prossimo colpo in mischia" non riceveva eventi immediati (`CURRENT_SPELL_CAST_CHANGED` non scatta per incantesimi on-next-swing).
+    - Tentativo di gestione bifronte in un'unica aura tramite customText su subregion nascosta, che impediva le transizioni reattive tra Heroic Strike e Cleave.
+  - [x] Nuova architettura modulare reattiva in `builder/components/rotational.py`:
+    - **Rotational Bar - Background warTank** (`PWHUD_ROTCENTER_BG`, 278x7px): cornice scura di base semitrasparente.
+    - **Rotational Bar - Base Bar warTank** (`PWHUD_ROTCENTER_BASE`, 274x5px): barra statica piena larghezza in texture warrior copper/bronze (`[0.65, 0.35, 0.12, 0.90]`) sempre visibile come riposo neutro (zero swipe, zero timer numerici).
+    - **Rotational Bar - HS Queued warTank** (`PWHUD_ROTCENTER_HSQ`, 274x5px):
+      - Trigger con `check: "update"` (valutazione OnUpdate frame-accurate) e risoluzione universale del nome tramite `GetSpellInfo(47450)` con fallback bilingue EN/IT.
+      - Barra piena larghezza color Oro vibrante (`[1.0, 0.84, 0.0, 1.0]`).
+      - Azione di Pixel Glow dorata (`LibCustomGlow-1.0` con chiave `PWHUD_HS_GLOW` e `do_glow: True` nativo di WeakAuras).
+    - **Rotational Bar - Cleave Queued warTank** (`PWHUD_ROTCENTER_CLQ`, 274x5px):
+      - Trigger con `check: "update"` e risoluzione universale tramite `GetSpellInfo(47520)`.
+      - Barra piena larghezza color Verde Smeraldo vibrante (`[0.1, 0.95, 0.2, 1.0]`).
+      - Azione di Pixel Glow verde smeraldo (`LibCustomGlow-1.0` con chiave `PWHUD_CLEAVE_GLOW` e `do_glow: True` nativo).
+  - [x] Creazione unit test dedicato `tests/test_rotational.py` e integrazione nella test suite parallela `tests/run_parallel_tests.py` (10/10 test superati in 0.39s).
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` (66692 caratteri) e sincronizzazione `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+  - [x] Esecuzione CP (Commit & Push su `origin/master`).
+

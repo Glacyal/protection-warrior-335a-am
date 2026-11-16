@@ -1,20 +1,22 @@
 """
-Modulo Componente: 15 - Rotational Bar (Static Queue Indicator for Heroic Strike & Cleave)
-========================================================================================
+Modulo Componente: 15 - Rotational Bar warTank (Static Queue Indicator for Heroic Strike & Cleave)
+==================================================================================================
 Gestisce la barra orizzontale centrale a y = -7 (278x7px):
 1. Background Frame (278x7px, scuro semitrasparente).
 2. Base Bar (274x5px, barra statica a piena larghezza con texture Warrior copper/bronze).
    - Occupa l'intero spazio assegnato senza animazione di scorrimento/swipe.
    - Non visualizza alcun testo o conto alla rovescia del tempo rimanente.
-3. Queue Glow (278x7px, indicatore di accodamento analogo a Fury Warrior):
-   - Rileva in tempo reale se Heroic Strike (47450) o Cleave (47520) è accodato tramite IsCurrentSpell().
-   - Retroilluminazione additiva con blend mode ADD e Pixel Glow dedicato LibCustomGlow-1.0:
-     * Oro (1.0, 0.84, 0.0) per Heroic Strike.
-     * Verde Smeraldo (0.1, 0.95, 0.2) per Cleave.
-   - Si spegne completamente quando nessuna abilità è accodata.
+3. Rotational Bar - HS Queued warTank (274x5px):
+   - Rileva in tempo reale se Heroic Strike è accodato sul prossimo attacco in mischia tramite IsCurrentSpell().
+   - Utilizza check="update" (valutazione OnUpdate ad ogni frame) e risoluzione universale del nome tramite GetSpellInfo(47450).
+   - Retroilluminazione dinamica Gold (1.0, 0.84, 0.0) e Pixel Glow dedicato LibCustomGlow-1.0 / do_glow nativo.
+4. Rotational Bar - Cleave Queued warTank (274x5px):
+   - Rileva in tempo reale se Cleave è accodato sul prossimo attacco in mischia tramite IsCurrentSpell().
+   - Utilizza check="update" e risoluzione del nome tramite GetSpellInfo(47520).
+   - Retroilluminazione dinamica Verde Smeraldo (0.1, 0.95, 0.2) e Pixel Glow dedicato LibCustomGlow-1.0 / do_glow nativo.
 """
-from builder.core.helpers import make_subtext
 from builder.core.constants import TEXTURE_STATUSBAR, TEXTURE_WHITE8X8
+from builder.core.helpers import make_glow_action
 
 
 def build_rotational_auras() -> list[dict]:
@@ -23,7 +25,8 @@ def build_rotational_auras() -> list[dict]:
     - 15 - Rotational Bar warTank (Group 278x7px a y = -7)
     - Rotational Bar - Background warTank
     - Rotational Bar - Base Bar warTank
-    - Rotational Bar - Queue Glow warTank
+    - Rotational Bar - HS Queued warTank
+    - Rotational Bar - Cleave Queued warTank
     """
     return [
         # Gruppo contenitore (278x7px a y = -7)
@@ -40,7 +43,8 @@ def build_rotational_auras() -> list[dict]:
             "controlledChildren": [
                 "Rotational Bar - Background warTank",
                 "Rotational Bar - Base Bar warTank",
-                "Rotational Bar - Queue Glow warTank",
+                "Rotational Bar - HS Queued warTank",
+                "Rotational Bar - Cleave Queued warTank",
             ],
             "actions": {
                 "init": {},
@@ -78,6 +82,9 @@ def build_rotational_auras() -> list[dict]:
                 },
                 "activeTriggerMode": -10,
             },
+            "subRegions": [
+                {"type": "subbackground"},
+            ],
         },
         # Base Bar (274x5px statica, piena larghezza, nessun timer, nessuno scorrimento)
         {
@@ -109,108 +116,160 @@ def build_rotational_auras() -> list[dict]:
                 },
                 "activeTriggerMode": -10,
             },
+            "subRegions": [
+                {"type": "subbackground"},
+            ],
         },
-        # Rotational Bar - Queue Glow (Overlay dinamico additivo + LibCustomGlow-1.0 Pixel Glow per Heroic Strike / Cleave)
+        # Rotational Bar - HS Queued (Indicatore dinamico Heroic Strike: barra Oro vibrante + Pixel Glow dorato)
         {
-            "id": "Rotational Bar - Queue Glow warTank",
-            "uid": "PWHUD_ROTCENTER_GLOW",
+            "id": "Rotational Bar - HS Queued warTank",
+            "uid": "PWHUD_ROTCENTER_HSQ",
             "parent": "15 - Rotational Bar warTank",
             "regionType": "texture",
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 278,
-            "height": 7,
+            "width": 274,
+            "height": 5,
             "texture": TEXTURE_STATUSBAR,
-            "blendMode": "ADD",
-            "color": [1.0, 0.84, 0.0, 0.40],
+            "color": [1.0, 0.84, 0.0, 1.0],
             "selfPoint": "CENTER",
             "anchorPoint": "CENTER",
-            "customTextUpdate": "update",
-            "customText": r"""function()
-                local isHS = IsCurrentSpell and (IsCurrentSpell(47450) or IsCurrentSpell("Heroic Strike") or IsCurrentSpell("Colpo Eroico"))
-                local isCleave = IsCurrentSpell and (IsCurrentSpell(47520) or IsCurrentSpell("Cleave") or IsCurrentSpell("Fendente"))
-                local LCG = LibStub and LibStub("LibCustomGlow-1.0", true)
-                local glowKey = "PWHUD_ROTCENTER_GLOW"
-                local reg = aura_env and aura_env.region
-                local tex = reg and (reg.texture or (reg.SetVertexColor and reg))
-                if tex and tex.SetBlendMode then tex:SetBlendMode("ADD") end
-
-                if isHS then
-                    if aura_env and aura_env.lastQueuedState ~= "HS" then
-                        aura_env.lastQueuedState = "HS"
-                        if tex and tex.SetVertexColor then tex:SetVertexColor(1.0, 0.84, 0.0, 0.40) end
-                        if LCG and reg then LCG.PixelGlow_Start(reg, {1.0, 0.84, 0.0, 1.0}, 8, 0.25, 10, 2, 0, 0, false, glowKey) end
-                    end
-                elseif isCleave then
-                    if aura_env and aura_env.lastQueuedState ~= "CLEAVE" then
-                        aura_env.lastQueuedState = "CLEAVE"
-                        if tex and tex.SetVertexColor then tex:SetVertexColor(0.1, 0.95, 0.2, 0.40) end
-                        if LCG and reg then LCG.PixelGlow_Start(reg, {0.1, 0.95, 0.2, 1.0}, 8, 0.25, 10, 2, 0, 0, false, glowKey) end
-                    end
-                else
-                    if aura_env and aura_env.lastQueuedState ~= "NONE" then
-                        aura_env.lastQueuedState = "NONE"
-                        if LCG and reg then LCG.PixelGlow_Stop(reg, glowKey) end
-                    end
-                end
-                return ""
-            end""",
             "actions": {
                 "start": {
                     "do_custom": True,
-                    "custom": r"""if aura_env then aura_env.lastQueuedState = nil end
-local isHS = IsCurrentSpell and (IsCurrentSpell(47450) or IsCurrentSpell("Heroic Strike") or IsCurrentSpell("Colpo Eroico"))
-local isCleave = IsCurrentSpell and (IsCurrentSpell(47520) or IsCurrentSpell("Cleave") or IsCurrentSpell("Fendente"))
-local LCG = LibStub and LibStub("LibCustomGlow-1.0", true)
-local glowKey = "PWHUD_ROTCENTER_GLOW"
-local reg = aura_env and aura_env.region
-local tex = reg and (reg.texture or (reg.SetVertexColor and reg))
-if tex and tex.SetBlendMode then tex:SetBlendMode("ADD") end
-if isHS then
-    if aura_env then aura_env.lastQueuedState = "HS" end
-    if tex and tex.SetVertexColor then tex:SetVertexColor(1.0, 0.84, 0.0, 0.40) end
-    if LCG and reg then LCG.PixelGlow_Start(reg, {1.0, 0.84, 0.0, 1.0}, 8, 0.25, 10, 2, 0, 0, false, glowKey) end
-elseif isCleave then
-    if aura_env then aura_env.lastQueuedState = "CLEAVE" end
-    if tex and tex.SetVertexColor then tex:SetVertexColor(0.1, 0.95, 0.2, 0.40) end
-    if LCG and reg then LCG.PixelGlow_Start(reg, {0.1, 0.95, 0.2, 1.0}, 8, 0.25, 10, 2, 0, 0, false, glowKey) end
+                    "custom": r"""local LCG = LibStub and LibStub("LibCustomGlow-1.0", true)
+if LCG and aura_env and aura_env.region then
+    LCG.PixelGlow_Start(aura_env.region, {1.0, 0.84, 0.0, 1.0}, 8, 0.25, 10, 2, 0, 0, false, "PWHUD_HS_GLOW")
 end""",
+                    "do_glow": True,
+                    "glow_action": "show",
+                    "glow_type": "Pixel",
+                    "glow_color": [1.0, 0.84, 0.0, 1.0],
+                    "glow_lines": 8,
+                    "glow_frequency": 0.25,
+                    "glow_length": 10,
+                    "glow_thickness": 2,
                 },
                 "finish": {
                     "do_custom": True,
-                    "custom": r"""if aura_env then aura_env.lastQueuedState = nil end
-local LCG = LibStub and LibStub("LibCustomGlow-1.0", true)
+                    "custom": r"""local LCG = LibStub and LibStub("LibCustomGlow-1.0", true)
 if LCG and aura_env and aura_env.region then
-    LCG.PixelGlow_Stop(aura_env.region, "PWHUD_ROTCENTER_GLOW")
+    LCG.PixelGlow_Stop(aura_env.region, "PWHUD_HS_GLOW")
 end""",
+                    "do_glow": True,
+                    "glow_action": "hide",
                 },
             },
-            "subRegions": [
-                make_subtext("%c", justify="CENTER", anchor_point="CENTER", font_size=10, y_offset=0, extra_props={"text_color": [0, 0, 0, 0]}),
-            ],
             "triggers": {
                 1: {
                     "trigger": {
                         "type": "custom",
                         "custom_type": "status",
-                        "check": "event",
-                        "events": "CURRENT_SPELL_CAST_CHANGED,ACTIONBAR_UPDATE_STATE,START_AUTOREPEAT_SPELL,STOP_AUTOREPEAT_SPELL,UNIT_SPELLCAST_SUCCEEDED,PLAYER_ENTERING_WORLD",
+                        "check": "update",
                         "custom": r"""function()
-                            local isHS = IsCurrentSpell and (IsCurrentSpell(47450) or IsCurrentSpell("Heroic Strike") or IsCurrentSpell("Colpo Eroico"))
-                            local isCleave = IsCurrentSpell and (IsCurrentSpell(47520) or IsCurrentSpell("Cleave") or IsCurrentSpell("Fendente"))
-                            return (isHS == true or isHS == 1 or isCleave == true or isCleave == 1)
+                            local hsName = _G.PWHUD_HSName
+                            if not hsName then
+                                hsName = GetSpellInfo(47450) or "Heroic Strike"
+                                _G.PWHUD_HSName = hsName
+                            end
+                            local isHS = (IsCurrentSpell and (IsCurrentSpell(hsName) or IsCurrentSpell("Heroic Strike") or IsCurrentSpell("Colpo Eroico")))
+                            return (isHS == 1 or isHS == true)
                         end""",
                     },
                     "untrigger": {
+                        "type": "custom",
                         "custom": r"""function()
-                            local isHS = IsCurrentSpell and (IsCurrentSpell(47450) or IsCurrentSpell("Heroic Strike") or IsCurrentSpell("Colpo Eroico"))
-                            local isCleave = IsCurrentSpell and (IsCurrentSpell(47520) or IsCurrentSpell("Cleave") or IsCurrentSpell("Fendente"))
-                            return not (isHS or isCleave)
+                            local hsName = _G.PWHUD_HSName
+                            if not hsName then
+                                hsName = GetSpellInfo(47450) or "Heroic Strike"
+                                _G.PWHUD_HSName = hsName
+                            end
+                            local isHS = (IsCurrentSpell and (IsCurrentSpell(hsName) or IsCurrentSpell("Heroic Strike") or IsCurrentSpell("Colpo Eroico")))
+                            return not (isHS == 1 or isHS == true)
                         end""",
                     }
                 },
                 "activeTriggerMode": -10,
             },
+            "subRegions": [
+                {"type": "subbackground"},
+            ],
+        },
+        # Rotational Bar - Cleave Queued (Indicatore dinamico Cleave: barra Verde Smeraldo + Pixel Glow smeraldo)
+        {
+            "id": "Rotational Bar - Cleave Queued warTank",
+            "uid": "PWHUD_ROTCENTER_CLQ",
+            "parent": "15 - Rotational Bar warTank",
+            "regionType": "texture",
+            "internalVersion": 90,
+            "xOffset": 0,
+            "yOffset": 0,
+            "width": 274,
+            "height": 5,
+            "texture": TEXTURE_STATUSBAR,
+            "color": [0.1, 0.95, 0.2, 1.0],
+            "selfPoint": "CENTER",
+            "anchorPoint": "CENTER",
+            "actions": {
+                "start": {
+                    "do_custom": True,
+                    "custom": r"""local LCG = LibStub and LibStub("LibCustomGlow-1.0", true)
+if LCG and aura_env and aura_env.region then
+    LCG.PixelGlow_Start(aura_env.region, {0.1, 0.95, 0.2, 1.0}, 8, 0.25, 10, 2, 0, 0, false, "PWHUD_CLEAVE_GLOW")
+end""",
+                    "do_glow": True,
+                    "glow_action": "show",
+                    "glow_type": "Pixel",
+                    "glow_color": [0.1, 0.95, 0.2, 1.0],
+                    "glow_lines": 8,
+                    "glow_frequency": 0.25,
+                    "glow_length": 10,
+                    "glow_thickness": 2,
+                },
+                "finish": {
+                    "do_custom": True,
+                    "custom": r"""local LCG = LibStub and LibStub("LibCustomGlow-1.0", true)
+if LCG and aura_env and aura_env.region then
+    LCG.PixelGlow_Stop(aura_env.region, "PWHUD_CLEAVE_GLOW")
+end""",
+                    "do_glow": True,
+                    "glow_action": "hide",
+                },
+            },
+            "triggers": {
+                1: {
+                    "trigger": {
+                        "type": "custom",
+                        "custom_type": "status",
+                        "check": "update",
+                        "custom": r"""function()
+                            local clName = _G.PWHUD_CleaveName
+                            if not clName then
+                                clName = GetSpellInfo(47520) or "Cleave"
+                                _G.PWHUD_CleaveName = clName
+                            end
+                            local isCL = (IsCurrentSpell and (IsCurrentSpell(clName) or IsCurrentSpell("Cleave") or IsCurrentSpell("Fendente")))
+                            return (isCL == 1 or isCL == true)
+                        end""",
+                    },
+                    "untrigger": {
+                        "type": "custom",
+                        "custom": r"""function()
+                            local clName = _G.PWHUD_CleaveName
+                            if not clName then
+                                clName = GetSpellInfo(47520) or "Cleave"
+                                _G.PWHUD_CleaveName = clName
+                            end
+                            local isCL = (IsCurrentSpell and (IsCurrentSpell(clName) or IsCurrentSpell("Cleave") or IsCurrentSpell("Fendente")))
+                            return not (isCL == 1 or isCL == true)
+                        end""",
+                    }
+                },
+                "activeTriggerMode": -10,
+            },
+            "subRegions": [
+                {"type": "subbackground"},
+            ],
         },
     ]

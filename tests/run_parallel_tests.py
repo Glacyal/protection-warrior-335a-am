@@ -32,6 +32,7 @@ TEST_SCRIPTS = [
     "test_interrupts.py",
     "test_danger_alerts.py",
     "test_target_debuffs.py",
+    "test_rotational.py",
 ]
 
 def run_single_test_script(script_name):
