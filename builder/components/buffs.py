@@ -326,7 +326,7 @@ def build_buffs_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
             "internalVersion": 90,
-            "xOffset": -271,
+            "xOffset": -253,
             "yOffset": 0,
             "controlledChildren": [
                 "Battle Shout - Active warTank",
@@ -524,7 +524,7 @@ def build_buffs_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
             "internalVersion": 90,
-            "xOffset": -161,
+            "xOffset": -179,
             "yOffset": 0,
             "controlledChildren": [
                 "04 - Defensive Stance - OutOfStance warTank",

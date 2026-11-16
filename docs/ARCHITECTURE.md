@@ -51,7 +51,7 @@ builder/
 │   ├── bars.py                  # 14 - Rage Bar warTank & 16 - Castbar warTank (con Kick Advisor integrato)
 │   ├── rotational.py            # 15 - Rotational Bar warTank (Indicatore statico di accodamento 278x7px per HS/Cleave con Pixel Glow)
 │   ├── alerts.py                # 17 - Alerts warTank (Gruppo avvisi sonori e visivi per emergenze difensive e interrupt)
-│   ├── stats.py                 # 18 - Stats Panel warTank (Pannello 88x60px difensivo: Armor, Def, Block, Parry/Dodge, HP)
+│   ├── stats.py                 # 18 - Stats Panel warTank (Pannello 126x60px difensivo: Armor, Def, Block, Parry/Dodge, HP)
 │   ├── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px a x=160, y=-7 con supporto Expose Armor & Acid Spit)
 │   └── __init__.py              # Export aggregato dei builder dei componenti
 │

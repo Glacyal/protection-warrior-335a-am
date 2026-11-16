@@ -134,6 +134,14 @@ protection-warrior-335a-am/
 - **Griglia Shouts e Stance Sovrastante (34x34px a X: -271, -216, -161, Y: 0)**: Icone standardizzate a 34x34px (identiche alla riga procs); bordo sinistro (-288) allineato a filo con il pannello, centro (-216) allineato a Commanding Shout, e bordo destro (-144) allineato a Defensive Stance.
 - **Separazione Verticale Pulita**: Spazio di 3px tra le label inferiori delle icone (`OFF`, `STANCE` a Y: -17) e il bordo superiore del pannello (Y: -19.6), azzerando ogni sovrapposizione visiva.
 
+### 4.10 Ottimizzazione Compatta Stats Panel (126x60px) & Ravvicinamento Icone a 3px
+- **Pannello Statistiche Snello (126x60px)**: Riconfigurato a 126x60px (`X: -216, Y: -49`), eliminando il vuoto superfluo a destra e in basso, mantenendo un margine interno perfetto di 6px per lato sul testo difensivo.
+- **Icone Sovrastanti Ravvicinate (Gap 3px)**: Sostituito l'eccessivo distacco di 21px con un passo compatto di 37px (34px icona + 3px gap):
+  - `02 - Battle Shout warTank`: `X: -253, Y: 0`
+  - `03 - Commanding Shout warTank`: `X: -216, Y: 0`
+  - `04 - Defensive Stance warTank`: `X: -179, Y: 0`
+- Il blocco icone (108px) risulta centrato sull'asse del pannello statistiche (126px) con 9px di respiro simmetrico a sinistra e a destra e 2px di distacco verticale.
+
 ### 4.9 Filtraggio Intelligente Mantello con Proc (Slot 15) & Soppressione Paracadute/Statici
 - **Visibilità Esclusiva per Proc da Combattimento**: `07 - Cloak warTank` compare unicamente se il mantello (Slot 15) è dotato di un incanto proccabile da combattimento, specificamente *Swordguard Embroidery* (*Ricamo della Spada* di Sartoria, +400 AP per 15s con 45s ICD, Spell ID 55775, Enchant ID 3730).
 - **Soppressione Totale Paracadute e Incanti Statici**: Il tinker del paracadute di Ingegneria (*Flexweave Underlay*, Incanto ID 3605, Spell ID 55002) così come tutti gli incanti statici (+22 Agilità, +16 Difesa, +225 Armatura) o mantelli senza incanto valutano rigorosamente `_G.PWHUD_CheckSlotEquipped(15) == false`.

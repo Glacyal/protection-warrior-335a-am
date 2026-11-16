@@ -41,7 +41,7 @@ Posizionato nella parte superiore dell'HUD ($y = 52$), gestisce fino a 5 icone (
 5. **Tank Buster Alert**: Notifica con Glow rosso in caso di debuff letali sul tank (*Soul Reaper*, *Impale* $\ge 2$ stacks, *Gastric Bloat* $\ge 8$ stacks) per coordinare lo swap del Taunt.
 
 ### 2. Buff di Classe & Postura Difensiva (`02`, `03`, `04`)
-Posizionati a sinistra direttamente sopra il pannello statistiche a $x = -271, -216, -161$ e $y = 0$ ($34 \times 34\text{px}$, allineati sui 144px di larghezza dello stats panel sottostante):
+Posizionati a sinistra direttamente sopra il pannello statistiche a $x = -253, -216, -179$ e $y = 0$ ($34 \times 34\text{px}$, ravvicinati a 3px di spaziatura e centrati sui 126px dello stats panel sottostante):
 - **02 - Battle Shout warTank**: Compare con timer solo se in scadenza ($\le 30\text{s}$) o desaturato con scritta `OFF` se manca sia Battle Shout che *Blessing of Might* del Paladino.
 - **03 - Commanding Shout warTank**: Compare con timer solo se in scadenza ($\le 30\text{s}$) o desaturato con scritta `OFF` se manca sia Commanding Shout che *Blood Pact* dell'Imp.
 - **04 - Defensive Stance warTank**: Allineato al modello Fury Warrior (invisibile durante la corretta Defensive Stance; compare con allerta rossa e label `STANCE` solo fuori postura in combattimento tramite `04 - Defensive Stance - OutOfStance warTank`).
