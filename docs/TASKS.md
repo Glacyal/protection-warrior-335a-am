@@ -252,3 +252,19 @@
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
   - [x] Commit Git con messaggio descrittivo.
+- [x] **Task 14: Adattamento Perfetto di Stats Panel - Text warTank (144x68px) e Armonizzazione Componenti Sovrastanti (Shouts & Stance a 34x34px)**:
+  - [x] Riconfigurazione geometrica di `18 - Stats Panel warTank` in `builder/components/stats.py`:
+    - Espansione del background `Stats Panel - Background warTank` a **144x68px** (precedentemente 88x60px), dimensionato con precisione per racchiudere tutte le 5 righe di testo difensivo (`Def`, `Armor DR%`, `CTC`, `Block % (SBV)`, `Hit | Exp`) con 10px di margine orizzontale e 6px verticale, eliminando qualsiasi debordamento all'esterno del box scuro.
+    - Riposizionamento del centro del pannello a **X: -216, Y: -53**, azzerando `xOffset` a 0 per centratura interna uniforme del testo `%c`.
+  - [x] Armonizzazione e allineamento geometrico 1:1 delle 3 componenti sovrastanti in `builder/components/buffs.py`:
+    - Dimensione icone standardizzata a **34x34px** (precedentemente 28x28px, coerente con le icone 34x34px dei procs):
+      - `02 - Battle Shout warTank`: centro a **X: -271, Y: 0** (il bordo sinistro a -288 combacia perfettamente al pixel con il bordo sinistro dello stats panel).
+      - `03 - Commanding Shout warTank`: centro a **X: -216, Y: 0** (il centro combacia perfettamente con l'asse centrale dello stats panel).
+      - `04 - Defensive Stance warTank`: centro a **X: -161, Y: 0** (il bordo destro a -144 combacia perfettamente al pixel con il bordo destro dello stats panel).
+    - Risoluzione dell'interferenza verticale: creato un margine pulito di 3px tra la base delle icone e delle etichette `OFF`/`STANCE` (Y: -17) e la cima del pannello statistiche (Y: -19), eliminando ogni sovrapposizione visiva.
+  - [x] Aggiornamento dei test di regressione in `tests/test_tree_layout.py` con le nuove coordinate e dimensioni sincronizzate.
+  - [x] Aggiornamento del simulatore web in `docs/index.html` (colonna sinistra allineata a 144px con icone `size-34` e box statistiche 144x68px).
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+  - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [x] Commit Git con messaggio descrittivo.

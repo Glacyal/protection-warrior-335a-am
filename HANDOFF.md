@@ -46,12 +46,12 @@ protection-warrior-335a-am/
 │   │   └── helpers.py               # Dual-key subtext generators and UI helpers
 │   └── components/                  # Component modules (identical architecture to Fury)
 │       ├── procs.py                 # 01 - Procs warTank (Horizontal 5-icon dynamic group 34x34 at y = 52)
-│       ├── buffs.py                 # 02 - Battle Shout warTank, 03 - Commanding Shout warTank, 04 - Defensive Stance warTank (x = -222, -190, -158, y = 0)
+│       ├── buffs.py                 # 02 - Battle Shout warTank, 03 - Commanding Shout warTank, 04 - Defensive Stance warTank (x = -271, -216, -161, y = 0, 34x34px)
 │       ├── utility.py               # 05-13 - Utility Row (Trinkets, Ring, Cloak, Tier, Enchants, Gloves, Shield Wall warTank, Last Stand warTank, Boots) at y = -45
 │       ├── bars.py                  # 14 - Rage Bar warTank (278x14px at y = -20) & 16 - Castbar warTank (278x20px at y = +8 with Kick Advisor)
 │       ├── rotational.py            # 15 - Rotational Bar warTank (Static Queue Indicator 278x7px at y = -7 with HS/Cleave Pixel Glow)
 │       ├── alerts.py                # 17 - Alerts warTank (Central text alerts at y = 78)
-│       ├── stats.py                 # 18 - Stats Panel warTank (Compact panel 88x60px at x = -190, y = -45)
+│       ├── stats.py                 # 18 - Stats Panel warTank (144x68px panel at x = -216, y = -53, perfectly adapted to 5-row text)
 │       └── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px at x = 160, y = -7)
 │
 ├── docs/                            # Documentation and interactive preview for GitHub Pages
@@ -128,6 +128,11 @@ protection-warrior-335a-am/
   3. `CTC:` Combat Table Coverage with non-stacking engine for *Insect Swarm* and *Scorpid Sting* (+3.0% max Miss).
   4. `Block:` with block chance % and Shield Block Value (SBV).
   5. `Hit:` with Draenei *Heroic Presence* (+1.0%) and `Exp:` with Soft Cap 26 and Hard Cap 56.
+
+### 4.7 Left Column Harmonization (Stats Panel & Shouts Alignment)
+- **Stats Panel Dimensions (144x68px at X: -216, Y: -53)**: Perfectly sized to enclose all 5 lines of defensive text (`Def: 541 (CAP)`, `Armor: 25.3k (62.4%)`, `CTC: 75.2%`, `Block: 21.7% (1800 SBV)`, `Hit: 9.1% | 25 Exp`) with 10px lateral and 6px vertical padding, eliminating label overflow.
+- **Top Shouts & Stance Grid (34x34px at X: -271, -216, -161, Y: 0)**: Icon size standardized to 34x34px (matching procs row); left edge (-288) aligns with the left edge of the stats panel, center (-216) aligns with Commanding Shout, and right edge (-144) aligns with Defensive Stance.
+- **Clean Vertical Separation**: 3px gap between icon labels (`OFF`, `STANCE` at Y: -17) and panel top edge (Y: -19.6), completely eliminating visual collisions.
 
 ### 4.6 Weapon Proc Enchant Filtering (Slot 16)
 - **Strict Proc-Only Visibility**: `09 - Enchants warTank` is exclusively displayed when an enchantment with actual combat procs is present on the Main-Hand weapon (Slot 16): *Blade Ward*, *Blood Draining* (stacks 1-5 & emergency heal), *Mongoose*, *Berserking*, *Executioner*, *Crusader*, *Lifeward*, *Black Magic*, *Icebreaker*, *Giant Slayer*, *Deathfrost*, *Unholy Weapon*, *Fiery Weapon*, *Lifestealing*.

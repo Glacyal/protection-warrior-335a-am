@@ -38,16 +38,18 @@ def run_tests():
     assert children_by_id["Revenge Ready warTank"]["uid"] == "PWHUD_PROC_REVENGE"
 
     bs = children_by_id["02 - Battle Shout warTank"]
-    assert bs["xOffset"] == -222 and bs["yOffset"] == 0
+    assert bs["xOffset"] == -271 and bs["yOffset"] == 0
 
     cs = children_by_id["03 - Commanding Shout warTank"]
-    assert cs["xOffset"] == -190 and cs["yOffset"] == 0
+    assert cs["xOffset"] == -216 and cs["yOffset"] == 0
 
     ds = children_by_id["04 - Defensive Stance warTank"]
-    assert ds["xOffset"] == -158 and ds["yOffset"] == 0
+    assert ds["xOffset"] == -161 and ds["yOffset"] == 0
 
     stats = children_by_id["18 - Stats Panel warTank"]
-    assert stats["xOffset"] == -190 and stats["yOffset"] == -45
+    assert stats["xOffset"] == -216 and stats["yOffset"] == -53
+    stats_bg = children_by_id["Stats Panel - Background warTank"]
+    assert stats_bg["width"] == 144 and stats_bg["height"] == 68
 
     sunder = children_by_id["19 - Sunder Armor Tracker warTank"]
     assert sunder["xOffset"] == 160 and sunder["yOffset"] == -7

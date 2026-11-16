@@ -46,7 +46,7 @@ protection-warrior-335a-am/
 │   │   └── helpers.py               # Generatori di subtext dual-key e helper grafici
 │   └── components/                  # Moduli dedicati ai singoli componenti dell'HUD (identici a Fury)
 │       ├── procs.py                 # 01 - Procs warTank (Dynamic Group orizzontale a 6 icone 34x34 a y = 52)
-│       ├── buffs.py                 # 02 - Battle Shout warTank, 03 - Commanding Shout warTank, 04 - Defensive Stance warTank (x = -222, -190, -158, y = 0)
+│       ├── buffs.py                 # 02 - Battle Shout warTank, 03 - Commanding Shout warTank, 04 - Defensive Stance warTank (x = -271, -216, -161, y = 0, 34x34px)
 │       ├── utility.py               # 05-13 - Utility Row (Monili, Anello, Mantello, Tier, Incanti, Guanti, Shield Wall warTank, Last Stand warTank, Boots) a y = -45
 │       ├── bars.py                  # 14 - Rage Bar warTank (278x14px a y = -20) & 16 - Castbar warTank (278x20px a y = +8 con Kick Advisor)
 │       ├── rotational.py            # 15 - Rotational Bar warTank (Indicatore statico di accodamento 278x7px a y = -7 con Pixel Glow HS/Cleave)
@@ -128,6 +128,11 @@ protection-warrior-335a-am/
   3. `CTC:` Combat Table Coverage con motore non-stacking per *Insect Swarm* e *Scorpid Sting* (+3.0% Miss max).
   4. `Block:` con % di blocco e Shield Block Value (SBV).
   5. `Hit:` con Draenei *Heroic Presence* (+1.0%) ed `Exp:` con Soft Cap 26 ed Hard Cap 56.
+
+### 4.7 Armonizzazione Colonna Sinistra (Allineamento Stats Panel e Shouts/Stance)
+- **Dimensioni Stats Panel (144x68px a X: -216, Y: -53)**: Perfettamente dimensionato per racchiudere tutte le 5 righe di statistiche difensive (`Def: 541 (CAP)`, `Armor: 25.3k (62.4%)`, `CTC: 75.2%`, `Block: 21.7% (1800 SBV)`, `Hit: 9.1% | 25 Exp`) con 10px di margine laterale e 6px verticale, eliminando qualsiasi sbordamento a sinistra delle etichette.
+- **Griglia Shouts e Stance Sovrastante (34x34px a X: -271, -216, -161, Y: 0)**: Icone standardizzate a 34x34px (identiche alla riga procs); bordo sinistro (-288) allineato a filo con il pannello, centro (-216) allineato a Commanding Shout, e bordo destro (-144) allineato a Defensive Stance.
+- **Separazione Verticale Pulita**: Spazio di 3px tra le label inferiori delle icone (`OFF`, `STANCE` a Y: -17) e il bordo superiore del pannello (Y: -19.6), azzerando ogni sovrapposizione visiva.
 
 ### 4.6 Filtraggio Incanti Arma Proccabili (Slot 16)
 - **Visibilità Esclusiva per Incanti con Proc**: `09 - Enchants warTank` compare solo se sull'arma principale (Slot 16) è presente un incantesimo con proc di combattimento attivo: *Blade Ward*, *Blood Draining* (stack 1-5 e cura d'emergenza), *Mongoose*, *Berserking*, *Executioner*, *Crusader*, *Lifeward*, *Black Magic*, *Icebreaker*, *Giant Slayer*, *Deathfrost*, *Unholy Weapon*, *Fiery Weapon*, *Lifestealing*.
