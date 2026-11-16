@@ -109,9 +109,10 @@ protection-warrior-335a-am/
   ```
 - Propagata uniformemente su root e su tutte le 43 aure figlie.
 
-### 4.2 Notifica Postura Errata in Combattimento (Wrong Stance Alert)
+### 4.2 Notifica Postura Errata in Combattimento (Wrong Stance Alert — Modello Fury Warrior)
+- In postura difensiva corretta (`GetShapeshiftForm() == 2`), l'icona è **completamente invisibile** (zero clutter a schermo, identico a Fury Warrior).
 - Doppio livello di allarme attivo quando `UnitAffectingCombat("player") and GetShapeshiftForm() ~= 2`:
-  1. Indicatore `Defensive Stance - Warning` (X: -158, Y: 0) con Pixel Glow rosso e label `STANCE`.
+  1. Indicatore locale `04 - Defensive Stance - OutOfStance` (X: -158, Y: 0, 28x28px) con colore rosso e label `STANCE`.
   2. Banner centrale `Alert - Wrong Stance` (X: 0, Y: +64) a 20pt `>> DEFENSIVE STANCE REQUIRED! <<` con audio `RaidWarning.ogg`.
 
 ### 4.3 Motore Statistiche Tanking Stile Fury Warrior & Buff/Debuff Non-Stacking

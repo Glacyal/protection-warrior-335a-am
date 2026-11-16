@@ -106,3 +106,11 @@
   - [x] Rilevamento aura di gruppo Draenei *Heroic Presence* (+1.0% Hit) e Soft Cap 26 / Hard Cap 56 di Competenza (Expertise).
   - [x] Aggiornamento test di verifica in `tests/test_stats_panel.py`.
   - [x] Sincronizzazione in `docs/index.html` e rigenerazione `IMPORT_STRING_v5.21.8.txt`.
+- [x] **Task 4: Allineamento 1:1 Icona Stance al Modello Fury Warrior (Nascosta in Stance Corretta, Attiva solo Out-of-Stance in Combat)**:
+  - [x] Rimozione di `Defensive Stance - Active` in `builder/components/buffs.py`: l'icona non deve essere mostrata quando il tank si trova nella postura difensiva corretta (`GetShapeshiftForm() == 2`).
+  - [x] Riconfigurazione del gruppo `04 - Defensive Stance` con unico figlio `04 - Defensive Stance - OutOfStance` (UID `PWHUD_STANCE_WARN`) di dimensione 28x28px a $x = -158, y = 0$.
+  - [x] Trigger condizionale reattivo identico a Fury Warrior: visibile esclusivamente in combattimento quando fuori postura difensiva (`GetShapeshiftForm() ~= 2 and UnitAffectingCombat("player")`).
+  - [x] Ridimensionamento delle icone Shouts (`02 - Battle Shout`, `03 - Commanding Shout`) a 28x28px in `builder/components/buffs.py` per garantire perfetta coerenza geometrica con Fury Warrior sopra lo Stats Panel (88px).
+  - [x] Aggiornamento test di regressione (`tests/test_danger_alerts.py`, `tests/test_components_integrity.py`).
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e verifica superamento suite 8/8 test paralleli.
+  - [x] Aggiornamento simulatore web `docs/index.html`: icona stance nascosta di default e nel preset standard; visibile con bordo rosso pulsante solo nel preset `stance_fail`.

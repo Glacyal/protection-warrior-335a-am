@@ -43,9 +43,11 @@ def run_tests():
     assert "GetShapeshiftForm() ~= 2" in alert_stance["triggers"][1]["trigger"]["custom"]
     assert "PLAYER_REGEN_DISABLED" in alert_stance["triggers"][1]["trigger"]["events"]
 
-    # Defensive Stance - Warning in 04 - Defensive Stance
-    stance_warn = children_by_id["Defensive Stance - Warning"]
-    assert "GetShapeshiftForm() ~= 2" in stance_warn["triggers"][1]["trigger"]["custom"]
+    # 04 - Defensive Stance - OutOfStance (allineato a Fury Warrior: visibile solo out-of-stance in combat)
+    stance_warn = children_by_id["04 - Defensive Stance - OutOfStance"]
+    assert "GetShapeshiftForm()" in stance_warn["triggers"][1]["trigger"]["custom"] and "form ~= 2" in stance_warn["triggers"][1]["trigger"]["custom"]
+    assert stance_warn["width"] == 28 and stance_warn["height"] == 28
+    assert "Defensive Stance - Active" not in children_by_id, "Defensive Stance - Active deve essere rimossa per non mostrare l'icona in postura corretta"
 
     print("[OK] test_danger_alerts completato: allarmi emergenza, tank buster e wrong stance conformi.")
     return True

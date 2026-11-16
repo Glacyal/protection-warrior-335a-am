@@ -342,8 +342,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 34,
-            "height": 34,
+            "width": 28,
+            "height": 28,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_BattleShout",
             "auto": False,
             "color": [1, 1, 1, 1],
@@ -384,8 +384,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 34,
-            "height": 34,
+            "width": 28,
+            "height": 28,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_BattleShout",
             "auto": False,
             "desaturate": True,
@@ -442,8 +442,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 34,
-            "height": 34,
+            "width": 28,
+            "height": 28,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_RallyingCry",
             "auto": False,
             "color": [1, 1, 1, 1],
@@ -484,8 +484,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 34,
-            "height": 34,
+            "width": 28,
+            "height": 28,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_RallyingCry",
             "auto": False,
             "desaturate": True,
@@ -527,70 +527,39 @@ def build_buffs_auras() -> list[dict]:
             "xOffset": -158,
             "yOffset": 0,
             "controlledChildren": [
-                "Defensive Stance - Active",
-                "Defensive Stance - Warning",
+                "04 - Defensive Stance - OutOfStance",
             ],
         },
         {
-            "id": "Defensive Stance - Active",
-            "uid": "PWHUD_STANCE_ACTIVE",
-            "parent": "04 - Defensive Stance",
-            "regionType": "icon",
-            "internalVersion": 90,
-            "width": 34,
-            "height": 34,
-            "displayIcon": "Interface\\Icons\\Ability_Warrior_DefensiveStance",
-            "triggers": {
-                1: {
-                    "trigger": {
-                        "type": "custom",
-                        "custom_type": "status",
-                        "check": "event",
-                        "events": "UPDATE_SHAPESHIFT_FORM,PLAYER_ENTERING_WORLD",
-                        "custom": r"""function()
-                            return (GetShapeshiftForm() == 2)
-                        end""",
-                    },
-                    "untrigger": {"type": "custom", "custom": "function() return (GetShapeshiftForm() ~= 2) end"}
-                },
-                "activeTriggerMode": -10,
-            },
-            "subRegions": [
-                {"type": "subbackground"},
-                make_subtext("DEF", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=9, y_offset=0),
-            ],
-        },
-        {
-            "id": "Defensive Stance - Warning",
+            "id": "04 - Defensive Stance - OutOfStance",
             "uid": "PWHUD_STANCE_WARN",
             "parent": "04 - Defensive Stance",
             "regionType": "icon",
             "internalVersion": 90,
-            "width": 34,
-            "height": 34,
+            "width": 28,
+            "height": 28,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_DefensiveStance",
-            "actions": {
-                "start": make_glow_action([1.0, 0.1, 0.1, 1.0]),
-                "finish": {"do_glow": True, "glow_action": "hide"},
-            },
+            "auto": False,
+            "color": [1, 0.2, 0.1, 1],
+            "desaturate": False,
+            "subRegions": [
+                {"type": "subbackground"},
+                make_subtext("STANCE", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=8, y_offset=1),
+            ],
             "triggers": {
                 1: {
                     "trigger": {
                         "type": "custom",
                         "custom_type": "status",
-                        "check": "event",
-                        "events": "PLAYER_REGEN_DISABLED,PLAYER_REGEN_ENABLED,UPDATE_SHAPESHIFT_FORM,PLAYER_ENTERING_WORLD",
-                        "custom": r"""function()
-                            return UnitAffectingCombat("player") and (GetShapeshiftForm() ~= 2)
-                        end""",
+                        "check": "update",
+                        "custom": """function()
+    local form = GetShapeshiftForm()
+    return form ~= 2 and UnitAffectingCombat("player")
+end""",
                     },
-                    "untrigger": {"type": "custom", "custom": "function() return not UnitAffectingCombat('player') or (GetShapeshiftForm() == 2) end"}
+                    "untrigger": {},
                 },
                 "activeTriggerMode": -10,
             },
-            "subRegions": [
-                {"type": "subbackground"},
-                make_subtext("STANCE", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=8, y_offset=0, extra_props={"text_color": [1.0, 0.1, 0.1, 1.0]}),
-            ],
         },
     ]

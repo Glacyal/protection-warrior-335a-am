@@ -173,10 +173,11 @@ $$\text{Index} = (3 - 1) \times 40 + 23 = \mathbf{103}$$
 La gestione della postura è critica per la sopravvivenza del Protection Warrior in raid e dungeon. Un guerriero che affronta il combattimento fuori da *Defensive Stance* perde il 10% di mitigazione passiva, il bonus di Threat moltiplicato e l'accesso ad abilità salvavita (*Shield Block*, *Shield Wall*, *Revenge*).
 
 L'architettura adotta un **doppio livello di allerta reattiva**:
-1. **Indicatore Locale su Slot Postura (`04 - Defensive Stance - Warning`, UID `PWHUD_STANCE_WARN`)**:
-   - Posizionato a $x = -158, y = 0$.
-   - Dotato di Pixel Glow rosso pulsante e label visiva `|cFFFF2020STANCE|r`.
-   - Si attiva istantaneamente quando `UnitAffectingCombat("player") and (GetShapeshiftForm() ~= 2)`.
+1. **Indicatore Locale su Slot Postura (`04 - Defensive Stance - OutOfStance`, UID `PWHUD_STANCE_WARN`)**:
+   - Posizionato a $x = -158, y = 0$ (dimensione 28x28px, allineato alle shout e al pannello statistiche).
+   - In postura difensiva corretta (`GetShapeshiftForm() == 2`) l'icona è **completamente invisibile** (allineamento 1:1 al modello Fury Warrior: zero clutter a schermo).
+   - Dotato di colore rosso allerta e label visiva `STANCE`.
+   - Si attiva istantaneamente in combattimento quando `UnitAffectingCombat("player") and (GetShapeshiftForm() ~= 2)`.
 2. **Allarme Centrale ad Alta Priorità (`Alert - Wrong Stance`, UID `PWHUD_ALERT_WRONG_STANCE`)**:
    - Posizionato nel gruppo `17 - Alerts warTank` a $y = +64$ (sopra il castbar, centro visivo del giocatore).
    - Testo a 20pt con contorno: `|cFFFF1010>> DEFENSIVE STANCE REQUIRED! <<|r`.
