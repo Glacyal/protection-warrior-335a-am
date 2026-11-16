@@ -46,7 +46,7 @@ def run_tests():
     stats = children_by_id["18 - Stats Panel warTank"]
     assert stats["xOffset"] == -190 and stats["yOffset"] == -45
 
-    sunder = children_by_id["19 - Sunder Armor Tracker"]
+    sunder = children_by_id["19 - Sunder Armor Tracker warTank"]
     assert sunder["xOffset"] == 160 and sunder["yOffset"] == -7
     assert sunder["width"] == 32 and sunder["height"] == 32
 

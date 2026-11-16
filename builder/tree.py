@@ -79,7 +79,7 @@ def build_wa_tree(target_version: str = "5.21.8", load_override: dict = None) ->
                 "16 - Castbar warTank",
                 "17 - Alerts warTank",
                 "18 - Stats Panel warTank",
-                "19 - Sunder Armor Tracker",
+                "19 - Sunder Armor Tracker warTank",
             ],
             "load": copy.deepcopy(load_cond),
             "actions": {

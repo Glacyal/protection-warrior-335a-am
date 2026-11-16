@@ -99,11 +99,13 @@ Hit:   9.1% | 25 Exp
 | **`GCD`** | **Global Cooldown** *(Tempo di Recupero Globale)* | Finestra standard di 1.5 secondi tra l'attivazione di un'abilità e la successiva. |
 | **`ICD`** | **Internal Cooldown** *(Tempo di Ricarica Interno)* | Tempo di attesa obbligatorio (es. 45s o 50s) prima che l'effetto proc di un monile possa riattivarsi. |
 
-### 7. Sunder Armor Tracker (`19 - Sunder Armor Tracker`)
+### 7. Sunder Armor Tracker (`19 - Sunder Armor Tracker warTank`)
 Posizionato sul lato destro delle barre ($x = 160, y = -7$, $32 \times 32\text{px}$):
-- Tracciamento delle cariche di Sunder Armor (1-5 cariche, stack count verde `x5`) o *Expose Armor* del Ladro (`EA` in ciano).
-- Timer numerico di scadenza alla base.
-- Allerta rossa `OFF` quando il debuff manca sul bersaglio corrente in combattimento.
+- ID univoco `19 - Sunder Armor Tracker warTank` per prevenire collisioni di denominazione WeakAuras e suffissi automatici duplicati ` 2` in caso di coesistenza con la suite Fury Warrior o altre classi.
+- Supporto completo ai debuff di riduzione armatura maggiori multi-classe e multi-spec: traccia *Sunder Armor* (tutti i rank 1-6 del Guerriero), *Expose Armor* del Ladro (`EA` in ciano) e *Acid Spit* del verme del Cacciatore.
+- Conteggio cariche: `x5` in verde a 5 cariche, `x1`–`x4` in bianco, e cambio icona dinamico verso Expose Armor quando attivo.
+- Timer di scadenza numerico alla base (%c1) e cariche centrate in alto (%c2).
+- Allerta rossa visibile `OFF` alla base quando il debuff di armatura manca sul bersaglio ostile in combattimento.
 
 ---
 

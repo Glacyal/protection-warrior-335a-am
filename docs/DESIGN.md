@@ -108,6 +108,15 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
     - `Alert - Boss Enraged`: `|cFFFF0000BOSS ENRAGED! POP CD!|r` (18pt, Rosso vivo).
     - `Alert - Wrong Stance`: `|cFFFF1010>> DEFENSIVE STANCE REQUIRED! <<|r` (20pt, Rosso vivido lampeggiante con allarme audio *RaidWarning.ogg* a $y = 64$ px, attivo solo se `UnitAffectingCombat("player") and GetShapeshiftForm() ~= 2`).
 - **Indicatore Icona Postura Difensiva (`04 - Defensive Stance`)**:
-  - Posizione: X = -158 px, Y = 0 px.
-  - `Defensive Stance - Active`: Icona standard con label `DEF` in verde quando in Stance 2.
-  - `Defensive Stance - Warning`: Icona con Pixel Glow rosso vivo (spessore 2px, 8 linee) e label `|cFFFF2020STANCE|r` in combattimento fuori da Stance 2.
+  - Posizione: X = -158 px, Y = 0 px (28x28px).
+  - Nascosta in postura corretta (zero visual clutter); attiva esclusivamente in combattimento fuori da Stance 2 con Pixel Glow rosso e label `STANCE` (`04 - Defensive Stance - OutOfStance`).
+
+### 4.7 Tracker Debuff Armatura (`19 - Sunder Armor Tracker warTank`)
+- **Dimensioni**: 32 x 32 px
+- **Posizione**: X = +160 px, Y = -7 px (lato destro centrale)
+- **Denominazione Univoca Anti-Conflitto**: Identificatore `19 - Sunder Armor Tracker warTank` per scongiurare collisioni e rinomine automatiche a suffisso ` 2` nell'import WeakAuras accanto alla suite Fury Warrior o altre classi.
+- **Rilevamento Intelligente Sovrapposizioni (All-Specs & Cross-Class)**:
+  - *Sunder Armor* (Guerriero all-specs, rank 1-6): contatore cariche `x1`–`x4` in bianco, `x5` in verde smeraldo, e timer di scadenza alla base.
+  - *Expose Armor* (Ladro): etichetta `EA` in ciano con icona dinamica di Expose Armor, riconoscendo la sovrapposizione al 100% (-20% armor).
+  - *Acid Spit* (Hunter Worm): rilevamento automatico del debuff esotico del verme (-20% armor).
+  - **Mancanza Debuff in Combattimento**: testo visibile `OFF` in rosso vivo alla base dell'icona.

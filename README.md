@@ -99,11 +99,13 @@ Hit:   9.1% | 25 Exp
 | **`GCD`** | **Global Cooldown** | Standard 1.5-second recovery window between ability activations. |
 | **`ICD`** | **Internal Cooldown** | Required cooldown interval (e.g. 45s or 50s) before a trinket proc effect can trigger again. |
 
-### 7. Sunder Armor Tracker (`19 - Sunder Armor Tracker`)
+### 7. Sunder Armor Tracker (`19 - Sunder Armor Tracker warTank`)
 Positioned on the right side of the bars ($x = 160, y = -7$, $32 \times 32\text{px}$):
-- Sunder Armor stack tracking (1-5 stacks, green stack count `x5`) or Rogue *Expose Armor* (`EA` in cyan).
-- Numeric expiration countdown timer at base.
-- Red `OFF` alert when the armor debuff is missing on the active combat target.
+- Unique ID `19 - Sunder Armor Tracker warTank` preventing WeakAuras naming collisions and automated ` 2` duplicate suffixes when coexisting with Fury Warrior or other class suites.
+- Full multi-class and multi-spec armor debuff support: tracks *Sunder Armor* (Warrior all-specs ranks 1-6), Rogue *Expose Armor* (`EA` in cyan), and Hunter Worm *Acid Spit*.
+- Stack tracking: green `x5` at 5 stacks, white `x1`–`x4`, and dynamic icon shift to Expose Armor when rogue debuff is active.
+- Numeric expiration countdown timer at base (%c1) and centered stacks (%c2).
+- Prominent red `OFF` alert at base when major armor reduction is missing on the active hostile combat target.
 
 ---
 

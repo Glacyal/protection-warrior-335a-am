@@ -42,7 +42,7 @@ def run_tests():
         "16 - Castbar warTank",
         "17 - Alerts warTank",
         "18 - Stats Panel warTank",
-        "19 - Sunder Armor Tracker",
+        "19 - Sunder Armor Tracker warTank",
     ]
 
     ctrl = root["controlledChildren"]

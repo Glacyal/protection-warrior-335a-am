@@ -52,7 +52,7 @@ protection-warrior-335a-am/
 │       ├── rotational.py            # 15 - Rotational Bar (Static Queue Indicator 278x7px at y = -7 with HS/Cleave Pixel Glow)
 │       ├── alerts.py                # 17 - Alerts warTank (Central text alerts at y = 78)
 │       ├── stats.py                 # 18 - Stats Panel warTank (Compact panel 88x60px at x = -190, y = -45)
-│       └── sunder.py                # 19 - Sunder Armor Tracker (32x32px at x = 160, y = -7)
+│       └── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px at x = 160, y = -7)
 │
 ├── docs/                            # Documentation and interactive preview for GitHub Pages
 │   └── index.html                   # Interactive HTML/CSS/JS simulator (purely in English, 1:1 Fury layout)

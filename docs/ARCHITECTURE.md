@@ -52,7 +52,7 @@ builder/
 │   ├── rotational.py            # 15 - Rotational Bar (Indicatore statico di accodamento 278x7px per HS/Cleave con Pixel Glow)
 │   ├── alerts.py                # 17 - Alerts warTank (Gruppo avvisi sonori e visivi per emergenze difensive e interrupt)
 │   ├── stats.py                 # 18 - Stats Panel warTank (Pannello 88x60px difensivo: Armor, Def, Block, Parry/Dodge, HP)
-│   ├── sunder.py                # 19 - Sunder Armor Tracker (32x32px a x=160, y=-7 con supporto Expose Armor)
+│   ├── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px a x=160, y=-7 con supporto Expose Armor & Acid Spit)
 │   └── __init__.py              # Export aggregato dei builder dei componenti
 │
 └── tree.py                      # Assemblatore dell'albero gerarchico master (Root Group + 20 children controllati)
@@ -117,7 +117,7 @@ Le tre barre orizzontali condividono la larghezza calibrata di **278 px**:
 | **16** | `16 - Castbar warTank` | 278x20 px | X: 0, Y: +8 | Barra di lancio target con **Kick Advisor integrato**: rileva lanci interrompibili vs immuni e suggerisce Shield Bash, Pummel o Stun in base a stance e scudo |
 | **17** | `17 - Alerts warTank` | Testo 20pt | X: 0, Y: +78 | Avvisi sonori e testuali per emergenza difensiva, debuff letali e richiesta interrupt |
 | **18** | `18 - Stats Panel warTank` | 88x60 px | X: -190, Y: -45 | Pannello difensivo a 5 righe stile Fury Warrior (Def 540 Cap, Armor DR%, CTC 102.4%, Block % & SBV, Hit & Exp) |
-| **19** | `19 - Sunder Armor Tracker` | 32x32 px | X: +160, Y: -7 | Monitoraggio cariche (1-5) e durata Sunder Armor o Expose Armor del Ladro |
+| **19** | `19 - Sunder Armor Tracker warTank` | 32x32 px | X: +160, Y: -7 | Monitoraggio cariche (1-5) e durata Sunder Armor (Warrior), Expose Armor (Rogue) o Acid Spit (Hunter); nome univoco anti-conflitto |
 
 ---
 

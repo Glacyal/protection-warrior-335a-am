@@ -137,3 +137,16 @@
   - [x] Aggiornamento sincronizzato di tutti i documenti bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`.
   - [x] Esecuzione e superamento della suite di test (8/8 test paralleli).
   - [x] Commit Git con messaggio descrittivo.
+- [x] **Task 8: Allineamento 1:1 di 19 - Sunder Armor Tracker warTank (Prevenzione Collisioni Nomi Multi-Spec/Classi & Funzionamento Identico a Fury Warrior)**:
+  - [x] Ridenominazione univoca ID da `19 - Sunder Armor Tracker` a `19 - Sunder Armor Tracker warTank` in `builder/components/sunder.py` e `builder/tree.py` per prevenire sovrapposizioni e suffissi automatici ` 2` nell'importazione WeakAuras accanto a Fury Warrior o altre classi.
+  - [x] Correzione typo storico sullo spell ID di Sunder Armor Rank 6 (`47467`, precedentemente `47437`) e supporto completo a tutti i rank di *Sunder Armor* (Warrior all-specs), *Expose Armor* (Rogue) e *Acid Spit* (Hunter Worm).
+  - [x] Allineamento 1:1 di layout ed eventi con Fury Warrior:
+    - Subtext `%c1` in basso (`INNER_BOTTOM`, font size 10) per timer di scadenza numerico o `OFF` in rosso in combattimento.
+    - Subtext `%c2` in alto (`INNER_TOP`, font size 12, y=-1) per stack count (`x5` in verde, `x1`-`x4` in bianco, `EA` in ciano).
+    - `customIcon` dinamica che commuta sull'icona di *Expose Armor* quando il debuff del ladro è attivo sul bersaglio.
+    - Funzioni `customDuration`, `customStacks` e trigger reattivo `inCombat`.
+  - [x] Aggiornamento test di regressione (`tests/test_tree_layout.py`, `tests/test_components_integrity.py`).
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione automatica in `docs/index.html`.
+  - [x] Aggiornamento sincronizzato di tutti i documenti bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`.
+  - [x] Esecuzione e superamento della suite parallela multi-core (8/8 test).
+  - [x] Commit Git con messaggio descrittivo.
