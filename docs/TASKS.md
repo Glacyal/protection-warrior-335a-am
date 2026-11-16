@@ -288,3 +288,18 @@
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
   - [x] Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 19: Allineamento '08 - Tier Set warTank' al Cooldown Difensivo Bloodrage T10 4P (Icona Bloodrage, Swipe Cooldown e Timer Scudo 20% HP)**:
+  - [x] Riconfigurazione dell'icona e della logica di `08 - Tier Set warTank` in `builder/components/utility.py`:
+    - Con il bonus T10 4P (*Ymirjar Lord*), l'abilità *Bloodrage* (*Ira Sanguinaria*, Spell ID 2687) si trasforma in un potente CD difensivo a tempo, garantendo un assorbimento danni del 20% della salute massima per 10 secondi (*Blood Frenzy*, Spell ID 70844).
+    - **Icona Dinamica Appropriata**: Sostituita la generica texture scudo con l'icona ufficiale dell'abilità che attiva l'effetto difensivo: *Bloodrage* (`Interface\Icons\Ability_Racial_BloodRage`).
+    - **Tre Stati di Tracciamento Cooldown**:
+      1. **Attivo (`ACTIVE`)**: Durante i 10s dello scudo *Blood Frenzy*, visualizza timer di durata decrescente `%p` (es. `10.0s`), swipe circolare e Pixel Glow dorato (`LibCustomGlow-1.0`).
+      2. **In Ricarica (`COOLDOWN`)**: Alla scadenza del buff difensivo, traccia istantaneamente il tempo di ricarica residuo di *Bloodrage* (60s o ridotto dai talenti) con swipe e countdown numerico in secondi/minuti.
+      3. **Pronto (`READY`)**: Quando Bloodrage è disponibile, mostra l'icona pulita pronta all'uso difensivo.
+    - **Soppressione Automatica**: Se il giocatore non indossa il T10 4P, il componente viene escluso e la barra utility ricentra fluidamente le restanti icone.
+    - **Pulizia Bordo**: Impostato `"cooldownEdge": False` per eliminare qualsiasi artefatto a spillo giallo a riposo.
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+  - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [x] Esecuzione CP (Commit & Push su `origin/master`).

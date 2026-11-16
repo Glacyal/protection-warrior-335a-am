@@ -928,13 +928,28 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
 
         -- T10 Prot 4P: Blood Frenzy from Bloodrage (Spell 70844 / "Blood Frenzy" / "Frenesia del Sangue")
+        -- Bloodrage (Spell 2687) acts as a powerful active defensive CD granting 20% max HP absorption for 10s
         if t10 >= 4 or (buffs and buffs.bySpellId and buffs.bySpellId[70844]) then
-            local t10_4P_Buff = buffs and (buffs.bySpellId[70844] or buffs.byName["Blood Frenzy"] or buffs.byName["Frenesia del Sangue"] or buffs.byName["Bloodrage"])
+            local t10_4P_Buff = buffs and (buffs.bySpellId[70844] or buffs.byName["Blood Frenzy"] or buffs.byName["Frenesia del Sangue"])
             if t10_4P_Buff and t10_4P_Buff.expirationTime and t10_4P_Buff.expirationTime > now_tk then
                 local rem = t10_4P_Buff.expirationTime - now_tk
                 local dur = (t10_4P_Buff.duration and t10_4P_Buff.duration > 0) and t10_4P_Buff.duration or 10
                 return "ACTIVE", rem, dur, 1, "Interface\\Icons\\Ability_Racial_BloodRage", "T10 (4P)"
             end
+
+            -- Bloodrage Cooldown tracking (Spell 2687)
+            local brStart, brDur = GetSpellCooldown(2687)
+            if not brStart or brDur == 0 or brDur <= 1.5 then
+                local brName = (GetSpellInfo and select(1, GetSpellInfo(2687))) or "Bloodrage"
+                brStart, brDur = GetSpellCooldown(brName)
+            end
+            if brStart and brDur and brDur > 1.5 then
+                local remCD = (brStart + brDur) - now_tk
+                if remCD > 0.1 then
+                    return "COOLDOWN", remCD, brDur, 0, "Interface\\Icons\\Ability_Racial_BloodRage", "T10 (4P)"
+                end
+            end
+
             if t10 >= 4 then
                 return "READY", 0, 0, 0, "Interface\\Icons\\Ability_Racial_BloodRage", "T10 (4P)"
             end
@@ -1479,6 +1494,15 @@ def make_tierset_custom_text() -> str:
         if LCG and aura_env and aura_env.region then
             LCG.PixelGlow_Stop(aura_env.region, glowKey)
         end
+        if state == "COOLDOWN" and rem > 0.1 then
+            if rem >= 60 then
+                local m = math.floor(rem / 60)
+                local s = math.floor(rem % 60)
+                return string.format("%d:%02d", m, s)
+            else
+                return string.format("%.0f", rem)
+            end
+        end
         return ""
     end
 end"""
@@ -1488,7 +1512,7 @@ def make_tierset_custom_duration() -> str:
     return """function()
     if not _G.PWHUD_CheckTierSet then return 0, 0 end
     local state, rem, dur = _G.PWHUD_CheckTierSet()
-    if state == "ACTIVE" and rem > 0 and dur > 0 then
+    if (state == "ACTIVE" or state == "COOLDOWN") and rem > 0 and dur > 0 then
         return dur, GetTime() + rem
     end
     return 0, 0
@@ -1501,7 +1525,7 @@ def make_tierset_custom_icon() -> str:
         local state, rem, dur, count, icon = _G.PWHUD_CheckTierSet()
         if icon then return icon end
     end
-    return "Interface\\Icons\\INV_Shield_05"
+    return "Interface\\Icons\\Ability_Racial_BloodRage"
 end"""
 
 
@@ -1830,10 +1854,10 @@ def build_utility_auras() -> list[dict]:
             "yOffset": -45,
             "width": 28,
             "height": 28,
-            "displayIcon": "Interface\\Icons\\INV_Shield_05",
+            "displayIcon": "Interface\\Icons\\Ability_Racial_BloodRage",
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "inverse": False,
             "customTextUpdate": "update",

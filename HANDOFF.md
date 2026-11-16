@@ -134,6 +134,15 @@ protection-warrior-335a-am/
 - **Top Shouts & Stance Grid (34x34px at X: -271, -216, -161, Y: 0)**: Icon size standardized to 34x34px (matching procs row); left edge (-288) aligns with the left edge of the stats panel, center (-216) aligns with Commanding Shout, and right edge (-144) aligns with Defensive Stance.
 - **Clean Vertical Separation**: 3px gap between icon labels (`OFF`, `STANCE` at Y: -17) and panel top edge (Y: -19.6), completely eliminating visual collisions.
 
+### 4.11 T10 4P Defensive Cooldown & Bloodrage Icon Architecture (08 - Tier Set warTank)
+- **Defensive Cooldown Transformation**: With T10 4P equipped (*Ymirjar Lord's Battlegear*), *Bloodrage* (Spell ID 2687) acts as an active defensive cooldown granting a 10s absorption shield equal to 20% max HP (*Blood Frenzy*, Spell ID 70844).
+- **Triggering Ability Icon**: Standardized texture to *Bloodrage* (`Interface\Icons\Ability_Racial_BloodRage`), the exact ability that triggers the defensive shield.
+- **Three-State Cooldown Engine**:
+  1. `ACTIVE`: 10s countdown (`%.1fs`), circular swipe, and amber Pixel Glow (`LibCustomGlow-1.0`).
+  2. `COOLDOWN`: Real-time tracking of Bloodrage spell cooldown (60s base or talent-reduced) with numeric countdown and recovery swipe.
+  3. `READY`: Clean, ready Bloodrage icon ready to pop defensive shield.
+- **Dynamic Centering & Edge Polish**: Strictly suppressed when T10 4P is not equipped; `cooldownEdge: False` ensures clean borders.
+
 ### 4.10 Vigilance Missing Alert (04b - Vigilance warTank — Focus Magic Architecture)
 - **Talent-Grounded Tracking**: Subscribed to spellbook/talent inspection for *Vigilance* (Spell ID 50720 / 59665). If not talented, the aura is completely dormant.
 - **Event-Driven Ally Lifecycle**:

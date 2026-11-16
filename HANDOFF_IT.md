@@ -134,6 +134,15 @@ protection-warrior-335a-am/
 - **Griglia Shouts e Stance Sovrastante (34x34px a X: -271, -216, -161, Y: 0)**: Icone standardizzate a 34x34px (identiche alla riga procs); bordo sinistro (-288) allineato a filo con il pannello, centro (-216) allineato a Commanding Shout, e bordo destro (-144) allineato a Defensive Stance.
 - **Separazione Verticale Pulita**: Spazio di 3px tra le label inferiori delle icone (`OFF`, `STANCE` a Y: -17) e il bordo superiore del pannello (Y: -19.6), azzerando ogni sovrapposizione visiva.
 
+### 4.12 Cooldown Difensivo T10 4P & Icona Bloodrage (08 - Tier Set warTank)
+- **Trasformazione in Cooldown Difensivo**: Con il T10 4P (*Ymirjar Lord*), l'abilità *Bloodrage* (Spell ID 2687) funge da vero cooldown difensivo conferendo uno scudo del 20% della salute massima per 10s (*Blood Frenzy*, Spell ID 70844).
+- **Icona Ufficiale dell'Abilità Attivatrice**: Standardizzata sull'icona di *Bloodrage* (`Interface\Icons\Ability_Racial_BloodRage`), l'abilità esatta che innesca l'effetto difensivo.
+- **Engine a Tre Stati**:
+  1. `ACTIVE`: Conto alla rovescia decrescente dello scudo da 10s (`%.1fs`), swipe e Pixel Glow dorato.
+  2. `COOLDOWN`: Tracciamento del tempo di ricarica di Bloodrage (60s o ridotto) con swipe e secondi residui.
+  3. `READY`: Icona Bloodrage pulita pronta all'uso.
+- **Ricentratura Dinamica**: Soppressione totale se non si indossa il T10 4P con auto-centratura della riga utility; `cooldownEdge: False` per bordo pulito.
+
 ### 4.11 Allerta Mancanza Vigilanza (04b - Vigilance warTank — Architettura Focus Magic)
 - **Verifica Presenza Talento**: Rileva in tempo reale l'apprendimento di *Vigilance* (Spell ID 50720 / 59665) tramite `IsSpellKnown` e scansione spellbook. Se non presente nei talenti, l'aura resta disattivata.
 - **Ciclo di Vita Event-Driven su Alleati**:
