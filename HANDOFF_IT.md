@@ -143,14 +143,27 @@ protection-warrior-335a-am/
   3. `READY`: Icona Bloodrage pulita pronta all'uso.
 - **Ricentratura Dinamica**: Soppressione totale se non si indossa il T10 4P con auto-centratura della riga utility; `cooldownEdge: False` per bordo pulito.
 
-### 4.11 Allerta Mancanza Vigilanza (04b - Vigilance warTank — Architettura Focus Magic)
-- **Verifica Presenza Talento**: Rileva in tempo reale l'apprendimento di *Vigilance* (Spell ID 50720 / 59665) tramite `IsSpellKnown` e scansione spellbook. Se non presente nei talenti, l'aura resta disattivata.
+### 4.13 Database Allarmi Tank Buster Completo (Raid WotLK 3.3.5a & Trash Pericolosi)
+- **Meccaniche Tank Swap & Buster di Tutti i Tier**: Database completo per Spell ID `_G.PWHUD_TankBustersDB` e tabella nomi bilingue `_G.PWHUD_TankBustersByName` in `builder/components/procs.py`:
+  - **Icecrown Citadel (ICC)**: Soul Reaper (Lich King 10N/25N/10H/25H - 69409, 73797, 73798, 73799; `SWAP`), Gastric Bloat (Festergut 10N/25N/10H/25H >= 8 - 72219, 72551, 72552, 72553; `x8`), Rune of Blood (Deathbringer Saurfang - 72410; `SWAP`), Mystic Buffet (Sindragosa P3 >= 5 - 70127, 70128; `x5`), Delirious Slash (Blood-Queen Lana'thel >= 2 - 71623, 71624; `x2`), Mutated Plague (Putricide P3 >= 2 - 72451..72454; `x2`), Mutated Infection (Rotface - 69674..73023; `INFECT`), Corrosion (Valithria Zombie >= 3 - 70751, 71236; `x3`), Gut Spray (Valithria Abomination - 70633, 71232; `SPRAY`), Severed Flesh (Deathbound Ward / Trash ICC >= 3 - 71127; `x3`).
+  - **Ruby Sanctum (RS)**: Fiery Combustion (Halion - 74562, 74567, 74795; `RUN`), Soul Consumption (Halion Twilight - 74792, 74793, 74799; `RUN`), Cleave Armor (General Zarithrian >= 2 - 74367; `x2`), Enervating Brand (Baltharus the Warborn - 74502; `BRAND`).
+  - **Trial of the Crusader (TotC / ToGC)**: Impale (Gormok >= 2 - 67478, 67479, 66331; `x2`), Paralytic Toxin (Acidmaw - 66823, 67618; `TOXIN`), Incinerate Flesh (Jaraxxus - 66237, 67049..67051; `HEAL`), Expose Weakness (Anub'arak Burrower >= 2 - 67847..67849; `x2`).
+  - **Ulduar**: Phase Punch (Algalon >= 3 - 64412, 64417; `x3`), Unbalancing Strike (Thorim - 62130, 62131; `SWAP`), Fusion Punch (Steelbreaker - 61903, 63493; `FUSION`), Overwhelming Power (Steelbreaker - 61888, 64637; `MELT`), Fuse Armor (Razorscale >= 2 - 64771, 64772; `x2`), Surge of Darkness (General Vezax - 62661, 62662; `CD!`), Plasma Blast (Mimiron - 62997, 64529; `PLASMA`), Crunch Armor (Kologarn >= 2 - 63355, 64002; `x2`), Slag Pot (Ignis - 62717, 63477; `POT`).
+  - **Naxxramas, VoA, Sartharion**: Mortal Wound (Gluth >= 4 - 25646; `x4`), 4 Horsemen Marks (Blaumeux, Rivendare, Korth'azz, Zeliek >= 3 - 28832..28835; `x3`), Frostbite (Toravon the Ice Watcher >= 4 - 72098; `x4`), Twilight Torment (Sartharion - 57948; `SHADOW`).
+- **Dinamismo Grafico Avanzato**:
+  - `customIcon`: commutazione dinamica della texture all'icona reale del debuff applicato.
+  - `customDuration`: swipe di ricarica circolare con bordo pulito (`cooldownEdge: False`).
+  - `customText`: etichetta di raccomandazione tattica o stack (`SWAP`, `x8`, `HEAL`, `RUN`, `PLASMA`, ecc.).
+  - Pixel Glow rosso intenso via `LibCustomGlow-1.0` all'avvio con rimozione pulita allo scadere.
+
+### 4.11 Allerta Mancanza Vigilanza (04b - Vigilance warTank — Architettura Focus Magic Pura)
+- **Allineamento 1:1 a Focus Magic**: Rimosso il blocco incompatibile di scansione talenti; mostra l'icona desaturata `Ability_Warrior_Vigilance` con scritta rossa `OFF` non appena nessun alleato attivo nel raggio o nel party/raid possiede il buff (`not allyActive`).
 - **Ciclo di Vita Event-Driven su Alleati**:
   - `UNIT_SPELLCAST_SUCCEEDED`: Rileva l'assegnazione di Vigilanza su alleato (`expires = now + 1800`).
   - `COMBAT_LOG_EVENT_UNFILTERED`: Traccia `SPELL_AURA_APPLIED`, `SPELL_AURA_REFRESH`, `SPELL_AURA_REMOVED`, `SPELL_AURA_BROKEN` e azzera il buff alla morte dell'alleato protetto (`UNIT_DIED`).
   - Scansione automatica di fallback su `target`, `focus`, `party1..4` e `raid1..40`.
-- **Modello Visivo Anti-Clutter (Stile Focus Magic del Mago)**:
-  - `Vigilance - OFF warTank`: Icona desaturata con `OFF` rosso in basso, compare solo se il talento è appreso e nessun alleato ha il buff attivo.
+- **Modello Visivo Anti-Clutter**:
+  - `Vigilance - OFF warTank`: Icona desaturata con `OFF` rosso in basso, compare non appena nessun alleato ha il buff attivo.
   - `Vigilance - Active warTank`: Compare solo in prossimità di scadenza (`rem <= 60s`).
 - **Geometria Armonizzata a 4 Icone (30x30px con gap 2px)**: Copre esattamente i 126px del pannello statistiche sottostante (da X: -279 a X: -153):
   - `02 - Battle Shout warTank`: `X: -264, Y: 0`

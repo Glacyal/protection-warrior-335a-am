@@ -4,7 +4,8 @@ Test Allarmi Pericolo & Boss Mechanics — Class Warrior (Protection)
 Verifica:
 1. Emergency Low HP Alert (< 35% HP con suggerimento dinamico CD)
 2. Boss Enrage Alert
-3. Tank Buster Alert (Soul Reaper, Gastric Bloat, Impale)
+3. Tank Buster Alert (Database completo WotLK 3.3.5a: Soul Reaper, Phase Punch, Rune of Blood, Thorim, Halion)
+4. Vigilance Missing Alert (Focus Magic architecture)
 """
 import os
 import sys
@@ -26,11 +27,28 @@ def run_tests():
     assert "Boss Enrage Alert" not in children_by_id
     assert "Boss Enrage Alert" not in children_by_id["01 - Procs warTank"]["controlledChildren"]
 
-    # Tank Buster Alert in 01 - Procs
+    # Tank Buster Alert in 01 - Procs (Task 20 - WotLK 3.3.5a Database)
     buster = children_by_id["Tank Buster Alert"]
     assert buster["width"] == 34
-    code = buster["triggers"][1]["trigger"]["custom"]
-    assert "Soul Reaper" in code or "73797" in code
+    assert buster["cooldown"] is True
+    assert buster["cooldownSwipe"] is True
+    assert buster["cooldownEdge"] is False
+    trig = buster["triggers"][1]["trigger"]
+    assert "_G.PWHUD_CheckTankBusters" in trig["custom"]
+    assert "customIcon" in trig and "customDuration" in trig and "customText" in trig
+    from builder.components.procs import TANK_BUSTER_DB_LUA
+    assert "69409" in TANK_BUSTER_DB_LUA and "73797" in TANK_BUSTER_DB_LUA  # Soul Reaper
+    assert "64412" in TANK_BUSTER_DB_LUA  # Phase Punch (Algalon)
+    assert "72410" in TANK_BUSTER_DB_LUA  # Rune of Blood (Saurfang)
+    assert "62130" in TANK_BUSTER_DB_LUA  # Unbalancing Strike (Thorim)
+    assert "74562" in TANK_BUSTER_DB_LUA  # Fiery Combustion (Halion)
+    assert "67478" in TANK_BUSTER_DB_LUA  # Impale (Gormok)
+    assert "72219" in TANK_BUSTER_DB_LUA  # Gastric Bloat (Festergut)
+
+    # Vigilance Missing Alert (04b - Vigilance warTank — Focus Magic Architecture)
+    vig_off = children_by_id["Vigilance - OFF warTank"]
+    assert vig_off["desaturate"] is True
+    assert "not allyActive" in vig_off["triggers"][1]["trigger"]["custom"]
 
     # Alert - Emergency CD in 17 - Alerts
     alert_em = children_by_id["Alert - Emergency CD"]

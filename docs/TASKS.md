@@ -303,3 +303,26 @@
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
   - [x] Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 20: Espansione Massiva Database Tank Buster Alert (Tutti i Boss Raid WotLK 3.3.5a & Trash Pericolosi) e Perfezionamento Vigilance (Allineamento 1:1 a Focus Magic)**:
+  - [x] Database completo dei debuff letali e meccaniche tank swap in `builder/components/procs.py`:
+    - Definita la tabella `_G.PWHUD_TankBustersDB` per Spell ID e `_G.PWHUD_TankBustersByName` per nomi bilingue (EN / IT) con soglie stack (`min`) e tag d'azione (`SWAP`, `STACK`, `HEAL`, `RUN`, `PLASMA`, `FUSION`, `MELT`, `BRAND`, `TOXIN`, `INFECT`, `SPRAY`, `CD!`, `POT`, `SHADOW`).
+    - **Icecrown Citadel (ICC)**: Soul Reaper (Lich King 10N/25N/10H/25H - 69409, 73797, 73798, 73799), Gastric Bloat (Festergut 10N/25N/10H/25H >= 8 - 72219, 72551, 72552, 72553), Rune of Blood (Saurfang - 72410), Mystic Buffet (Sindragosa P3 >= 5 - 70127, 70128), Delirious Slash (Lana'thel >= 2 - 71623, 71624), Mutated Plague (Putricide P3 >= 2 - 72451..72454), Mutated Infection (Rotface - 69674..73023), Corrosion (Valithria Zombie >= 3 - 70751, 71236), Gut Spray (Valithria Abomination - 70633, 71232), Severed Flesh (Deathbound Ward / Trash ICC >= 3 - 71127).
+    - **Ruby Sanctum (RS)**: Fiery Combustion (Halion - 74562, 74567, 74795), Soul Consumption (Halion - 74792, 74793, 74799), Cleave Armor (Zarithrian >= 2 - 74367), Enervating Brand (Baltharus - 74502).
+    - **Trial of the Crusader (TotC / ToGC)**: Impale (Gormok >= 2 - 67478, 67479, 66331), Paralytic Toxin (Acidmaw - 66823, 67618), Incinerate Flesh (Jaraxxus - 66237, 67049..67051), Expose Weakness (Anub'arak Nerubian Burrower >= 2 - 67847..67849).
+    - **Ulduar**: Phase Punch (Algalon >= 3 - 64412, 64417), Unbalancing Strike (Thorim - 62130, 62131), Fusion Punch (Steelbreaker - 61903, 63493), Overwhelming Power (Steelbreaker - 61888, 64637), Fuse Armor (Razorscale >= 2 - 64771, 64772), Surge of Darkness (General Vezax - 62661, 62662), Plasma Blast (Mimiron - 62997, 64529), Crunch Armor (Kologarn >= 2 - 63355, 64002), Slag Pot (Ignis - 62717, 63477).
+    - **Naxxramas, VoA, Sartharion**: Mortal Wound (Gluth >= 4 - 25646), 4 Horsemen Marks (Blaumeux, Rivendare, Korth'azz, Zeliek >= 3 - 28832..28835), Frostbite (Toravon - 72098), Twilight Torment (Sartharion - 57948).
+  - [x] Dinamismo grafico completo in `Tank Buster Alert`:
+    - Funzione `_G.PWHUD_CheckTankBusters(force)` condivisa con caching per frame.
+    - Texture dinamica `customIcon`: adotta all'istante l'icona del debuff critico attivo sul giocatore.
+    - Conto alla rovescia e swipe circolare `customDuration` con `"cooldownEdge": False`.
+    - Etichetta dinamica `%c` (`customText`) che visualizza l'azione consigliata o il conteggio stack (`SWAP`, `x8`, `HEAL`, `RUN`, `PLASMA`, ecc.).
+    - Azione `actions.start` con red Pixel Glow e `actions.finish` con rimozione glow al termine del debuff.
+  - [x] Perfezionamento architettura `04b - Vigilance warTank` in `builder/components/buffs.py`:
+    - Rimossa la verifica bloccante `IsSpellKnown` (non supportata nativamente nell'ambiente FrameXML 3.3.5a), allineando il trigger di `Vigilance - OFF warTank` direttamente al modello collaudato di Focus Magic (`not allyActive`).
+    - L'icona compare desaturata con `OFF` rosso non appena nessun alleato attivo nel raggio o nel party/raid possiede la vigilanza.
+  - [x] Aggiornamento dei test in `tests/test_danger_alerts.py` a copertura di tutti i nuovi Spell ID e meccaniche.
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+  - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [x] Esecuzione CP (Commit & Push su `origin/master`).

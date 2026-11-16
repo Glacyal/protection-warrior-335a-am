@@ -333,30 +333,10 @@ SHARED_VIGILANCE_CHECK_LUA = r"""function(event, ...)
 
     local now = GetTime()
 
-    -- 0. Verifica se il giocatore conosce il talento Vigilance
-    local hasTalent = false
-    if IsSpellKnown and (IsSpellKnown(50720) or IsSpellKnown(59665)) then
-        hasTalent = true
-    else
-        local vigName = (GetSpellInfo and select(1, GetSpellInfo(50720))) or "Vigilance"
-        for i = 1, 120 do
-            local sName = GetSpellName(i, BOOKTYPE_SPELL)
-            if not sName then break end
-            if sName == "Vigilance" or sName == "Vigilanza" or sName == vigName then
-                hasTalent = true
-                break
-            end
-        end
-    end
-    state.hasTalent = hasTalent
-    if not hasTalent then
-        return false, false, 0, 1800, 0
-    end
-
     -- 1. Gestione Eventi Assegnazione, Rimozione e Morte
     if event == "UNIT_SPELLCAST_SUCCEEDED" then
         local unit, spell = ...
-        if unit == "player" and (spell == "Vigilance" or spell == "Vigilanza" or spell == 50720) then
+        if unit == "player" and (spell == "Vigilance" or spell == "Vigilanza" or spell == 50720 or spell == 59665) then
             state.targetName = UnitName("target")
             state.targetGUID = UnitGUID("target")
             state.expires = now + 1800
@@ -385,7 +365,7 @@ SHARED_VIGILANCE_CHECK_LUA = r"""function(event, ...)
         end
         if not isRelevant then
             local isAllyActive = (state.expires and state.expires > now) or false
-            return true, isAllyActive, (isAllyActive and (state.expires - now) or 0), 1800, (state.expires or 0)
+            return isAllyActive, (isAllyActive and (state.expires - now) or 0), 1800, (state.expires or 0)
         end
     end
 
@@ -396,7 +376,7 @@ SHARED_VIGILANCE_CHECK_LUA = r"""function(event, ...)
             state.targetGUID = nil
             state.expires = 0
         else
-            return true, true, (state.expires - now), 1800, state.expires
+            return true, (state.expires - now), 1800, state.expires
         end
     end
 
@@ -423,7 +403,7 @@ SHARED_VIGILANCE_CHECK_LUA = r"""function(event, ...)
     if checkUnit("target") or checkUnit("focus") then
         allyActive = true
     else
-        local nr = GetNumRaidMembers and GetNumRaidMembers() or 0
+        local nr = (GetNumRaidMembers and GetNumRaidMembers()) or 0
         if nr > 0 then
             for r = 1, nr do
                 if checkUnit("raid" .. r) then
@@ -432,7 +412,7 @@ SHARED_VIGILANCE_CHECK_LUA = r"""function(event, ...)
                 end
             end
         else
-            local np = GetNumPartyMembers and GetNumPartyMembers() or 0
+            local np = (GetNumPartyMembers and GetNumPartyMembers()) or 0
             if np > 0 then
                 for p = 1, np do
                     if checkUnit("party" .. p) then
@@ -445,16 +425,16 @@ SHARED_VIGILANCE_CHECK_LUA = r"""function(event, ...)
     end
 
     local rem = allyActive and (expTime > now and (expTime - now) or 1800) or 0
-    return true, allyActive, rem, 1800, expTime
+    return allyActive, rem, 1800, expTime
 end"""
 
 
 def make_vigilance_off_trigger() -> str:
-    """Trigger Lua per Vigilance OFF (visibile se nessun alleato ha il buff e il talento e appreso)."""
+    """Trigger Lua per Vigilance OFF (visibile se nessun alleato ha il buff - modello Focus Magic)."""
     return f"""function(event, ...)
     _G.PWHUD_CheckVigilance = _G.PWHUD_CheckVigilance or {SHARED_VIGILANCE_CHECK_LUA}
-    local hasTalent, allyActive = _G.PWHUD_CheckVigilance(event, ...)
-    return hasTalent and (not allyActive)
+    local allyActive = _G.PWHUD_CheckVigilance(event, ...)
+    return not allyActive
 end"""
 
 
@@ -462,8 +442,8 @@ def make_vigilance_off_untrigger() -> str:
     """Untrigger Lua per Vigilance OFF."""
     return f"""function(event, ...)
     _G.PWHUD_CheckVigilance = _G.PWHUD_CheckVigilance or {SHARED_VIGILANCE_CHECK_LUA}
-    local hasTalent, allyActive = _G.PWHUD_CheckVigilance(event, ...)
-    return (not hasTalent) or allyActive
+    local allyActive = _G.PWHUD_CheckVigilance(event, ...)
+    return allyActive
 end"""
 
 
@@ -471,8 +451,8 @@ def make_vigilance_active_trigger() -> str:
     """Trigger Lua per Vigilance Active (visibile solo se sta per scadere <= 60s)."""
     return f"""function(event, ...)
     _G.PWHUD_CheckVigilance = _G.PWHUD_CheckVigilance or {SHARED_VIGILANCE_CHECK_LUA}
-    local hasTalent, allyActive, rem = _G.PWHUD_CheckVigilance(event, ...)
-    return hasTalent and allyActive and rem > 0 and rem <= 60
+    local allyActive, rem = _G.PWHUD_CheckVigilance(event, ...)
+    return allyActive and rem > 0 and rem <= 60
 end"""
 
 
@@ -480,8 +460,8 @@ def make_vigilance_active_untrigger() -> str:
     """Untrigger Lua per Vigilance Active."""
     return f"""function(event, ...)
     _G.PWHUD_CheckVigilance = _G.PWHUD_CheckVigilance or {SHARED_VIGILANCE_CHECK_LUA}
-    local hasTalent, allyActive, rem = _G.PWHUD_CheckVigilance(event, ...)
-    return (not hasTalent) or (not allyActive) or rem > 60 or rem <= 0
+    local allyActive, rem = _G.PWHUD_CheckVigilance(event, ...)
+    return (not allyActive) or rem > 60 or rem <= 0
 end"""
 
 
@@ -489,8 +469,8 @@ def make_vigilance_custom_duration() -> str:
     """Durata e scadenza dello swipe di ricarica per Vigilance."""
     return """function()
     if not _G.PWHUD_CheckVigilance then return 0, 0 end
-    local hasTalent, allyActive, rem, dur, exp = _G.PWHUD_CheckVigilance()
-    if hasTalent and allyActive and rem > 0 and rem <= 60 then
+    local allyActive, rem, dur, exp = _G.PWHUD_CheckVigilance()
+    if allyActive and rem > 0 and rem <= 60 then
         return dur or 1800, exp or (GetTime() + rem)
     end
     return 0, 0
@@ -501,12 +481,13 @@ def make_vigilance_custom_text() -> str:
     """Conto alla rovescia formattato per Vigilance (visibile quando rem <= 60)."""
     return """function()
     if not _G.PWHUD_CheckVigilance then return "" end
-    local hasTalent, allyActive, rem = _G.PWHUD_CheckVigilance()
-    if hasTalent and allyActive and rem > 0 and rem <= 60 then
+    local allyActive, rem = _G.PWHUD_CheckVigilance()
+    if allyActive and rem > 0 and rem <= 60 then
         return string.format("|cFFFF4444%.0fs|r", rem)
     end
     return ""
 end"""
+
 
 def build_buffs_auras() -> list[dict]:
     return [

@@ -143,14 +143,27 @@ protection-warrior-335a-am/
   3. `READY`: Clean, ready Bloodrage icon ready to pop defensive shield.
 - **Dynamic Centering & Edge Polish**: Strictly suppressed when T10 4P is not equipped; `cooldownEdge: False` ensures clean borders.
 
-### 4.10 Vigilance Missing Alert (04b - Vigilance warTank — Focus Magic Architecture)
-- **Talent-Grounded Tracking**: Subscribed to spellbook/talent inspection for *Vigilance* (Spell ID 50720 / 59665). If not talented, the aura is completely dormant.
+### 4.12 Comprehensive Tank Buster Alert Database (WotLK 3.3.5a Raids & Deadly Trash)
+- **All-Tier Boss & Trash Mechanics**: Full Spell ID database `_G.PWHUD_TankBustersDB` and bilingual name table `_G.PWHUD_TankBustersByName` in `builder/components/procs.py`:
+  - **Icecrown Citadel (ICC)**: Soul Reaper (Lich King 10N/25N/10H/25H - 69409, 73797, 73798, 73799; `SWAP`), Gastric Bloat (Festergut 10N/25N/10H/25H >= 8 - 72219, 72551, 72552, 72553; `x8`), Rune of Blood (Deathbringer Saurfang - 72410; `SWAP`), Mystic Buffet (Sindragosa P3 >= 5 - 70127, 70128; `x5`), Delirious Slash (Blood-Queen Lana'thel >= 2 - 71623, 71624; `x2`), Mutated Plague (Putricide P3 >= 2 - 72451..72454; `x2`), Mutated Infection (Rotface - 69674..73023; `INFECT`), Corrosion (Valithria Zombie >= 3 - 70751, 71236; `x3`), Gut Spray (Valithria Abomination - 70633, 71232; `SPRAY`), Severed Flesh (Deathbound Ward / ICC Trash >= 3 - 71127; `x3`).
+  - **Ruby Sanctum (RS)**: Fiery Combustion (Halion - 74562, 74567, 74795; `RUN`), Soul Consumption (Halion Twilight - 74792, 74793, 74799; `RUN`), Cleave Armor (General Zarithrian >= 2 - 74367; `x2`), Enervating Brand (Baltharus the Warborn - 74502; `BRAND`).
+  - **Trial of the Crusader (TotC / ToGC)**: Impale (Gormok >= 2 - 67478, 67479, 66331; `x2`), Paralytic Toxin (Acidmaw - 66823, 67618; `TOXIN`), Incinerate Flesh (Jaraxxus - 66237, 67049..67051; `HEAL`), Expose Weakness (Anub'arak Burrower >= 2 - 67847..67849; `x2`).
+  - **Ulduar**: Phase Punch (Algalon >= 3 - 64412, 64417; `x3`), Unbalancing Strike (Thorim - 62130, 62131; `SWAP`), Fusion Punch (Steelbreaker - 61903, 63493; `FUSION`), Overwhelming Power (Steelbreaker - 61888, 64637; `MELT`), Fuse Armor (Razorscale >= 2 - 64771, 64772; `x2`), Surge of Darkness (General Vezax - 62661, 62662; `CD!`), Plasma Blast (Mimiron - 62997, 64529; `PLASMA`), Crunch Armor (Kologarn >= 2 - 63355, 64002; `x2`), Slag Pot (Ignis - 62717, 63477; `POT`).
+  - **Naxxramas, VoA, Sartharion**: Mortal Wound (Gluth >= 4 - 25646; `x4`), 4 Horsemen Marks (Blaumeux, Rivendare, Korth'azz, Zeliek >= 3 - 28832..28835; `x3`), Frostbite (Toravon the Ice Watcher >= 4 - 72098; `x4`), Twilight Torment (Sartharion - 57948; `SHADOW`).
+- **Dynamic Graphical Polish**:
+  - `customIcon`: dynamically commutates to the exact texture of the threatening debuff.
+  - `customDuration`: circular countdown swipe with clean border (`cooldownEdge: False`).
+  - `customText`: contextual tag or stack count (`SWAP`, `x8`, `HEAL`, `RUN`, `PLASMA`, etc.).
+  - Intense red Pixel Glow via `LibCustomGlow-1.0` on start, automatic cleanup on expiration.
+
+### 4.10 Vigilance Missing Alert (04b - Vigilance warTank — Pure Focus Magic Architecture)
+- **1:1 Alignment with Focus Magic**: Removed talent inspection gates incompatible with 3.3.5a FrameXML; displays prominent desaturated `Ability_Warrior_Vigilance` icon with red `OFF` whenever no group/raid ally carries the buff (`not allyActive`).
 - **Event-Driven Ally Lifecycle**:
   - `UNIT_SPELLCAST_SUCCEEDED`: Detects player casting Vigilance on a friendly target (`expires = now + 1800`).
   - `COMBAT_LOG_EVENT_UNFILTERED`: Tracks `SPELL_AURA_APPLIED`, `SPELL_AURA_REFRESH`, `SPELL_AURA_REMOVED`, `SPELL_AURA_BROKEN`, and instantly resets if the protected ally dies (`UNIT_DIED`).
   - Automatic fallback scanning across `target`, `focus`, `party1..4`, and `raid1..40`.
-- **Anti-Clutter Visual Model (Focus Magic Style)**:
-  - `Vigilance - OFF warTank`: Prominent desaturated icon with red `OFF` at `INNER_BOTTOM`, displayed only when the warrior is talented into Vigilance and no group/raid ally carries the buff.
+- **Anti-Clutter Visual Model**:
+  - `Vigilance - OFF warTank`: Prominent desaturated icon with red `OFF` at `INNER_BOTTOM`, displayed whenever no group/raid ally carries the buff.
   - `Vigilance - Active warTank`: Only triggers if expiration is imminent (`rem <= 60s`).
 - **Harmonized 4-Icon Row Geometry**: Standardized to 30x30px with 2px gap (step = 32px), spanning exactly 126px from $x = -279$ to $x = -153$:
   - `02 - Battle Shout warTank`: `X: -264, Y: 0`

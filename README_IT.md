@@ -38,13 +38,13 @@ Posizionato nella parte superiore dell'HUD ($y = 52$), gestisce fino a 5 icone (
 2. **Revenge Ready warTank**: Attivato da Schivata, Parata o Blocco (`blocked > 0`) con finestra interna di 5,0 secondi, refresh dinamico in tempo reale ad ogni nuovo avoid/blocco subito, animazione di swipe circolare, conto alla rovescia in secondi `%p` e Pixel Glow ambra (`LibCustomGlow-1.0`) con disattivazione pulita per prevenire glitch o righe gialle residue.
 3. **Shield Block Active (Buff 2565)**: Durata attiva di 10 secondi con conto alla rovescia ed etichetta `100%`.
 4. **Emergency Low HP Alert**: Icona con Pixel Glow rosso lampeggiante quando la salute scende sotto il 35%, mostrando l'icona del cooldown consigliato pronto (*Shield Wall* o *Last Stand*).
-5. **Tank Buster Alert**: Notifica con Glow rosso in caso di debuff letali sul tank (*Soul Reaper*, *Impale* $\ge 2$ stacks, *Gastric Bloat* $\ge 8$ stacks) per coordinare lo swap del Taunt.
+5. **Tank Buster Alert**: Allerta dinamica ad alta priorità per tutti i boss raid WotLK 3.3.5a e trash letali (*Soul Reaper*, *Phase Punch*, *Rune of Blood*, *Impale*, *Gastric Bloat*, *Fusion Punch*, *Fiery Combustion*, ecc.) con commutazione dinamica dell'icona del debuff, swipe circolare, etichette d'azione (`SWAP`, `x8`, `HEAL`, `RUN`, `PLASMA`), e Pixel Glow rosso intenso.
 
 ### 2. Buff di Classe & Postura Difensiva (`02`, `03`, `04`)
 Posizionati a sinistra direttamente sopra il pannello statistiche a $x = -264, -232, -200, -168$ e $y = 0$ (griglia a 4 icone da $30 \times 30\text{px}$ con 2px di spaziatura, combaciante con i 126px del pannello sottostante):
 - **02 - Battle Shout warTank**: Timer attivo Battle Shout / allerta buff mancante (OFF).
 - **03 - Commanding Shout warTank**: Timer attivo Commanding Shout / allerta buff mancante (OFF).
-- **04b - Vigilance warTank**: Allerta Vigilanza mancante su alleato (OFF) quando il talento è appreso (modello Focus Magic del mago).
+- **04b - Vigilance warTank**: Allerta Vigilanza mancante su alleato (OFF) su puro modello Focus Magic (icona desaturata con scritta OFF se nessun alleato ha la vigilanza; countdown quando $\le 60\text{s}$).
 - **04 - Defensive Stance warTank**: Allerta postura errata fuori dalla Defensive Stance in combattimento (STANCE).
 - **02 - Battle Shout warTank**: Compare con timer solo se in scadenza ($\le 30\text{s}$) o desaturato con scritta `OFF` se manca sia Battle Shout che *Blessing of Might* del Paladino.
 - **03 - Commanding Shout warTank**: Compare con timer solo se in scadenza ($\le 30\text{s}$) o desaturato con scritta `OFF` se manca sia Commanding Shout che *Blood Pact* dell'Imp.

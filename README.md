@@ -38,13 +38,13 @@ Positioned at the upper region of the HUD ($y = 52$), managing up to 5 icons ($3
 2. **Revenge Ready warTank**: Triggered by any Dodge, Parry, or Block (`blocked > 0`) with an internal 5.0-second window, dynamic real-time refresh upon subsequent avoids/blocks, circular swipe animation, `%p` seconds countdown, and amber Pixel Glow (`LibCustomGlow-1.0`) with guaranteed cleanup to prevent yellow line artifacts.
 3. **Shield Block Active (Buff 2565)**: 10-second active duration countdown with `100%` block bonus label.
 4. **Emergency Low HP Alert**: Flashing red Pixel Glow icon when health drops below 35%, surfacing the icon of the optimal ready cooldown (*Shield Wall* or *Last Stand*).
-5. **Tank Buster Alert**: High-priority alert on lethal tank debuffs (*Soul Reaper*, *Impale* $\ge 2$ stacks, *Gastric Bloat* $\ge 8$ stacks) to coordinate Taunt swaps.
+5. **Tank Buster Alert**: Dynamic high-priority alert covering all WotLK 3.3.5a raid bosses and dangerous trash mechanics (*Soul Reaper*, *Phase Punch*, *Rune of Blood*, *Impale*, *Gastric Bloat*, *Fusion Punch*, *Fiery Combustion*, etc.) with dynamic debuff icon commutation, circular swipe, action tags (`SWAP`, `x8`, `HEAL`, `RUN`, `PLASMA`), and intense red Pixel Glow.
 
 ### 2. Class Buffs & Defensive Stance (`02`, `03`, `04`)
 Positioned on the left side directly above the Stats Panel at $x = -264, -232, -200, -168$ and $y = 0$ ($30 \times 30\text{px}$, 4-icon grid perfectly spanning the 126px width of the stats panel with 2px spacing):
 - **02 - Battle Shout warTank**: Battle Shout active timer / missing alert (OFF).
 - **03 - Commanding Shout warTank**: Commanding Shout active timer / missing alert (OFF).
-- **04b - Vigilance warTank**: Vigilance missing alert on ally (OFF) when talented (Focus Magic model).
+- **04b - Vigilance warTank**: Vigilance missing alert on ally (OFF) using pure Focus Magic model (displays desaturated icon with red OFF whenever no group/raid ally carries Vigilance; countdown timer when $\le 60\text{s}$).
 - **04 - Defensive Stance warTank**: Wrong stance combat warning (STANCE).
 - **02 - Battle Shout warTank**: Displays countdown timer only when expiring ($\le 30\text{s}$) or desaturated with red `OFF` label when neither Battle Shout nor Paladin *Blessing of Might* is present.
 - **03 - Commanding Shout warTank**: Displays countdown timer only when expiring ($\le 30\text{s}$) or desaturated with red `OFF` label when neither Commanding Shout nor Warlock *Blood Pact* is present.
