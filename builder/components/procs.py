@@ -9,8 +9,7 @@ Gestisce la barra orizzontale dinamica superiore dei proc e allarmi (y = 52):
   3. Shield Block Active (Buff 2565: durata attiva 10s con countdown)
   4. Victory Rush (Proc Victorious con countdown durata 20s)
   5. Emergency Low HP Alert (Salute < 35% con allerta visiva del CD difensivo prioritario pronto)
-  6. Boss Enrage Alert (Allarme Enrage/Frenzy sul boss)
-  7. Tank Buster Alert (Debuff letali: Soul Reaper, Impale >= 2, Gastric Bloat >= 8, Fusion Punch)
+  5. Tank Buster Alert (Debuff letali: Soul Reaper, Impale >= 2, Gastric Bloat >= 8, Fusion Punch)
 """
 from builder.core.helpers import make_subtext, make_glow_action
 
@@ -20,7 +19,7 @@ def build_procs_auras() -> list[dict]:
     Costruisce e restituisce le 8 aure del gruppo dinamico Procs:
     - 01 - Procs warTank (Dynamic Group)
     - Sword and Board, Revenge Ready warTank, Shield Block Active,
-      Emergency Low HP Alert, Boss Enrage Alert, Tank Buster Alert.
+      Emergency Low HP Alert, Tank Buster Alert.
     """
     return [
         {
@@ -39,7 +38,6 @@ def build_procs_auras() -> list[dict]:
                 "Revenge Ready warTank",
                 "Shield Block Active",
                 "Emergency Low HP Alert",
-                "Boss Enrage Alert",
                 "Tank Buster Alert",
             ],
         },
@@ -318,43 +316,7 @@ end""",
                 make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=0, extra_props={"text_color": [1.0, 0.2, 0.2, 1.0]}),
             ],
         },
-        # 6. Boss Enrage Alert
-        {
-            "id": "Boss Enrage Alert",
-            "uid": "PWHUD_PROC_BOSS_ENRAGE",
-            "parent": "01 - Procs warTank",
-            "regionType": "icon",
-            "internalVersion": 90,
-            "width": 34,
-            "height": 34,
-            "displayIcon": "Interface\\Icons\\Spell_Shadow_UnholyFrenzy",
-            "auto": False,
-            "color": [1, 1, 1, 1],
-            "actions": {
-                "start": make_glow_action([1.0, 0.0, 0.0, 1.0]),
-                "finish": {"do_glow": True, "glow_action": "hide"},
-            },
-            "triggers": {
-                1: {
-                    "trigger": {
-                        "type": "custom",
-                        "custom_type": "status",
-                        "check": "update",
-                        "custom": r"""function()
-                            if _G.PWHUD_InitCore then _G.PWHUD_InitCore() end
-                            local tb = _G.PWHUD_GetTargetBuffs and _G.PWHUD_GetTargetBuffs()
-                            return (tb ~= nil and tb.hasEnrage)
-                        end""",
-                    },
-                    "untrigger": {"type": "custom", "custom": "function() return false end"}
-                },
-                "activeTriggerMode": -10,
-            },
-            "subRegions": [
-                make_subtext("ENRAGE", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=8, y_offset=0, extra_props={"text_color": [1.0, 0.1, 0.1, 1.0]}),
-            ],
-        },
-        # 7. Tank Buster Alert
+        # 5. Tank Buster Alert
         {
             "id": "Tank Buster Alert",
             "uid": "PWHUD_PROC_TANK_BUSTER",

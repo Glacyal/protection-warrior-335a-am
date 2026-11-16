@@ -33,13 +33,12 @@ Visualizza e interagisci con l'HUD direttamente dal browser senza installare nul
 La suite è strutturata in 20 nodi sequenziali controllati dal gruppo principale `Class Warrior (Protection)` ($x = 0, y = -190$, scala $1.2$):
 
 ### 1. Gruppo Dinamico Procs (`01 - Procs warTank`)
-Posizionato nella parte superiore dell'HUD ($y = 52$), gestisce fino a 6 icone ($34 \times 34\text{px}$, space $6\text{px}$) con riposizionamento orizzontale centrato:
+Posizionato nella parte superiore dell'HUD ($y = 52$), gestisce fino a 5 icone ($34 \times 34\text{px}$, space $6\text{px}$) con riposizionamento orizzontale centrato:
 1. **Sword and Board (Buff 50227)**: Shield Slam a costo 0 rabbia e azzeramento del CD, con Pixel Glow dorato pulsante e conto alla rovescia di 5 secondi.
 2. **Revenge Ready warTank**: Attivato da Schivata, Parata o Blocco (`blocked > 0`) con finestra interna di 5,0 secondi, refresh dinamico in tempo reale ad ogni nuovo avoid/blocco subito, animazione di swipe circolare, conto alla rovescia in secondi `%p` e Pixel Glow ambra (`LibCustomGlow-1.0`) con disattivazione pulita per prevenire glitch o righe gialle residue.
 3. **Shield Block Active (Buff 2565)**: Durata attiva di 10 secondi con conto alla rovescia ed etichetta `100%`.
 4. **Emergency Low HP Alert**: Icona con Pixel Glow rosso lampeggiante quando la salute scende sotto il 35%, mostrando l'icona del cooldown consigliato pronto (*Shield Wall* o *Last Stand*).
-5. **Boss Enrage Alert**: Segnalazione immediata con Glow rosso quando il boss entra in Enrage/Frenzy/Berserk per attivare mitigazioni pesanti o chiamare il Tranq Shot.
-6. **Tank Buster Alert**: Notifica con Glow rosso in caso di debuff letali sul tank (*Soul Reaper*, *Impale* $\ge 2$ stacks, *Gastric Bloat* $\ge 8$ stacks) per coordinare lo swap del Taunt.
+5. **Tank Buster Alert**: Notifica con Glow rosso in caso di debuff letali sul tank (*Soul Reaper*, *Impale* $\ge 2$ stacks, *Gastric Bloat* $\ge 8$ stacks) per coordinare lo swap del Taunt.
 
 ### 2. Buff di Classe & Postura Difensiva (`02`, `03`, `04`)
 Posizionati a sinistra a $x = -222, -190, -158$ e $y = 0$:

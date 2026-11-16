@@ -22,10 +22,9 @@ def run_tests():
     assert em["width"] == 34
     assert "_G.PWHUD_GetEmergencyCD" in em["triggers"][1]["trigger"]["custom"]
 
-    # Boss Enrage Alert in 01 - Procs
-    enrage = children_by_id["Boss Enrage Alert"]
-    assert enrage["width"] == 34
-    assert "hasEnrage" in enrage["triggers"][1]["trigger"]["custom"]
+    # Rimozione Boss Enrage Alert da 01 - Procs warTank (Task 13)
+    assert "Boss Enrage Alert" not in children_by_id
+    assert "Boss Enrage Alert" not in children_by_id["01 - Procs warTank"]["controlledChildren"]
 
     # Tank Buster Alert in 01 - Procs
     buster = children_by_id["Tank Buster Alert"]

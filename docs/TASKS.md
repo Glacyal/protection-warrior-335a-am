@@ -244,3 +244,11 @@
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
   - [x] Commit Git con messaggio descrittivo.
+- [x] **Task 13: Rimozione Completa di Boss Enrage Alert dal Gruppo Procs (01 - Procs warTank)**:
+  - [x] Rimozione dell'aura `Boss Enrage Alert` (UID `PWHUD_PROC_BOSS_ENRAGE`) da `builder/components/procs.py` e dalla lista `controlledChildren` di `01 - Procs warTank` (la riga procs dinamica superiore gestisce ora 5 icone focalizzate sulla sopravvivenza del tank: Sword & Board, Revenge Ready warTank, Shield Block Active, Emergency Low HP Alert, Tank Buster Alert).
+  - [x] Aggiornamento dei test di regressione in `tests/test_danger_alerts.py` verificando l'assenza permanente dell'aura e del relativo child.
+  - [x] Rimozione dell'elemento `#procEnrage` dal simulatore web in `docs/index.html`.
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+  - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [x] Commit Git con messaggio descrittivo.
