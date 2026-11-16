@@ -1121,7 +1121,14 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
             for i = 1, 40 do
                 local name, _, icon, count, _, duration, expirationTime, _, _, _, sId = UnitBuff("player", i)
                 if not name then break end
-                if sId == buffId or (sId == spellId) then
+                local isMatch = (sId == buffId or sId == spellId)
+                if not isMatch and name then
+                    if spellId == 2565 and (name == "Shield Block" or name == "Blocco con lo Scudo") then isMatch = true
+                    elseif spellId == 871 and (name == "Shield Wall" or name == "Muro di Scudi") then isMatch = true
+                    elseif spellId == 12975 and (name == "Last Stand" or name == "Ultima Difesa") then isMatch = true
+                    end
+                end
+                if isMatch then
                     local rem = (expirationTime and expirationTime > 0) and (expirationTime - now) or 0
                     local dur = (duration and duration > 0) and duration or 0
                     return "ACTIVE", rem, dur, count or 1, icon or defIcon
@@ -1130,6 +1137,10 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         end
 
         local start, duration = GetSpellCooldown(spellId)
+        if (not start or duration == 0) and GetSpellInfo then
+            local spName = GetSpellInfo(spellId)
+            if spName then start, duration = GetSpellCooldown(spName) end
+        end
         if start and duration and start > 0 and duration > 1.5 then
             local remCD = (start + duration) - now
             if remCD > 0.1 then
@@ -1139,7 +1150,7 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
 
         local curHP = UnitHealth("player") or 100
         local maxHP = UnitHealthMax("player") or 100
-        local isEmergency = (curHP / maxHP) < 0.35
+        local isEmergency = (curHP / maxHP) < 0.35 and (spellId == 871 or spellId == 12975)
 
         return (isEmergency and "EMERGENCY" or "READY"), 0, 0, 0, defIcon
     end
@@ -1185,6 +1196,7 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         if hasTier then table.insert(activeOrder, "08 - Tier Set warTank") end
         if hasEnchant then table.insert(activeOrder, "09 - Enchants warTank") end
         if hasGloves then table.insert(activeOrder, "10 - Gloves warTank") end
+        table.insert(activeOrder, "10b - Shield Block warTank")
         table.insert(activeOrder, "11 - Shield Wall warTank")
         table.insert(activeOrder, "12 - Last Stand warTank")
         if hasBoots then table.insert(activeOrder, "13 - Boots warTank") end
@@ -1192,7 +1204,8 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         local N = #activeOrder
         local step = 38
         local targetW = 28
-        if N >= 10 then step = 27; targetW = 26
+        if N >= 11 then step = 25; targetW = 24
+        elseif N == 10 then step = 27; targetW = 26
         elseif N == 9 then step = 29; targetW = 28
         elseif N == 8 then step = 32; targetW = 28
         elseif N == 7 then step = 38; targetW = 28
@@ -1959,6 +1972,48 @@ def build_utility_auras() -> list[dict]:
                     },
                     "untrigger": {
                         "custom": make_slot_untrigger_custom(10)
+                    }
+                },
+                "activeTriggerMode": -10,
+            },
+            "subRegions": [
+                {"type": "subbackground"},
+                make_subtext("%c", justify="CENTER", anchor_point="CENTER", font_size=10),
+            ],
+        },
+
+        # 10b - Shield Block warTank (Spell 2565: Durata Attiva 10s & Cooldown 30s/60s)
+        {
+            "id": "10b - Shield Block warTank",
+            "uid": "PWHUD_UTIL_SHIELDBLOCK",
+            "parent": "Class Warrior (Protection)",
+            "regionType": "icon",
+            "internalVersion": 90,
+            "xOffset": 28,
+            "yOffset": -45,
+            "width": 28,
+            "height": 28,
+            "displayIcon": "Interface\\Icons\\Ability_Defensive",
+            "cooldown": True,
+            "cooldownSwipe": True,
+            "cooldownEdge": False,
+            "cooldownTextDisabled": True,
+            "inverse": False,
+            "customTextUpdate": "update",
+            "customText": make_warrior_spell_custom_text(2565, 2565, "PWHUD_SHIELDBLOCK_GLOW"),
+            "triggers": {
+                1: {
+                    "trigger": {
+                        "type": "custom",
+                        "custom_type": "status",
+                        "check": "update",
+                        "events": events_list,
+                        "custom": make_warrior_spell_trigger_custom(2565),
+                        "customDuration": make_warrior_spell_custom_duration(2565, 2565),
+                        "customIcon": make_warrior_spell_custom_icon(2565, "Interface\\Icons\\Ability_Defensive")
+                    },
+                    "untrigger": {
+                        "custom": "function() return false end"
                     }
                 },
                 "activeTriggerMode": -10,

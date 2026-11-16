@@ -72,6 +72,7 @@ def build_wa_tree(target_version: str = "5.21.8", load_override: dict = None) ->
                 "08 - Tier Set warTank",
                 "09 - Enchants warTank",
                 "10 - Gloves warTank",
+                "10b - Shield Block warTank",
                 "11 - Shield Wall warTank",
                 "12 - Last Stand warTank",
                 "13 - Boots warTank",

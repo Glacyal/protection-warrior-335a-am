@@ -244,7 +244,6 @@ def build_procs_auras() -> list[dict]:
             "controlledChildren": [
                 "Sword and Board",
                 "Revenge Ready warTank",
-                "Shield Block Active",
                 "Emergency Low HP Alert",
                 "Tank Buster Alert",
             ],
@@ -442,40 +441,6 @@ end""",
                 {"type": "subbackground"},
                 make_subtext("%p", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=0),
                 make_subtext("REV", justify="CENTER", anchor_point="CENTER", font_size=9, y_offset=0),
-            ],
-        },
-        # 3. Shield Block Active (Buff 2565)
-        {
-            "id": "Shield Block Active",
-            "uid": "PWHUD_PROC_SHIELDBLOCK",
-            "parent": "01 - Procs warTank",
-            "regionType": "icon",
-            "internalVersion": 90,
-            "width": 34,
-            "height": 34,
-            "displayIcon": "Interface\\Icons\\Ability_Defensive",
-            "auto": True,
-            "color": [1, 1, 1, 1],
-            "cooldown": True,
-            "cooldownSwipe": True,
-            "cooldownEdge": True,
-            "triggers": {
-                1: {
-                    "trigger": {
-                        "type": "aura2",
-                        "unit": "player",
-                        "auranames": ["Shield Block", "Blocco con lo Scudo", "2565"],
-                        "useName": True,
-                        "debuffType": "HELPFUL",
-                        "matchesShowOn": "showOnActive",
-                    },
-                    "untrigger": {}
-                },
-                "activeTriggerMode": -10,
-            },
-            "subRegions": [
-                make_subtext("%p", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=12, y_offset=0),
-                make_subtext("100%", justify="CENTER", anchor_point="CENTER", font_size=9, y_offset=0),
             ],
         },
         # 5. Emergency Low HP Alert (< 35% HP)

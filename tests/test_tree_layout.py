@@ -60,6 +60,7 @@ def run_tests():
 
     alerts = children_by_id["17 - Alerts warTank"]
     assert alerts["yOffset"] == 78
+    assert "10b - Shield Block warTank" in children_by_id
 
     # Verifica Load Conditions: Classe Warrior + Talento Devastate (ID 103)
     assert root["load"]["use_class"] is True

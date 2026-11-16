@@ -33,10 +33,9 @@ Explore and interact with the HUD directly inside your browser without installin
 The suite is structured into 20 sequential nodes controlled by the master group `Class Warrior (Protection)` ($x = 0, y = -190$, scale $1.2$):
 
 ### 1. Dynamic Procs Group (`01 - Procs warTank`)
-Positioned at the upper region of the HUD ($y = 52$), managing up to 5 icons ($34 \times 34\text{px}$, spacing $6\text{px}$) with centered horizontal auto-alignment:
+Positioned at the upper region of the HUD ($y = 52$), managing up to 4 icons ($34 \times 34\text{px}$, spacing $6\text{px}$) with centered horizontal auto-alignment:
 1. **Sword and Board (Buff 50227)**: Zero-rage Shield Slam proc with instant CD reset, pulsing golden Pixel Glow, and a 5-second countdown.
 2. **Revenge Ready warTank**: Triggered by any Dodge, Parry, or Block (`blocked > 0`) with an internal 5.0-second window, dynamic real-time refresh upon subsequent avoids/blocks, circular swipe animation, `%p` seconds countdown, and amber Pixel Glow (`LibCustomGlow-1.0`) with guaranteed cleanup to prevent yellow line artifacts.
-3. **Shield Block Active (Buff 2565)**: 10-second active duration countdown with `100%` block bonus label.
 4. **Emergency Low HP Alert**: Flashing red Pixel Glow icon when health drops below 35%, surfacing the icon of the optimal ready cooldown (*Shield Wall* or *Last Stand*).
 5. **Tank Buster Alert**: Dynamic high-priority alert covering all WotLK 3.3.5a raid bosses and dangerous trash mechanics (*Soul Reaper*, *Phase Punch*, *Rune of Blood*, *Impale*, *Gastric Bloat*, *Fusion Punch*, *Fiery Combustion*, etc.) with dynamic debuff icon commutation, circular swipe, action tags (`SWAP`, `x8`, `HEAL`, `RUN`, `PLASMA`), and intense red Pixel Glow.
 
@@ -58,6 +57,7 @@ Adaptive horizontal centering below the rage bar featuring $28 \times 28\text{px
 - **08 - Tier Set warTank**: T10 4P defensive cooldown tracker with *Bloodrage* icon (tracks 10s 20% max HP *Blood Frenzy* shield, Bloodrage recovery cooldown, and suppresses automatically when T10 4P is not equipped).
 - **09 - Enchants warTank**: Main-Hand weapon proc enchant tracker (*Blade Ward*, *Blood Draining*, *Mongoose*, *Berserking*, etc.). Exclusively visible when an enchant capable of proccing is equipped; automatically suppressed and hidden when static enchants (+30 Stamina Titanguard, +25 Hit/+25 Crit Accuracy, Titanium Weapon Chain, +26 Agility, +65 AP) or no enchants are present, with seamless dynamic re-centering of the utility row.
 - **10 - Gloves warTank**: *Reticulated Armor Webbing* (+885 Armor) or *Hyperspeed Accelerators*.
+- **10b - Shield Block warTank**: Shield Block tracking at Y: -45 alongside Shield Wall (10s active duration swipe/countdown, recovery cooldown tracking 30s/60s, and clean ready state).
 - **11 - Shield Wall warTank**: Spell 871 (-60% DR for 12s, duration swipe and CD).
 - **12 - Last Stand warTank**: Spell 12975 (+30% HP for 20s, duration swipe and CD).
 - **13 - Boots warTank**: Engineering *Nitro Boosts* or *Enraged Regeneration*.

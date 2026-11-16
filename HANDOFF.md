@@ -143,6 +143,14 @@ protection-warrior-335a-am/
   3. `READY`: Clean, ready Bloodrage icon ready to pop defensive shield.
 - **Dynamic Centering & Edge Polish**: Strictly suppressed when T10 4P is not equipped; `cooldownEdge: False` ensures clean borders.
 
+### 4.13 Shield Block Relocation to Utility Row (10b - Shield Block warTank)
+- **Moved to Bottom Utility Row (Y: -45)**: Completely removed `Shield Block Active` from the upper procs dynamic group (`01 - Procs warTank`), placing it in the bottom utility row as `10b - Shield Block warTank` alongside `11 - Shield Wall warTank` and `12 - Last Stand warTank`.
+- **Three-State Cooldown & Duration Engine**:
+  1. `ACTIVE`: When *Shield Block* (Spell ID 2565) is active, tracks the 10-second duration with circular swipe, yellow countdown seconds (`|cFFFFFF00%.1fs|r`), and golden Pixel Glow (`LibCustomGlow-1.0`).
+  2. `COOLDOWN`: When the buff expires, tracks remaining cooldown (base 60s, or 30s with *Shield Mastery* talent) with cooldown swipe, numeric countdown text, and clean borders (`cooldownEdge: False`).
+  3. `READY`: When available, displays clean official icon (`Ability_Defensive`) without clutter.
+- **Dynamic Row Auto-Centering**: Integrated into `_G.PWHUD_UpdateUtilityRowPositions()` preceding Shield Wall, supporting natural auto-centering for up to 11 utility icons.
+
 ### 4.12 Comprehensive Tank Buster Alert Database (WotLK 3.3.5a Raids & Deadly Trash)
 - **All-Tier Boss & Trash Mechanics**: Full Spell ID database `_G.PWHUD_TankBustersDB` and bilingual name table `_G.PWHUD_TankBustersByName` in `builder/components/procs.py`:
   - **Icecrown Citadel (ICC)**: Soul Reaper (Lich King 10N/25N/10H/25H - 69409, 73797, 73798, 73799; `SWAP`), Gastric Bloat (Festergut 10N/25N/10H/25H >= 8 - 72219, 72551, 72552, 72553; `x8`), Rune of Blood (Deathbringer Saurfang - 72410; `SWAP`), Mystic Buffet (Sindragosa P3 >= 5 - 70127, 70128; `x5`), Delirious Slash (Blood-Queen Lana'thel >= 2 - 71623, 71624; `x2`), Mutated Plague (Putricide P3 >= 2 - 72451..72454; `x2`), Mutated Infection (Rotface - 69674..73023; `INFECT`), Corrosion (Valithria Zombie >= 3 - 70751, 71236; `x3`), Gut Spray (Valithria Abomination - 70633, 71232; `SPRAY`), Severed Flesh (Deathbound Ward / ICC Trash >= 3 - 71127; `x3`).

@@ -107,12 +107,12 @@ Le tre barre orizzontali condividono la larghezza calibrata di **278 px**:
 | ID Modulo | Nome Componente | Dimensioni | Coordinate (X, Y) | Comportamento e Funzionalità |
 | :--- | :--- | :--- | :--- | :--- |
 | **Root** | `Class Warrior (Protection)` | Scale 1.2 | X: 0, Y: -190 | Gruppo master contenitore con icona Defensive Stance e bootstrap core |
-| **01** | `01 - Procs warTank` | 34x34 px (icone) | X: 0, Y: +52 | Dynamic group orizzontale centrato a 5 icone: Sword & Board, Revenge Ready warTank (finestra 5s con refresh dinamico su Schivata/Parata/Blocco e LibCustomGlow-1.0), Shield Block, Low HP Alert, Tank Buster (Database completo WotLK 3.3.5a: Soul Reaper, Phase Punch, Rune of Blood, Impale, ecc.) |
+| **01** | `01 - Procs warTank` | 34x34 px (icone) | X: 0, Y: +52 | Dynamic group orizzontale centrato a 4 icone: Sword & Board, Revenge Ready warTank (finestra 5s con refresh dinamico su Schivata/Parata/Blocco e LibCustomGlow-1.0), Low HP Alert, Tank Buster (Database completo WotLK 3.3.5a: Soul Reaper, Phase Punch, Rune of Blood, Impale, ecc.) |
 | **02** | `02 - Battle Shout warTank` | 30x30 px | X: -264, Y: 0 | Monitoraggio buff; soppresso intelligentemente da Blessing of Might del Paladino |
 | **03** | `03 - Commanding Shout warTank`| 30x30 px | X: -232, Y: 0 | Buff salute; soppresso intelligentemente da Blood Pact dell'Imp del Warlock |
 | **04b** | `04b - Vigilance warTank` | 30x30 px | X: -200, Y: 0 | Allerta Vigilanza mancante su alleato (OFF stile Focus Magic) e timer scadenza (<= 60s) |
 | **04** | `04 - Defensive Stance warTank`| 30x30 px | X: -168, Y: 0 | Allerta visiva immediata e glow rosso se in combat fuori dalla Postura Difensiva |
-| **05-13**| Utility Row (10 Icone) | 28x28 px | Y: -45, X centrato | Trinket 1/2, Ring, Cloak (Proc-Only: Swordguard), Tier 10 (Bloodrage CD), Enchants (Proc-Only), Gloves, Shield Wall warTank (-60%), Last Stand warTank (+30%), Boots/Enraged Regen |
+| **05-13**| Utility Row (11 Icone) | 28x28 px | Y: -45, X centrato | Trinket 1/2, Ring, Cloak (Proc-Only: Swordguard), Tier 10 (Bloodrage CD), Enchants (Proc-Only), Gloves, Shield Block warTank (Durata 10s & CD 30s/60s), Shield Wall warTank (-60%), Last Stand warTank (+30%), Boots/Enraged Regen |
 | **14** | `14 - Rage Bar warTank` | 278x14 px | X: 0, Y: -20 | Barra risorsa con cambio colore a soglia Heroic Strike/Cleave (>= 45 Rage) |
 | **15** | `15 - Rotational Bar warTank` | 278x7 px | X: 0, Y: -7 | Indicatore statico di accodamento rotazionale a 278x7px senza scorrimento e senza timer numerico; Pixel Glow LibCustomGlow-1.0 oro per Heroic Strike e verde smeraldo per Cleave |
 | **16** | `16 - Castbar warTank` | 278x20 px | X: 0, Y: +8 | Barra di lancio target con **Kick Advisor integrato**: rileva lanci interrompibili vs immuni e suggerisce Shield Bash, Pummel o Stun in base a stance e scudo |

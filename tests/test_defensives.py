@@ -23,9 +23,12 @@ def run_tests():
     ls = children_by_id["12 - Last Stand warTank"]
     assert ls["displayIcon"] == "Interface\\Icons\\Spell_Nature_ShamanRage"
 
-    # Shield Block Active (in 01 - Procs warTank)
-    sb = children_by_id["Shield Block Active"]
+    # 10b - Shield Block warTank (in Utility Row / Defensive CDs)
+    sb = children_by_id["10b - Shield Block warTank"]
     assert sb["displayIcon"] == "Interface\\Icons\\Ability_Defensive"
+    assert sb["cooldown"] is True and sb["cooldownSwipe"] is True
+    assert sb["cooldownEdge"] is False
+    assert "Shield Block Active" not in children_by_id["01 - Procs warTank"]["controlledChildren"]
 
     # 13 - Boots warTank (con fallback Enraged Regeneration)
     bot = children_by_id["13 - Boots warTank"]

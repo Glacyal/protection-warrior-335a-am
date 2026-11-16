@@ -35,6 +35,7 @@ def run_tests():
         "08 - Tier Set warTank",
         "09 - Enchants warTank",
         "10 - Gloves warTank",
+        "10b - Shield Block warTank",
         "11 - Shield Wall warTank",
         "12 - Last Stand warTank",
         "13 - Boots warTank",
@@ -47,7 +48,7 @@ def run_tests():
     ]
 
     ctrl = root["controlledChildren"]
-    assert len(ctrl) == 21, f"Expected 20 controlled children, got {len(ctrl)}"
+    assert len(ctrl) == 22, f"Expected 20 controlled children, got {len(ctrl)}"
     for exp in expected_children:
         assert exp in ctrl, f"Missing child in root controlledChildren: {exp}"
 

@@ -326,3 +326,24 @@
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
   - [x] Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 21: Riposizionamento 'Shield Block Active' nella Riga Utility Inferiore ('10b - Shield Block warTank') con Tracciamento Cooldown e Durata Attiva**:
+  - [x] Rimozione di `Shield Block Active` da `01 - Procs warTank` in `builder/components/procs.py`:
+    - Rimosso `Shield Block Active` dai nodi controllati (`controlledChildren`) del gruppo dinamico superiore.
+    - Eliminata la visualizzazione limitata al solo buff attivo a Y: +52.
+  - [x] Creazione di `10b - Shield Block warTank` (UID `PWHUD_UTIL_SHIELDBLOCK`) in `builder/components/utility.py`:
+    - Posizionamento a **Y: -45** a fianco di `11 - Shield Wall warTank` e `12 - Last Stand warTank`.
+    - **Engine a Tre Stati (Durata, Ricarica, Pronto)**:
+      1. **Attivo (`ACTIVE`)**: Durante i 10 secondi del buff *Shield Block* (Spell ID 2565), visualizza il conto alla rovescia decrescente della durata residua (`|cFFFFFF00%.1fs|r`, es. `9.8s`), swipe circolare e Pixel Glow dorato (`LibCustomGlow-1.0`).
+      2. **In Ricarica (`COOLDOWN`)**: Alla scadenza del buff, traccia in tempo reale il tempo di ricarica residuo (base 60s, oppure 30s con il talento *Shield Mastery*) con conto alla rovescia numerico e swipe circolare di recupero con `"cooldownEdge": False` (bordo pulito).
+      3. **Pronto (`READY`)**: Quando Shield Block è disponibile, visualizza l'icona ufficiale pulita (`Interface\Icons\Ability_Defensive`) pronta all'uso senza clutter numerico.
+  - [x] Integrazione nel riposizionamento dinamico automatico `_G.PWHUD_UpdateUtilityRowPositions()`:
+    - Inserito `10b - Shield Block warTank` nell'ordine naturale `activeOrder` prima di `11 - Shield Wall warTank`.
+    - Calibrato lo scaling automatico della riga utility fino a 11 icone contemporanee (step 25px, larghezza 24-28px) per preservare la centratura naturale entro i 278px.
+  - [x] Aggiornamento dei nodi controllati in `builder/tree.py` (22 nodi controllati).
+  - [x] Aggiornamento del simulatore web in `docs/index.html` (rimosso `#procSB` da `.procs-bar`, aggiunto `#iconSB` a `.utility-bar`).
+  - [x] Aggiornamento dei test di regressione (`tests/test_components_integrity.py`, `tests/test_defensives.py`, `tests/test_tree_layout.py`).
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+  - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [x] Esecuzione CP (Commit & Push su `origin/master`).

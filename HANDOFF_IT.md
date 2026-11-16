@@ -143,6 +143,14 @@ protection-warrior-335a-am/
   3. `READY`: Icona Bloodrage pulita pronta all'uso.
 - **Ricentratura Dinamica**: Soppressione totale se non si indossa il T10 4P con auto-centratura della riga utility; `cooldownEdge: False` per bordo pulito.
 
+### 4.14 Riposizionamento Shield Block nella Riga Utility Inferiore (10b - Shield Block warTank)
+- **Spostamento nella Riga Utility Inferiore (Y: -45)**: Rimosso completamente `Shield Block Active` dal gruppo dinamico procs superiore (`01 - Procs warTank`) e riposizionato sotto nella riga utility come `10b - Shield Block warTank` al fianco di `11 - Shield Wall warTank` e `12 - Last Stand warTank`.
+- **Engine a Tre Stati (Durata, Ricarica, Pronto)**:
+  1. `ACTIVE`: Quando *Shield Block* (Spell ID 2565) è attivo, traccia i 10 secondi di durata con swipe circolare, countdown in secondi gialli (`|cFFFFFF00%.1fs|r`) e Pixel Glow dorato (`LibCustomGlow-1.0`).
+  2. `COOLDOWN`: Alla scadenza del buff, traccia la ricarica residua (base 60s, oppure 30s con il talento *Shield Mastery*) con swipe circolare di recupero, conto alla rovescia numerico e bordo pulito (`cooldownEdge: False`).
+  3. `READY`: Quando disponibile, visualizza l'icona ufficiale pulita (`Ability_Defensive`) pronta all'uso senza testi spuri.
+- **Ricentratura Dinamica Automatica**: Integrato in `_G.PWHUD_UpdateUtilityRowPositions()` prima di Shield Wall, garantendo una centratura fluida ed equilibrata fino a 11 icone di utilità.
+
 ### 4.13 Database Allarmi Tank Buster Completo (Raid WotLK 3.3.5a & Trash Pericolosi)
 - **Meccaniche Tank Swap & Buster di Tutti i Tier**: Database completo per Spell ID `_G.PWHUD_TankBustersDB` e tabella nomi bilingue `_G.PWHUD_TankBustersByName` in `builder/components/procs.py`:
   - **Icecrown Citadel (ICC)**: Soul Reaper (Lich King 10N/25N/10H/25H - 69409, 73797, 73798, 73799; `SWAP`), Gastric Bloat (Festergut 10N/25N/10H/25H >= 8 - 72219, 72551, 72552, 72553; `x8`), Rune of Blood (Deathbringer Saurfang - 72410; `SWAP`), Mystic Buffet (Sindragosa P3 >= 5 - 70127, 70128; `x5`), Delirious Slash (Blood-Queen Lana'thel >= 2 - 71623, 71624; `x2`), Mutated Plague (Putricide P3 >= 2 - 72451..72454; `x2`), Mutated Infection (Rotface - 69674..73023; `INFECT`), Corrosion (Valithria Zombie >= 3 - 70751, 71236; `x3`), Gut Spray (Valithria Abomination - 70633, 71232; `SPRAY`), Severed Flesh (Deathbound Ward / Trash ICC >= 3 - 71127; `x3`).
