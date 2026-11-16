@@ -37,16 +37,16 @@ Positioned at the upper region of the HUD ($y = 52$), managing up to 7 icons ($3
 1. **Sword and Board (Buff 50227)**: Zero-rage Shield Slam proc with instant CD reset, pulsing golden Pixel Glow, and a 5-second countdown.
 2. **Revenge Ready**: Highlights with a vivid orange glowing border following any successful Dodge, Parry, or Block.
 3. **Shield Block Active (Buff 2565)**: 10-second active duration countdown with `100%` block bonus label.
-4. **Victory Rush**: *Victorious* buff proc with 20-second countdown.
+4. **Victory Rush warTank**: *Victorious* buff proc with 20-second countdown.
 5. **Emergency Low HP Alert**: Flashing red Pixel Glow icon when health drops below 35%, surfacing the icon of the optimal ready cooldown (*Shield Wall* or *Last Stand*).
 6. **Boss Enrage Alert**: Instant red glow alert whenever the boss triggers Enrage / Frenzy / Berserk to pop defensive cooldowns or call for Tranq Shot.
 7. **Tank Buster Alert**: High-priority alert on lethal tank debuffs (*Soul Reaper*, *Impale* $\ge 2$ stacks, *Gastric Bloat* $\ge 8$ stacks) to coordinate Taunt swaps.
 
 ### 2. Class Buffs & Defensive Stance (`02`, `03`, `04`)
 Positioned on the left side at $x = -222, -190, -158$ and $y = 0$:
-- **02 - Battle Shout**: Displays countdown timer only when expiring ($\le 30\text{s}$) or desaturated with red `OFF` label when neither Battle Shout nor Paladin *Blessing of Might* is present.
-- **03 - Commanding Shout**: Displays countdown timer only when expiring ($\le 30\text{s}$) or desaturated with red `OFF` label when neither Commanding Shout nor Warlock *Blood Pact* is present.
-- **04 - Defensive Stance**: Aligned 1:1 with Fury Warrior (completely hidden during correct Defensive Stance; visible with red alert border and `STANCE` subtext only when out-of-stance during combat).
+- **02 - Battle Shout warTank**: Displays countdown timer only when expiring ($\le 30\text{s}$) or desaturated with red `OFF` label when neither Battle Shout nor Paladin *Blessing of Might* is present.
+- **03 - Commanding Shout warTank**: Displays countdown timer only when expiring ($\le 30\text{s}$) or desaturated with red `OFF` label when neither Commanding Shout nor Warlock *Blood Pact* is present.
+- **04 - Defensive Stance warTank**: Aligned 1:1 with Fury Warrior (completely hidden during correct Defensive Stance; visible with red alert border and `STANCE` subtext only when out-of-stance during combat via `04 - Defensive Stance - OutOfStance warTank`).
 
 ### 3. Bottom Utility Row (`05` - `13`, at $y = -45$)
 Adaptive horizontal centering below the rage bar featuring $28 \times 28\text{px}$ icons:
@@ -56,13 +56,13 @@ Adaptive horizontal centering below the rage bar featuring $28 \times 28\text{px
 - **08 - Tier Set warTank**: T9 & T10 Prot tier set bonus tracking (*Ymirjar Lord* 2P/4P).
 - **09 - Enchants warTank**: Weapon enchants (*Blade Ward*, *Blood Draining*, *Mongoose*).
 - **10 - Gloves warTank**: *Reticulated Armor Webbing* (+885 Armor) or *Hyperspeed Accelerators*.
-- **11 - Shield Wall**: Spell 871 (-60% DR for 12s, duration swipe and CD).
-- **12 - Last Stand**: Spell 12975 (+30% HP for 20s, duration swipe and CD).
+- **11 - Shield Wall warTank**: Spell 871 (-60% DR for 12s, duration swipe and CD).
+- **12 - Last Stand warTank**: Spell 12975 (+30% HP for 20s, duration swipe and CD).
 - **13 - Boots warTank**: Engineering *Nitro Boosts* or *Enraged Regeneration*.
 
 ### 4. Synchronized 278px Center Bars (`14`, `15`, `16`)
-- **14 - Rage Bar ($278 \times 14\text{px}$ at $y = -20$)**: Precise numeric value centered with 3-tier dynamic color shifts: dark red under 25 points (starvation), deep crimson between 25 and 44 points, and bright amber/gold above 45 points (safe rage-dumping threshold for Heroic Strike / Cleave).
-- **15 - Rotational Bar ($278 \times 7\text{px}$ at $y = -7$)**: Static rotational queue indicator occupying the full 278px width without scroll/swipe animation and without remaining time countdown. Features dynamic additive illumination and LibCustomGlow-1.0 Pixel Glow (Gold for *Heroic Strike*, Emerald Green for *Cleave*), fully aligned with the Fury Warrior queueing mechanics.
+- **14 - Rage Bar warTank ($278 \times 14\text{px}$ at $y = -20$)**: Precise numeric value centered with 3-tier dynamic color shifts: dark red under 25 points (starvation), deep crimson between 25 and 44 points, and bright amber/gold above 45 points (safe rage-dumping threshold for Heroic Strike / Cleave).
+- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ at $y = -7$)**: Static rotational queue indicator occupying the full 278px width without scroll/swipe animation and without remaining time countdown. Features dynamic additive illumination and LibCustomGlow-1.0 Pixel Glow (Gold for *Heroic Strike*, Emerald Green for *Cleave*), fully aligned with the Fury Warrior queueing mechanics.
 - **16 - Castbar warTank ($278 \times 20\text{px}$ at $y = +8$)**: Target (or player) castbar. Features left spell icon, contextual **Kick Advisor** spell label (e.g. `Frostbolt [KICK: SHIELD BASH]` in cyan, or `[IMMUNE]` in dark gray), and remaining cast time on the right.
 
 ### 5. Central Text Alerts (`17 - Alerts warTank`)

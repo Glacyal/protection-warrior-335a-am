@@ -37,7 +37,7 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
 
 ## 4. Componenti UI Dettagliati
 
-### 4.1 Barra della Rabbia (`14 - Rage Bar`)
+### 4.1 Barra della Rabbia (`14 - Rage Bar warTank`)
 - **Dimensioni**: 278 x 14 px
 - **Posizione**: X = 0, Y = -20 px
 - **Testo**: `%p` (valore corrente) centrato.
@@ -45,7 +45,7 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
   - `0 - 44 Rage`: Rosso scuro/sangue (Rabbia riservata a Shield Slam, Revenge, Shockwave e Shield Block).
   - `>= 45 Rage`: Transizione istantanea ad ambra dorato (Rabbia in eccedenza: via libera per accodare Heroic Strike o Cleave senza rischiare di prosciugare la risorsa per le abilità di mitigazione e minaccia primaria).
 
-### 4.2 Barra Rotazionale Indicatore di Accodamento (`15 - Rotational Bar`)
+### 4.2 Barra Rotazionale Indicatore di Accodamento (`15 - Rotational Bar warTank`)
 - **Dimensioni**: 278 x 7 px
 - **Posizione**: X = 0, Y = -7 px
 - **Design Statico a Piena Larghezza**: Occupa interamente lo spazio assegnato (278px) con barra base Warrior copper/bronze, **senza animazione di scorrimento/swipe** e **senza testo o numeri del tempo residuo** (timer invisibile, zero clutter).
@@ -107,9 +107,9 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
     - `Alert - Kick Now`: `|cFF00FFFFINTERRUPT: %s!|r` (16pt, Ciano).
     - `Alert - Boss Enraged`: `|cFFFF0000BOSS ENRAGED! POP CD!|r` (18pt, Rosso vivo).
     - `Alert - Wrong Stance`: `|cFFFF1010>> DEFENSIVE STANCE REQUIRED! <<|r` (20pt, Rosso vivido lampeggiante con allarme audio *RaidWarning.ogg* a $y = 64$ px, attivo solo se `UnitAffectingCombat("player") and GetShapeshiftForm() ~= 2`).
-- **Indicatore Icona Postura Difensiva (`04 - Defensive Stance`)**:
+- **Indicatore Icona Postura Difensiva (`04 - Defensive Stance warTank`)**:
   - Posizione: X = -158 px, Y = 0 px (28x28px).
-  - Nascosta in postura corretta (zero visual clutter); attiva esclusivamente in combattimento fuori da Stance 2 con Pixel Glow rosso e label `STANCE` (`04 - Defensive Stance - OutOfStance`).
+  - Nascosta in postura corretta (zero visual clutter); attiva esclusivamente in combattimento fuori da Stance 2 con Pixel Glow rosso e label `STANCE` (`04 - Defensive Stance - OutOfStance warTank`).
 
 ### 4.7 Tracker Debuff Armatura (`19 - Sunder Armor Tracker warTank`)
 - **Dimensioni**: 32 x 32 px

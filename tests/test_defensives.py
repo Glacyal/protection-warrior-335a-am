@@ -16,11 +16,11 @@ def run_tests():
     children_by_id = {c["id"]: c for c in tree["c"]}
 
     # 11 - Shield Wall
-    sw = children_by_id["11 - Shield Wall"]
+    sw = children_by_id["11 - Shield Wall warTank"]
     assert sw["displayIcon"] == "Interface\\Icons\\Ability_Warrior_ShieldWall"
 
     # 12 - Last Stand
-    ls = children_by_id["12 - Last Stand"]
+    ls = children_by_id["12 - Last Stand warTank"]
     assert ls["displayIcon"] == "Interface\\Icons\\Spell_Nature_ShamanRage"
 
     # Shield Block Active (in 01 - Procs warTank)

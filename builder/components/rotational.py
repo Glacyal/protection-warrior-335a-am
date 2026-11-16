@@ -20,15 +20,15 @@ from builder.core.constants import TEXTURE_STATUSBAR, TEXTURE_WHITE8X8
 def build_rotational_auras() -> list[dict]:
     """
     Costruisce e restituisce le aure del gruppo Rotational Bar:
-    - 15 - Rotational Bar (Group 278x7px a y = -7)
-    - Rotational Bar - Background
-    - Rotational Bar - Base Bar
-    - Rotational Bar - Queue Glow
+    - 15 - Rotational Bar warTank (Group 278x7px a y = -7)
+    - Rotational Bar - Background warTank
+    - Rotational Bar - Base Bar warTank
+    - Rotational Bar - Queue Glow warTank
     """
     return [
         # Gruppo contenitore (278x7px a y = -7)
         {
-            "id": "15 - Rotational Bar",
+            "id": "15 - Rotational Bar warTank",
             "uid": "PWHUD_ROTCENTER_GRP",
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
@@ -38,9 +38,9 @@ def build_rotational_auras() -> list[dict]:
             "xOffset": 0,
             "yOffset": -7,
             "controlledChildren": [
-                "Rotational Bar - Background",
-                "Rotational Bar - Base Bar",
-                "Rotational Bar - Queue Glow",
+                "Rotational Bar - Background warTank",
+                "Rotational Bar - Base Bar warTank",
+                "Rotational Bar - Queue Glow warTank",
             ],
             "actions": {
                 "init": {},
@@ -50,9 +50,9 @@ def build_rotational_auras() -> list[dict]:
         },
         # Background Frame (278x7px)
         {
-            "id": "Rotational Bar - Background",
+            "id": "Rotational Bar - Background warTank",
             "uid": "PWHUD_ROTCENTER_BG",
-            "parent": "15 - Rotational Bar",
+            "parent": "15 - Rotational Bar warTank",
             "regionType": "texture",
             "internalVersion": 90,
             "xOffset": 0,
@@ -81,9 +81,9 @@ def build_rotational_auras() -> list[dict]:
         },
         # Base Bar (274x5px statica, piena larghezza, nessun timer, nessuno scorrimento)
         {
-            "id": "Rotational Bar - Base Bar",
+            "id": "Rotational Bar - Base Bar warTank",
             "uid": "PWHUD_ROTCENTER_BASE",
-            "parent": "15 - Rotational Bar",
+            "parent": "15 - Rotational Bar warTank",
             "regionType": "texture",
             "internalVersion": 90,
             "xOffset": 0,
@@ -112,9 +112,9 @@ def build_rotational_auras() -> list[dict]:
         },
         # Rotational Bar - Queue Glow (Overlay dinamico additivo + LibCustomGlow-1.0 Pixel Glow per Heroic Strike / Cleave)
         {
-            "id": "Rotational Bar - Queue Glow",
+            "id": "Rotational Bar - Queue Glow warTank",
             "uid": "PWHUD_ROTCENTER_GLOW",
-            "parent": "15 - Rotational Bar",
+            "parent": "15 - Rotational Bar warTank",
             "regionType": "texture",
             "internalVersion": 90,
             "xOffset": 0,

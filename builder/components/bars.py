@@ -28,7 +28,7 @@ from builder.core.constants import (
 def build_bars_auras() -> list[dict]:
     """
     Costruisce e restituisce le 2 barre principali dell'HUD:
-    - 14 - Rage Bar (Aurabar 278x14px a y = -20)
+    - 14 - Rage Bar warTank (Aurabar 278x14px a y = -20)
     - 16 - Castbar warTank (Aurabar 278x20px a y = +8)
     """
     return [
@@ -36,7 +36,7 @@ def build_bars_auras() -> list[dict]:
         # 14 - RAGE BAR
         # =====================================================================
         {
-            "id": "14 - Rage Bar",
+            "id": "14 - Rage Bar warTank",
             "uid": "PWHUD_RAGEBAR",
             "parent": "Class Warrior (Protection)",
             "regionType": "aurabar",

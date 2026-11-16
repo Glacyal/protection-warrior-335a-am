@@ -150,3 +150,18 @@
   - [x] Aggiornamento sincronizzato di tutti i documenti bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`.
   - [x] Esecuzione e superamento della suite parallela multi-core (8/8 test).
   - [x] Commit Git con messaggio descrittivo.
+- [x] **Task 9: Eliminazione Integrale Sovrapposizioni Nomi (Standardizzazione Suffisso warTank su tutte le Aure 01-19 e Figli)**:
+  - [x] Standardizzazione globale dell'albero WeakAuras: applicazione del suffisso univoco `warTank` a tutti i nodi principali da 01 a 19 e ai relativi figli interni suscettibili di collisione multi-spec (Fury/Arms) o multi-classe:
+    - `02 - Battle Shout warTank` (e figli `Battle Shout - Active warTank`, `Battle Shout - OFF warTank`).
+    - `03 - Commanding Shout warTank` (e figli `Commanding Shout - Active warTank`, `Commanding Shout - OFF warTank`).
+    - `04 - Defensive Stance warTank` (e figlio `04 - Defensive Stance - OutOfStance warTank`).
+    - `11 - Shield Wall warTank` & `12 - Last Stand warTank`.
+    - `14 - Rage Bar warTank`.
+    - `15 - Rotational Bar warTank` (e figli `Rotational Bar - Background warTank`, `Rotational Bar - Base Bar warTank`, `Rotational Bar - Queue Glow warTank`).
+    - `Victory Rush warTank` all'interno di `01 - Procs warTank`.
+  - [x] Aggiornamento `builder/tree.py` e di tutti i moduli in `builder/components/`.
+  - [x] Aggiornamento dei test di regressione (`tests/test_components_integrity.py`, `tests/test_tree_layout.py`, `tests/test_defensives.py`, `tests/test_danger_alerts.py`).
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione automatica in `docs/index.html`.
+  - [x] Aggiornamento sincronizzato di tutti i documenti bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`.
+  - [x] Esecuzione e superamento della suite parallela multi-core (8/8 test).
+  - [x] Commit Git con messaggio descrittivo.

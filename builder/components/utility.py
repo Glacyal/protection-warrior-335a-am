@@ -1134,8 +1134,8 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         if hasTier then table.insert(activeOrder, "08 - Tier Set warTank") end
         if hasEnchant then table.insert(activeOrder, "09 - Enchants warTank") end
         if hasGloves then table.insert(activeOrder, "10 - Gloves warTank") end
-        table.insert(activeOrder, "11 - Shield Wall")
-        table.insert(activeOrder, "12 - Last Stand")
+        table.insert(activeOrder, "11 - Shield Wall warTank")
+        table.insert(activeOrder, "12 - Last Stand warTank")
         if hasBoots then table.insert(activeOrder, "13 - Boots warTank") end
 
         local N = #activeOrder
@@ -1911,7 +1911,7 @@ def build_utility_auras() -> list[dict]:
 
         # 11 - Shield Wall (Spell 871)
         {
-            "id": "11 - Shield Wall",
+            "id": "11 - Shield Wall warTank",
             "uid": "PWHUD_UTIL_SHIELDWALL",
             "parent": "Class Warrior (Protection)",
             "regionType": "icon",
@@ -1953,7 +1953,7 @@ def build_utility_auras() -> list[dict]:
 
         # 12 - Last Stand (Spell 12975)
         {
-            "id": "12 - Last Stand",
+            "id": "12 - Last Stand warTank",
             "uid": "PWHUD_UTIL_LASTSTAND",
             "parent": "Class Warrior (Protection)",
             "regionType": "icon",

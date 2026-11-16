@@ -38,7 +38,7 @@ def build_procs_auras() -> list[dict]:
                 "Sword and Board",
                 "Revenge Ready",
                 "Shield Block Active",
-                "Victory Rush",
+                "Victory Rush warTank",
                 "Emergency Low HP Alert",
                 "Boss Enrage Alert",
                 "Tank Buster Alert",
@@ -163,7 +163,7 @@ def build_procs_auras() -> list[dict]:
         },
         # 4. Victory Rush
         {
-            "id": "Victory Rush",
+            "id": "Victory Rush warTank",
             "uid": "PWHUD_PROC_VICTORY_RUSH",
             "parent": "01 - Procs warTank",
             "regionType": "icon",

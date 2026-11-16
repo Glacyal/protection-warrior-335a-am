@@ -321,7 +321,7 @@ def build_buffs_auras() -> list[dict]:
         # 02 - BATTLE SHOUT (Gruppo Madre a x = -222, y = 0)
         # =====================================================================
         {
-            "id": "02 - Battle Shout",
+            "id": "02 - Battle Shout warTank",
             "uid": "PWHUD_BS_GRP",
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
@@ -329,15 +329,15 @@ def build_buffs_auras() -> list[dict]:
             "xOffset": -222,
             "yOffset": 0,
             "controlledChildren": [
-                "Battle Shout - Active",
-                "Battle Shout - OFF",
+                "Battle Shout - Active warTank",
+                "Battle Shout - OFF warTank",
             ],
         },
         # 02 - Active (mostra timer solo se il buff o BoM è attivo ma con <= 30 secondi)
         {
-            "id": "Battle Shout - Active",
+            "id": "Battle Shout - Active warTank",
             "uid": "PWHUD_BS_ACTIVE",
-            "parent": "02 - Battle Shout",
+            "parent": "02 - Battle Shout warTank",
             "regionType": "icon",
             "internalVersion": 90,
             "xOffset": 0,
@@ -377,9 +377,9 @@ def build_buffs_auras() -> list[dict]:
         },
         # 02 - OFF (Architettura nativa aura2 con showOnMissing e controllo sovrapposizioni BoM/GBoM)
         {
-            "id": "Battle Shout - OFF",
+            "id": "Battle Shout - OFF warTank",
             "uid": "PWHUD_BS_OFF",
-            "parent": "02 - Battle Shout",
+            "parent": "02 - Battle Shout warTank",
             "regionType": "icon",
             "internalVersion": 90,
             "xOffset": 0,
@@ -421,7 +421,7 @@ def build_buffs_auras() -> list[dict]:
         # 03 - COMMANDING SHOUT (Gruppo Madre a x = -190, y = 0)
         # =====================================================================
         {
-            "id": "03 - Commanding Shout",
+            "id": "03 - Commanding Shout warTank",
             "uid": "PWHUD_CS_GRP",
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
@@ -429,15 +429,15 @@ def build_buffs_auras() -> list[dict]:
             "xOffset": -190,
             "yOffset": 0,
             "controlledChildren": [
-                "Commanding Shout - Active",
-                "Commanding Shout - OFF",
+                "Commanding Shout - Active warTank",
+                "Commanding Shout - OFF warTank",
             ],
         },
         # 03 - Active (mostra timer solo se il buff o Blood Pact è attivo ma con <= 30 secondi)
         {
-            "id": "Commanding Shout - Active",
+            "id": "Commanding Shout - Active warTank",
             "uid": "PWHUD_CS_ACTIVE",
-            "parent": "03 - Commanding Shout",
+            "parent": "03 - Commanding Shout warTank",
             "regionType": "icon",
             "internalVersion": 90,
             "xOffset": 0,
@@ -477,9 +477,9 @@ def build_buffs_auras() -> list[dict]:
         },
         # 03 - OFF (Architettura nativa aura2 con showOnMissing e controllo sovrapposizioni Blood Pact)
         {
-            "id": "Commanding Shout - OFF",
+            "id": "Commanding Shout - OFF warTank",
             "uid": "PWHUD_CS_OFF",
-            "parent": "03 - Commanding Shout",
+            "parent": "03 - Commanding Shout warTank",
             "regionType": "icon",
             "internalVersion": 90,
             "xOffset": 0,
@@ -519,7 +519,7 @@ def build_buffs_auras() -> list[dict]:
         # 04 - DEFENSIVE STANCE (Gruppo Madre a x = -158, y = 0)
         # =====================================================================
         {
-            "id": "04 - Defensive Stance",
+            "id": "04 - Defensive Stance warTank",
             "uid": "PWHUD_STANCE_GRP",
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
@@ -527,13 +527,13 @@ def build_buffs_auras() -> list[dict]:
             "xOffset": -158,
             "yOffset": 0,
             "controlledChildren": [
-                "04 - Defensive Stance - OutOfStance",
+                "04 - Defensive Stance - OutOfStance warTank",
             ],
         },
         {
-            "id": "04 - Defensive Stance - OutOfStance",
+            "id": "04 - Defensive Stance - OutOfStance warTank",
             "uid": "PWHUD_STANCE_WARN",
-            "parent": "04 - Defensive Stance",
+            "parent": "04 - Defensive Stance warTank",
             "regionType": "icon",
             "internalVersion": 90,
             "width": 28,

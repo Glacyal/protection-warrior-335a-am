@@ -19,7 +19,7 @@ def run_tests():
     children_by_id = {c["id"]: c for c in tree["c"]}
 
     # Verifiche barre centrali (278px sincronizzate)
-    rage = children_by_id["14 - Rage Bar"]
+    rage = children_by_id["14 - Rage Bar warTank"]
     assert rage["width"] == 278 and rage["height"] == 14
     assert rage["yOffset"] == -20
 
@@ -27,20 +27,20 @@ def run_tests():
     assert cast["width"] == 278 and cast["height"] == 20
     assert cast["yOffset"] == 8
 
-    rot = children_by_id["15 - Rotational Bar"]
+    rot = children_by_id["15 - Rotational Bar warTank"]
     assert rot["yOffset"] == -7
 
     # Verifiche gruppi e icone
     procs = children_by_id["01 - Procs warTank"]
     assert procs["yOffset"] == 52 and procs["regionType"] == "dynamicgroup"
 
-    bs = children_by_id["02 - Battle Shout"]
+    bs = children_by_id["02 - Battle Shout warTank"]
     assert bs["xOffset"] == -222 and bs["yOffset"] == 0
 
-    cs = children_by_id["03 - Commanding Shout"]
+    cs = children_by_id["03 - Commanding Shout warTank"]
     assert cs["xOffset"] == -190 and cs["yOffset"] == 0
 
-    ds = children_by_id["04 - Defensive Stance"]
+    ds = children_by_id["04 - Defensive Stance warTank"]
     assert ds["xOffset"] == -158 and ds["yOffset"] == 0
 
     stats = children_by_id["18 - Stats Panel warTank"]

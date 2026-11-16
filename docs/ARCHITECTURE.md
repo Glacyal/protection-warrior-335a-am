@@ -47,9 +47,9 @@ builder/
 ├── components/                  # Moduli verticali dei 20 componenti HUD
 │   ├── procs.py                 # 01 - Procs warTank (Dynamic Group: Sword & Board, Revenge, Shield Block, VR, Emergency HP, Boss Enrage, Tank Buster)
 │   ├── buffs.py                 # 02 - Battle Shout (x=-222), 03 - Commanding Shout (x=-190), 04 - Defensive Stance (x=-158)
-│   ├── utility.py               # 05-13 - Riga Utility Adattiva (Trinket 1/2, Ring, Cloak, Tier 10, Enchants, Gloves, Shield Wall, Last Stand, Boots)
-│   ├── bars.py                  # 14 - Rage Bar & 16 - Castbar warTank (con Kick Advisor integrato)
-│   ├── rotational.py            # 15 - Rotational Bar (Indicatore statico di accodamento 278x7px per HS/Cleave con Pixel Glow)
+│   ├── utility.py               # 05-13 - Riga Utility Adattiva (Trinket 1/2, Ring, Cloak, Tier 10, Enchants, Gloves, Shield Wall warTank, Last Stand warTank, Boots)
+│   ├── bars.py                  # 14 - Rage Bar warTank & 16 - Castbar warTank (con Kick Advisor integrato)
+│   ├── rotational.py            # 15 - Rotational Bar warTank (Indicatore statico di accodamento 278x7px per HS/Cleave con Pixel Glow)
 │   ├── alerts.py                # 17 - Alerts warTank (Gruppo avvisi sonori e visivi per emergenze difensive e interrupt)
 │   ├── stats.py                 # 18 - Stats Panel warTank (Pannello 88x60px difensivo: Armor, Def, Block, Parry/Dodge, HP)
 │   ├── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px a x=160, y=-7 con supporto Expose Armor & Acid Spit)
@@ -108,12 +108,12 @@ Le tre barre orizzontali condividono la larghezza calibrata di **278 px**:
 | :--- | :--- | :--- | :--- | :--- |
 | **Root** | `Class Warrior (Protection)` | Scale 1.2 | X: 0, Y: -190 | Gruppo master contenitore con icona Defensive Stance e bootstrap core |
 | **01** | `01 - Procs warTank` | 34x34 px (icone) | X: 0, Y: +52 | Dynamic group orizzontale centrato: Sword & Board, Revenge, Shield Block, VR, Low HP Alert, Boss Enrage, Tank Buster |
-| **02** | `02 - Battle Shout` | 28x28 px | X: -222, Y: 0 | Monitoraggio buff; soppresso intelligentemente da Blessing of Might del Paladino |
-| **03** | `03 - Commanding Shout`| 28x28 px | X: -190, Y: 0 | Buff salute; soppresso intelligentemente da Blood Pact dell'Imp del Warlock |
-| **04** | `04 - Defensive Stance`| 28x28 px | X: -158, Y: 0 | Allerta visiva immediata e glow rosso se in combat fuori dalla Postura Difensiva |
-| **05-13**| Utility Row (10 Icone) | 28x28 px | Y: -45, X centrato | Trinket 1/2, Ring, Cloak, Tier 10, Enchants (Blade Ward/Blood Draining), Gloves, Shield Wall (-60%), Last Stand (+30%), Boots/Enraged Regen |
-| **14** | `14 - Rage Bar` | 278x14 px | X: 0, Y: -20 | Barra risorsa con cambio colore a soglia Heroic Strike/Cleave (>= 45 Rage) |
-| **15** | `15 - Rotational Bar` | 278x7 px | X: 0, Y: -7 | Indicatore statico di accodamento rotazionale a 278x7px senza scorrimento e senza timer numerico; Pixel Glow LibCustomGlow-1.0 oro per Heroic Strike e verde smeraldo per Cleave |
+| **02** | `02 - Battle Shout warTank` | 28x28 px | X: -222, Y: 0 | Monitoraggio buff; soppresso intelligentemente da Blessing of Might del Paladino |
+| **03** | `03 - Commanding Shout warTank`| 28x28 px | X: -190, Y: 0 | Buff salute; soppresso intelligentemente da Blood Pact dell'Imp del Warlock |
+| **04** | `04 - Defensive Stance warTank`| 28x28 px | X: -158, Y: 0 | Allerta visiva immediata e glow rosso se in combat fuori dalla Postura Difensiva |
+| **05-13**| Utility Row (10 Icone) | 28x28 px | Y: -45, X centrato | Trinket 1/2, Ring, Cloak, Tier 10, Enchants (Blade Ward/Blood Draining), Gloves, Shield Wall warTank (-60%), Last Stand warTank (+30%), Boots/Enraged Regen |
+| **14** | `14 - Rage Bar warTank` | 278x14 px | X: 0, Y: -20 | Barra risorsa con cambio colore a soglia Heroic Strike/Cleave (>= 45 Rage) |
+| **15** | `15 - Rotational Bar warTank` | 278x7 px | X: 0, Y: -7 | Indicatore statico di accodamento rotazionale a 278x7px senza scorrimento e senza timer numerico; Pixel Glow LibCustomGlow-1.0 oro per Heroic Strike e verde smeraldo per Cleave |
 | **16** | `16 - Castbar warTank` | 278x20 px | X: 0, Y: +8 | Barra di lancio target con **Kick Advisor integrato**: rileva lanci interrompibili vs immuni e suggerisce Shield Bash, Pummel o Stun in base a stance e scudo |
 | **17** | `17 - Alerts warTank` | Testo 20pt | X: 0, Y: +78 | Avvisi sonori e testuali per emergenza difensiva, debuff letali e richiesta interrupt |
 | **18** | `18 - Stats Panel warTank` | 88x60 px | X: -190, Y: -45 | Pannello difensivo a 5 righe stile Fury Warrior (Def 540 Cap, Armor DR%, CTC 102.4%, Block % & SBV, Hit & Exp) |

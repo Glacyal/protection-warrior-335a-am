@@ -46,10 +46,10 @@ protection-warrior-335a-am/
 │   │   └── helpers.py               # Generatori di subtext dual-key e helper grafici
 │   └── components/                  # Moduli dedicati ai singoli componenti dell'HUD (identici a Fury)
 │       ├── procs.py                 # 01 - Procs warTank (Dynamic Group orizzontale a 7 icone 34x34 a y = 52)
-│       ├── buffs.py                 # 02 - Battle Shout, 03 - Commanding Shout, 04 - Defensive Stance (x = -222, -190, -158, y = 0)
-│       ├── utility.py               # 05-13 - Utility Row (Monili, Anello, Mantello, Tier, Incanti, Guanti, Shield Wall, Last Stand, Boots) a y = -45
-│       ├── bars.py                  # 14 - Rage Bar (278x14px a y = -20) & 16 - Castbar warTank (278x20px a y = +8 con Kick Advisor)
-│       ├── rotational.py            # 15 - Rotational Bar (Indicatore statico di accodamento 278x7px a y = -7 con Pixel Glow HS/Cleave)
+│       ├── buffs.py                 # 02 - Battle Shout warTank, 03 - Commanding Shout warTank, 04 - Defensive Stance warTank (x = -222, -190, -158, y = 0)
+│       ├── utility.py               # 05-13 - Utility Row (Monili, Anello, Mantello, Tier, Incanti, Guanti, Shield Wall warTank, Last Stand warTank, Boots) a y = -45
+│       ├── bars.py                  # 14 - Rage Bar warTank (278x14px a y = -20) & 16 - Castbar warTank (278x20px a y = +8 con Kick Advisor)
+│       ├── rotational.py            # 15 - Rotational Bar warTank (Indicatore statico di accodamento 278x7px a y = -7 con Pixel Glow HS/Cleave)
 │       ├── alerts.py                # 17 - Alerts warTank (Avvisi testuali centrali a y = 78)
 │       ├── stats.py                 # 18 - Stats Panel warTank (Pannello 88x60px a x = -190, y = -45)
 │       └── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px a x = 160, y = -7)
