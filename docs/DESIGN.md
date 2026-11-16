@@ -75,7 +75,7 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
 
 #### Legenda & Significato delle Sigle del Pannello
 - **`Def` (Defense Skill)**: Abilità di difesa del personaggio (`base + rating`). A livello 80 il cap di immunità dai colpi critici dei boss Lv.83 è **540** (riduce del 5.6% il crit subito). In dungeon eroici il cap è **535**.
-- **`Armor` (Armatura)**: Armatura effettiva del player; tra parentesi la percentuale di riduzione danno fisico contro boss Lv.83 ($\text{DR}\% = \frac{\text{Armor}}{\text{Armor} + 16635} \times 100$). Hard cap a 49.905 armatura (75% DR).
+- **`Armor` (Armatura & DR% Contestuale)**: Armatura effettiva del player; tra parentesi la percentuale di riduzione danno fisico contestuale: calcolata con costante Blizzard $K = 15232.5$ a Lv.80 (es. 25.253 armatura $\implies \mathbf{62.4\%}$, identico al $62.38\%$ visualizzato nel tooltip in-game della scheda personaggio) e con $K = 16635$ contro Raid Boss Lv.83 / Skull ($\implies \mathbf{60.3\%}$, mitigazione effettiva sul boss). Hard cap al 75.0% DR.
 - **`CTC` (Combat Table Coverage)**: Copertura totale della tabella colpi: $\text{Dodge} + \text{Parry} + \text{Block} + \text{BossMiss}$. A $\ge 102.4\%$ il tank è *Unhittable* (tutti i colpi bianchi vengono mitigati o evitati). Include debuff non-stacking (*Insect Swarm* o *Scorpid Sting* max +3%).
 - **`Block`**: Percentuale di parare un colpo con lo scudo (durante *Shield Block* sale al 100%).
 - **`SBV` (Shield Block Value)**: Quantità netta di danno fisico assorbito da ciascun blocco; scala anche il danno e la minaccia di *Shield Slam*.

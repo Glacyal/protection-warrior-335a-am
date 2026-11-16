@@ -19,16 +19,20 @@ def run_tests():
     assert HIT_CAP_MELEE == 8.0
     assert EXPERTISE_SOFT_CAP == 26
 
-    # Test formula Armor DR
-    armor = 27450
-    k = 16635 # Costante livello 80 WotLK
-    armor_dr = (armor / (armor + k)) * 100
-    assert 62.0 <= armor_dr <= 63.0, f"Armor DR inattesa: {armor_dr}"
+    # Test formula Armor DR (Opzione 1: K=15232.5 su Lv.80 / scheda PG; K=16635 su Raid Boss Lv.83)
+    armor_ingame = 25253
+    k_80 = 400 + 85 * 80 + 4.5 * 85 * (80 - 59) # 15232.5
+    dr_80 = (armor_ingame / (armor_ingame + k_80)) * 100
+    assert abs(dr_80 - 62.38) < 0.05, f"Armor DR Lv.80 attesa ~62.38%, ottenuta {dr_80:.2f}%"
+
+    k_83 = 16635
+    dr_83 = (armor_ingame / (armor_ingame + k_83)) * 100
+    assert abs(dr_83 - 60.29) < 0.05, f"Armor DR Lv.83 attesa ~60.29%, ottenuta {dr_83:.2f}%"
 
     # Test formula EHP
     hp = 45000
-    ehp = hp / (1 - (armor_dr / 100))
-    assert 115000 <= ehp <= 125000, f"EHP inattesa: {ehp}"
+    ehp = hp / (1 - (dr_83 / 100))
+    assert 110000 <= ehp <= 125000, f"EHP inattesa: {ehp}"
 
     # Test formula CTC (Combat Table Coverage)
     dodge = 28.5
@@ -50,7 +54,7 @@ def run_tests():
     assert "Scorpid Sting" in lua_code
     assert "Heroic Presence" in lua_code
 
-    print(f"[OK] test_stats_panel completato: Armor DR={armor_dr:.1f}%, EHP={ehp:.0f}, CTC={ctc:.1f}% e stile Fury Warrior verificati.")
+    print(f"[OK] test_stats_panel completato: Armor DR Lv.80={dr_80:.1f}%, Lv.83={dr_83:.1f}%, EHP={ehp:.0f}, CTC={ctc:.1f}% e stile Fury Warrior verificati.")
     return True
 
 if __name__ == "__main__":

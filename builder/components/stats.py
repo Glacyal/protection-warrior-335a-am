@@ -21,9 +21,14 @@ def make_stats_custom_text() -> str:
     end
 
     -- 0. CONTESTO BERSAGLIO & DEBUFFS (Insect Swarm, Scorpid Sting -> Non-stacking +3.0% Boss Miss)
-    local targetLevel = 83
+    -- Opzione 1: Default Lv.80 (allineato alla scheda del personaggio in-game)
+    -- e scalatura automatica a Lv.83 su Raid Boss / Skull in tempo reale
+    local pLvl = UnitLevel("player") or 80
+    local targetLevel = pLvl
     local targetMissBonus = 0
+    local hasHostileTarget = false
     if UnitExists("target") and not UnitIsDead("target") and UnitCanAttack("player", "target") then
+        hasHostileTarget = true
         local lvl = UnitLevel("target")
         if lvl and lvl > 0 then
             targetLevel = lvl
@@ -49,7 +54,7 @@ def make_stats_custom_text() -> str:
     -- 1. DEFENSE SKILL & CRIT IMMUNITY (Cap: 540 per Boss Raid Lv.83, 535 per Eroiche Lv.82)
     local baseDef, armorDef = UnitDefense("player")
     local totalDef = (baseDef or 0) + (armorDef or 0)
-    local reqDef = (targetLevel >= 83) and 540 or ((targetLevel == 82) and 535 or 400)
+    local reqDef = (hasHostileTarget and targetLevel == 82) and 535 or 540
     local defStr
     if totalDef >= reqDef then
         defStr = string.format("|cFF22C55E%d (CAP)|r", totalDef)

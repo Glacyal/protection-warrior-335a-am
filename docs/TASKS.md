@@ -114,3 +114,10 @@
   - [x] Aggiornamento test di regressione (`tests/test_danger_alerts.py`, `tests/test_components_integrity.py`).
   - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e verifica superamento suite 8/8 test paralleli.
   - [x] Aggiornamento simulatore web `docs/index.html`: icona stance nascosta di default e nel preset standard; visibile con bordo rosso pulsante solo nel preset `stance_fail`.
+- [x] **Task 5: Calcolo Dinamico Armor Physical DR% Contestuale al Bersaglio (Opzione 1: Default Lv.80 Scheda PG, Lv.83 su Raid Boss/Skull)**:
+  - [x] Aggiornamento logica Lua in `builder/components/stats.py`: se non esiste un target ostile attaccabile, il livello di riferimento predefinito diventa `UnitLevel("player") or 80` anziché 83 fisso.
+  - [x] Allineamento matematico a $K_{80} = 15232.5$: in assenza di target (o contro bersagli Lv.80), la percentuale calcolata per 25.253 di armatura è $62.4\%$, esattamente corrispondente al $62.38\%$ visualizzato nel tooltip in-game della scheda del personaggio.
+  - [x] Rilevamento dinamico Raid Boss / Skull ($lvl == -1$ o $lvl \ge 83$): adozione in tempo reale di $K_{83} = 16635$ per mostrare la mitigazione fisica effettiva sul boss ($60.3\%$).
+  - [x] Aggiornamento test suite in `tests/test_stats_panel.py` con verifica formale sia di $K_{80} = 15232.5$ che di $K_{83} = 16635$.
+  - [x] Rigenerazione stringa `IMPORT_STRING_v5.21.8.txt` e sincronizzazione in `docs/index.html`.
+  - [x] Aggiornamento documentazione tecnica (`docs/ARCHITECTURE.md`, `docs/DESIGN.md`, `README.md`, `HANDOFF.md`).

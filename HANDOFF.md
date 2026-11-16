@@ -118,7 +118,7 @@ protection-warrior-335a-am/
 ### 4.3 Motore Statistiche Tanking Stile Fury Warrior & Buff/Debuff Non-Stacking
 - Formattazione a 5 righe con etichette bianche `|cFFFFFFFFLabel:|r <Valore>`:
   1. `Def:` (540 Cap per Lv.83, 535 per Lv.82).
-  2. `Armor:` con Physical DR% contro boss Lv.83 ($K=16635$, hard cap 75%).
+  2. `Armor:` con Physical DR% contestuale ($K=15232.5$ a Lv.80 default pari a 62.4% come scheda PG; $K=16635$ su Raid Boss Lv.83 pari a 60.3%, hard cap 75%).
   3. `CTC:` Combat Table Coverage con motore non-stacking per *Insect Swarm* e *Scorpid Sting* (+3.0% Miss max).
   4. `Block:` con % di blocco e Shield Block Value (SBV).
   5. `Hit:` con Draenei *Heroic Presence* (+1.0%) ed `Exp:` con Soft Cap 26 ed Hard Cap 56.
@@ -130,7 +130,7 @@ protection-warrior-335a-am/
 | Sigla | Termine Completo | Descrizione Meccanica e Formule WotLK |
 | :--- | :--- | :--- |
 | **`DEF`** | **Defense Skill** | Skill di difesa (`base + rating`). Cap **540** per immunità dai colpi critici dei boss Lv.83 (-5.6% crit subito), **535** in Eroiche Lv.82. |
-| **`ARM`** | **Effective Armor & Physical DR%** | Armatura effettiva del player. Calcola la riduzione del danno fisico contro boss Lv.83: $\text{DR}\% = \frac{\text{Armor}}{\text{Armor} + 16635} \times 100$. Hard cap al 75.0% (49.905 armatura). |
+| **`ARM`** | **Effective Armor & Physical DR%** | Armatura effettiva del player. Calcola la riduzione del danno fisico contestuale: con costante Blizzard $K = 15232.5$ a Lv.80 default (25.253 armatura $\implies \mathbf{62.4\%}$, identico alla scheda PG in-game) e $K = 16635$ contro Raid Boss Lv.83 ($\implies \mathbf{60.3\%}$, mitigazione effettiva). Hard cap al 75.0%. |
 | **`CTC`** | **Combat Table Coverage** | Copertura totale della tabella colpi: $\text{Dodge} + \text{Parry} + \text{Block} + \text{BossMiss}$. A $\ge \mathbf{102.4\%}$ il tank è *Unhittable* (nessun colpo normale subito). Include debuff non-stacking (*Insect Swarm* / *Scorpid Sting* max +3%). |
 | **`Block`** | **Block Chance** | Percentuale di blocco con lo scudo. Raggiunge il 100% durante l'abilità attiva *Shield Block* (10s). |
 | **`SBV`** | **Shield Block Value** | Quantità fissa di danno assorbito per singolo blocco. Moltiplicatore primario che scala danno e threat di *Shield Slam*. |
