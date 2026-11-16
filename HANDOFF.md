@@ -129,6 +129,11 @@ protection-warrior-335a-am/
   4. `Block:` with block chance % and Shield Block Value (SBV).
   5. `Hit:` with Draenei *Heroic Presence* (+1.0%) and `Exp:` with Soft Cap 26 and Hard Cap 56.
 
+### 4.6 Weapon Proc Enchant Filtering (Slot 16)
+- **Strict Proc-Only Visibility**: `09 - Enchants warTank` is exclusively displayed when an enchantment with actual combat procs is present on the Main-Hand weapon (Slot 16): *Blade Ward*, *Blood Draining* (stacks 1-5 & emergency heal), *Mongoose*, *Berserking*, *Executioner*, *Crusader*, *Lifeward*, *Black Magic*, *Icebreaker*, *Giant Slayer*, *Deathfrost*, *Unholy Weapon*, *Fiery Weapon*, *Lifestealing*.
+- **Static Enchant Suppression**: Static enhancements (*Titanguard* +30 Stamina, *Accuracy* +25 Hit/+25 Crit, *Titanium Weapon Chain* +28 Hit/-50% Disarm, *Superior Potency* +65 AP, *Exceptional Agility* +26 Agi, *Major Defense* +12 Def, etc.) or weapons with no enchant strictly evaluate `_G.PWHUD_CheckEnchantsEquipped() == false`.
+- **Seamless Row Auto-Centering**: When suppressed, `09 - Enchants warTank` is excluded from `activeOrder` in `_G.PWHUD_UpdateUtilityRowPositions()`, automatically re-centering the remaining utility icons without an empty gap.
+
 ### 4.5 Revenge Ready Engine & Dynamic Refresh
 - **Internal 5.0s Window with CLEU Tracking**: Subscribed to `COMBAT_LOG_EVENT_UNFILTERED` detecting incoming `DODGE`, `PARRY`, and `BLOCK` (`blocked > 0`) on the player.
 - **Dynamic Real-Time Refresh**: Each subsequent avoid or block immediately resets the internal timer back to full 5.0 seconds.

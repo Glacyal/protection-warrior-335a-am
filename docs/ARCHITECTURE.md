@@ -111,7 +111,7 @@ Le tre barre orizzontali condividono la larghezza calibrata di **278 px**:
 | **02** | `02 - Battle Shout warTank` | 28x28 px | X: -222, Y: 0 | Monitoraggio buff; soppresso intelligentemente da Blessing of Might del Paladino |
 | **03** | `03 - Commanding Shout warTank`| 28x28 px | X: -190, Y: 0 | Buff salute; soppresso intelligentemente da Blood Pact dell'Imp del Warlock |
 | **04** | `04 - Defensive Stance warTank`| 28x28 px | X: -158, Y: 0 | Allerta visiva immediata e glow rosso se in combat fuori dalla Postura Difensiva |
-| **05-13**| Utility Row (10 Icone) | 28x28 px | Y: -45, X centrato | Trinket 1/2, Ring, Cloak, Tier 10, Enchants (Blade Ward/Blood Draining), Gloves, Shield Wall warTank (-60%), Last Stand warTank (+30%), Boots/Enraged Regen |
+| **05-13**| Utility Row (10 Icone) | 28x28 px | Y: -45, X centrato | Trinket 1/2, Ring, Cloak, Tier 10, Enchants (Solo incanti con proc: Blade Ward/Blood Draining/Mongoose; soppresso con incanti statici), Gloves, Shield Wall warTank (-60%), Last Stand warTank (+30%), Boots/Enraged Regen |
 | **14** | `14 - Rage Bar warTank` | 278x14 px | X: 0, Y: -20 | Barra risorsa con cambio colore a soglia Heroic Strike/Cleave (>= 45 Rage) |
 | **15** | `15 - Rotational Bar warTank` | 278x7 px | X: 0, Y: -7 | Indicatore statico di accodamento rotazionale a 278x7px senza scorrimento e senza timer numerico; Pixel Glow LibCustomGlow-1.0 oro per Heroic Strike e verde smeraldo per Cleave |
 | **16** | `16 - Castbar warTank` | 278x20 px | X: 0, Y: +8 | Barra di lancio target con **Kick Advisor integrato**: rileva lanci interrompibili vs immuni e suggerisce Shield Bash, Pummel o Stun in base a stance e scudo |

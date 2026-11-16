@@ -129,6 +129,11 @@ protection-warrior-335a-am/
   4. `Block:` con % di blocco e Shield Block Value (SBV).
   5. `Hit:` con Draenei *Heroic Presence* (+1.0%) ed `Exp:` con Soft Cap 26 ed Hard Cap 56.
 
+### 4.6 Filtraggio Incanti Arma Proccabili (Slot 16)
+- **Visibilità Esclusiva per Incanti con Proc**: `09 - Enchants warTank` compare solo se sull'arma principale (Slot 16) è presente un incantesimo con proc di combattimento attivo: *Blade Ward*, *Blood Draining* (stack 1-5 e cura d'emergenza), *Mongoose*, *Berserking*, *Executioner*, *Crusader*, *Lifeward*, *Black Magic*, *Icebreaker*, *Giant Slayer*, *Deathfrost*, *Unholy Weapon*, *Fiery Weapon*, *Lifestealing*.
+- **Soppressione Integrale Incanti Statici**: Tutti gli incanti puramente statistici (*Titanguard* +30 Stamina, *Accuracy* +25 Hit/+25 Crit, *Titanium Weapon Chain* +28 Hit/-50% Disarm, *Superior Potency* +65 AP, *Exceptional Agility* +26 Agi, *Major Defense* +12 Def, ecc.) o armi prive di incanto valutano rigorosamente `_G.PWHUD_CheckEnchantsEquipped() == false`.
+- **Ricentratura Dinamica Naturale**: In caso di soppressione, `09 - Enchants warTank` viene escluso da `activeOrder` in `_G.PWHUD_UpdateUtilityRowPositions()`, ricentrando simmetricamente le restanti icone utility senza lasciare spazi vuoti.
+
 ### 4.5 Motore Revenge Ready & Refresh Dinamico
 - **Finestra Interna di 5.0s con Tracking CLEU**: Ascolto in tempo reale su `COMBAT_LOG_EVENT_UNFILTERED` per Schivata (`DODGE`), Parata (`PARRY`) e Blocco (`BLOCK` o `blocked > 0`) subiti dal giocatore.
 - **Refresh Dinamico in Tempo Reale**: Ogni nuova schivata, parata o blocco mentre Revenge è utilizzabile ripristina istantaneamente il timer a 5,0 secondi pieni.

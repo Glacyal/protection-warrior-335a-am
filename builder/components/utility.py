@@ -335,13 +335,30 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         [3225] = { name = "Executioner", spellId = 42976, dur = 15, icon = "Interface\\Icons\\INV_Sword_48" },
         [1900] = { name = "Crusader", spellId = 20007, dur = 15, icon = "Interface\\Icons\\Spell_Holy_BlessingOfProtection" },
         [3830] = { name = "Lifeward", spellId = 60691, dur = 10, icon = "Interface\\Icons\\Spell_Holy_Restoration" },
+        [3790] = { name = "Black Magic", spellId = 59626, dur = 10, icon = "Interface\\Icons\\Spell_Shadow_ShadowBolt" },
+        [3239] = { name = "Icebreaker", spellId = 44525, dur = 5, icon = "Interface\\Icons\\Spell_Frost_FrostNova" },
+        [3251] = { name = "Giant Slayer", spellId = 44578, dur = 10, icon = "Interface\\Icons\\Ability_Racial_Avatar" },
+        [3273] = { name = "Deathfrost", spellId = 46578, dur = 8, icon = "Interface\\Icons\\Spell_Frost_FrostArmor" },
+        [1898] = { name = "Unholy Weapon", spellId = 20004, dur = 10, icon = "Interface\\Icons\\Spell_Shadow_ShadowWordDominate" },
+        [803]  = { name = "Fiery Weapon", spellId = 13897, dur = 5, icon = "Interface\\Icons\\Spell_Fire_FlameBlades" },
+        [1899] = { name = "Lifestealing", spellId = 20005, dur = 5, icon = "Interface\\Icons\\Spell_Shadow_LifeDrain02" },
     }
     _G.PWHUD_StaticWeaponEnchants = {
-        [195]  = true, -- Titanguard (+30 Stamina)
+        [3851] = true, -- Titanguard (+30 Stamina)
+        [195]  = true, -- Titanguard legacy
         [3788] = true, -- Accuracy (+25 Hit & +25 Crit)
         [3731] = true, -- Titanium Weapon Chain (+28 Hit & -50% Disarm)
         [2667] = true, -- Superior Potency (+65 Attack Power 1H)
         [1103] = true, -- Exceptional Agility (+26 Agility)
+        [1944] = true, -- Major Defense (+12 Defense)
+        [3834] = true, -- Mighty Spellpower (+63 SP)
+        [3827] = true, -- Massacre (+110 AP 2H)
+        [3247] = true, -- Scourgebane (+140 AP vs Undead)
+        [2674] = true, -- Greater Savagery (+85 AP 2H)
+        [2666] = true, -- Potency (+20 Strength)
+        [805]  = true, -- Major Striking (+7 Damage)
+        [1897] = true, -- Superior Striking (+5 Damage)
+        [249]  = true, -- Greater Striking (+4 Damage)
         [0]    = true, -- Nessun incanto
     }
     _G.PWHUD_WeaponState = _G.PWHUD_WeaponState or {
@@ -956,26 +973,79 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         cache.time = now
 
         local itemLink = GetInventoryItemLink("player", 16)
-        local enchantID = itemLink and tonumber(itemLink:match("item:%d+:(%d+)"))
-        if enchantID and _G.PWHUD_WeaponEnchantDB[enchantID] then
-            cache.hasEnchant = true
-            return true
+        if not itemLink then
+            cache.hasEnchant = false
+            return false
         end
 
+        local enchantID = tonumber(itemLink:match("item:%d+:(%d+)"))
+        if enchantID and enchantID > 0 then
+            if _G.PWHUD_WeaponEnchantDB and _G.PWHUD_WeaponEnchantDB[enchantID] then
+                cache.hasEnchant = true
+                return true
+            end
+            if _G.PWHUD_StaticWeaponEnchants and _G.PWHUD_StaticWeaponEnchants[enchantID] then
+                cache.hasEnchant = false
+                return false
+            end
+        elseif not enchantID or enchantID == 0 then
+            cache.hasEnchant = false
+            return false
+        end
+
+        -- Check active player buffs for known weapon proc auras
         local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
         local bList = buffs and buffs.list or {}
         for _, b in ipairs(bList) do
             local sId = b.spellId
             local name = b.name or ""
-            if sId == 64440 or sId == 64442 or sId == 64568 or sId == 28093 or sId == 59620 or
-               name:find("Blade Ward") or name:find("Blood Reserve") or name:find("Mongoose") then
+            if sId == 64440 or sId == 64442 or sId == 64568 or sId == 28093 or sId == 59620 or sId == 42976 or sId == 20007 or sId == 60691 or sId == 59626 or
+               name:find("Blade Ward") or name:find("Guardiano") or
+               name:find("Blood Reserve") or name:find("Riserva") or
+               name:find("Blood Draining") or name:find("Drenaggio") or
+               name:find("Lightning Speed") or name:find("Velocit") or name:find("Mongoose") or name:find("Mangusta") or
+               name:find("Berserk") or name:find("Executioner") or name:find("Boia") or
+               name:find("Holy Strength") or name:find("Forza Sacra") or name:find("Crusader") or
+               name:find("Lifeward") or name:find("Salvavita") or
+               name:find("Black Magic") or name:find("Magia Nera") then
                 cache.hasEnchant = true
                 return true
             end
         end
 
-        cache.hasEnchant = true
-        return true
+        -- Tooltip scanning fallback for dynamic proc enchant detection on green text
+        if not _G.PWHUD_EnchantScanTooltip then
+            local tt = CreateFrame("GameTooltip", "PWHUD_EnchantScanTooltip", nil, "GameTooltipTemplate")
+            tt:SetOwner(WorldFrame, "ANCHOR_NONE")
+            _G.PWHUD_EnchantScanTooltip = tt
+        end
+        local tt = _G.PWHUD_EnchantScanTooltip
+        tt:ClearLines()
+        tt:SetInventoryItem("player", 16)
+        for i = 1, tt:NumLines() do
+            local fontString = _G["PWHUD_EnchantScanTooltipTextLeft" .. i]
+            if fontString then
+                local text = fontString:GetText()
+                local r, g, b = fontString:GetTextColor()
+                if text and r and g and b and (g > 0.7 and r < 0.3 and b < 0.3) then
+                    local t = text:lower()
+                    if t:find("chance") or t:find("probabilit") or t:find("proc") or
+                       t:find("blade ward") or t:find("guardiano") or
+                       t:find("blood draining") or t:find("drenaggio") or
+                       t:find("mongoose") or t:find("mangusta") or
+                       t:find("berserk") or t:find("executioner") or t:find("boia") or
+                       t:find("crusader") or t:find("crociato") or
+                       t:find("lifeward") or t:find("salvavita") or
+                       t:find("black magic") or t:find("magia nera") then
+                        cache.hasEnchant = true
+                        return true
+                    end
+                end
+            end
+        end
+
+        cache.hasEnchant = false
+        return false
     end
 
     _G.PWHUD_CheckEnchants = function()
@@ -1018,9 +1088,15 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         end
 
         -- 5. Check Blood Reserve Stacks (1 to 5)
-        local br = buffs and (buffs.bySpellId[64440] or buffs.byName["Blood Reserve"])
+        local br = buffs and (buffs.bySpellId[64440] or buffs.byName["Blood Reserve"] or buffs.byName["Riserva di Sangue"])
         if br and br.count and br.count > 0 then
             return "STACKS", 0, 0, br.count, "Interface\\Icons\\Spell_Shadow_BloodBoil"
+        end
+
+        local itemLink = GetInventoryItemLink("player", 16)
+        local enchantID = itemLink and tonumber(itemLink:match("item:%d+:(%d+)"))
+        if enchantID and _G.PWHUD_WeaponEnchantDB and _G.PWHUD_WeaponEnchantDB[enchantID] then
+            defIcon = _G.PWHUD_WeaponEnchantDB[enchantID].icon or defIcon
         end
 
         return "READY", 0, 0, 0, defIcon

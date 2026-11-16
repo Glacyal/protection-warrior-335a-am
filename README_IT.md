@@ -53,7 +53,7 @@ Centratura automatica orizzontale adattiva sotto la barra della rabbia con icone
 - **06b - Ring warTank**: Rilevamento anello tanking (*Ashen Band of Endless Courage*).
 - **07 - Cloak warTank**: Paracadute/Flexweave e incanti mantello.
 - **08 - Tier Set warTank**: Tracciamento bonus set T9 e T10 Prot (*Ymirjar Lord* 2P/4P).
-- **09 - Enchants warTank**: Incanti arma tanking (*Blade Ward*, *Blood Draining*, *Mongoose*).
+- **09 - Enchants warTank**: Monitoraggio incanti arma proccabili (*Blade Ward*, *Blood Draining*, *Mongoose*, *Berserking*, ecc.). Visibile esclusivamente quando l'arma equipaggia un incanto che può realmente proccare; soppresso e nascosto automaticamente in presenza di incanti statici (+30 Stamina Titanguard, +25 Hit/+25 Crit Accuracy, Titanium Weapon Chain, +26 Agility, +65 AP) o nessun incanto, con ricalcolo e ricentratura automatica della barra utility.
 - **10 - Gloves warTank**: *Reticulated Armor Webbing* (+885 Armatura) o *Acceleratori Ipersonici*.
 - **11 - Shield Wall warTank**: Spell 871 (-60% DR per 12s, swipe durata e CD).
 - **12 - Last Stand warTank**: Spell 12975 (+30% HP per 20s, swipe durata e CD).

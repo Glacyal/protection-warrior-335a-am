@@ -150,6 +150,18 @@
   - [x] Aggiornamento sincronizzato di tutti i documenti bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`.
   - [x] Esecuzione e superamento della suite parallela multi-core (8/8 test).
   - [x] Commit Git con messaggio descrittivo.
+- [ ] **Task 11: Fix e Perfezionamento di Revenge Ready (Timer Interno 5.0s, Refresh Dinamico Schivata/Parata/Blocco, Eliminazione Glitch Glow con LibCustomGlow-1.0 & Standardizzazione warTank)**:
+  - [ ] Ridenominazione e standardizzazione ID da `Revenge Ready` a `Revenge Ready warTank` (UID `PWHUD_PROC_REVENGE`) in `builder/components/procs.py`.
+  - [ ] Implementazione del motore event-driven `_G.PWHUD_Revenge` con listener `COMBAT_LOG_EVENT_UNFILTERED`:
+    - Rilevamento in tempo reale di Schivata (`DODGE`), Parata (`PARRY`) o Blocco (`BLOCK` o `blocked > 0`) subiti dal giocatore con impostazione finestra `start = GetTime(), dur = 5.0`.
+    - Meccanica di **Refresh Dinamico**: ogni nuova schivata/parata/blocco durante la disponibilità ricarica istantaneamente il timer a 5,0s.
+    - Azzeramento immediato al lancio di Revenge (`SPELL_CAST_SUCCESS` per spell ID 57823, 6572, ecc.).
+  - [ ] Integrazione dello swipe circolare nativo (`customDuration` che ritorna `5.0, start + 5.0`) e visualizzazione del conto alla rovescia in secondi (`%p` a dimensione 10) con label `REV` centrata.
+  - [ ] Sostituzione definitiva del glow nativo difettoso (causa della linea gialla congelata) con **`LibCustomGlow-1.0` Pixel Glow arancione/ambra** (`0.95, 0.45, 0.10, 1.0`) e arresto garantito `LCG.PixelGlow_Stop` in `actions.finish`.
+  - [ ] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [ ] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`).
+  - [ ] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [ ] Commit Git con messaggio descrittivo.
 - [x] **Task 9: Eliminazione Integrale Sovrapposizioni Nomi (Standardizzazione Suffisso warTank su tutte le Aure 01-19 e Figli)**:
   - [x] Standardizzazione globale dell'albero WeakAuras: applicazione del suffisso univoco `warTank` a tutti i nodi principali da 01 a 19 e ai relativi figli interni suscettibili di collisione multi-spec (Fury/Arms) o multi-classe:
     - `02 - Battle Shout warTank` (e figli `Battle Shout - Active warTank`, `Battle Shout - OFF warTank`).
@@ -164,6 +176,18 @@
   - [x] Aggiornamento sincronizzato di tutti i documenti bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`.
   - [x] Esecuzione e superamento della suite parallela multi-core (8/8 test).
   - [x] Commit Git con messaggio descrittivo.
+- [ ] **Task 11: Fix e Perfezionamento di Revenge Ready (Timer Interno 5.0s, Refresh Dinamico Schivata/Parata/Blocco, Eliminazione Glitch Glow con LibCustomGlow-1.0 & Standardizzazione warTank)**:
+  - [ ] Ridenominazione e standardizzazione ID da `Revenge Ready` a `Revenge Ready warTank` (UID `PWHUD_PROC_REVENGE`) in `builder/components/procs.py`.
+  - [ ] Implementazione del motore event-driven `_G.PWHUD_Revenge` con listener `COMBAT_LOG_EVENT_UNFILTERED`:
+    - Rilevamento in tempo reale di Schivata (`DODGE`), Parata (`PARRY`) o Blocco (`BLOCK` o `blocked > 0`) subiti dal giocatore con impostazione finestra `start = GetTime(), dur = 5.0`.
+    - Meccanica di **Refresh Dinamico**: ogni nuova schivata/parata/blocco durante la disponibilità ricarica istantaneamente il timer a 5,0s.
+    - Azzeramento immediato al lancio di Revenge (`SPELL_CAST_SUCCESS` per spell ID 57823, 6572, ecc.).
+  - [ ] Integrazione dello swipe circolare nativo (`customDuration` che ritorna `5.0, start + 5.0`) e visualizzazione del conto alla rovescia in secondi (`%p` a dimensione 10) con label `REV` centrata.
+  - [ ] Sostituzione definitiva del glow nativo difettoso (causa della linea gialla congelata) con **`LibCustomGlow-1.0` Pixel Glow arancione/ambra** (`0.95, 0.45, 0.10, 1.0`) e arresto garantito `LCG.PixelGlow_Stop` in `actions.finish`.
+  - [ ] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [ ] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`).
+  - [ ] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [ ] Commit Git con messaggio descrittivo.
 - [x] **Task 10: Rimozione Completa di Victory Rush dal Pacchetto Tank (01 - Procs warTank)**:
   - [x] Rimozione dell'aura `Victory Rush warTank` da `builder/components/procs.py` e dalla lista `controlledChildren` del gruppo `01 - Procs warTank` (la riga procs passa da 7 a 6 icone dinamiche focalizzate sulla sopravvivenza del tank).
   - [x] Pulizia helper `_G.PWHUD_VRState` e `_G.PWHUD_CheckVictoryRush` in `builder/components/utility.py`.
@@ -172,6 +196,18 @@
   - [x] Aggiornamento documentazione bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`.
   - [x] Esecuzione e superamento della suite parallela multi-core (8/8 test).
   - [x] Commit Git con messaggio descrittivo.
+- [ ] **Task 11: Fix e Perfezionamento di Revenge Ready (Timer Interno 5.0s, Refresh Dinamico Schivata/Parata/Blocco, Eliminazione Glitch Glow con LibCustomGlow-1.0 & Standardizzazione warTank)**:
+  - [ ] Ridenominazione e standardizzazione ID da `Revenge Ready` a `Revenge Ready warTank` (UID `PWHUD_PROC_REVENGE`) in `builder/components/procs.py`.
+  - [ ] Implementazione del motore event-driven `_G.PWHUD_Revenge` con listener `COMBAT_LOG_EVENT_UNFILTERED`:
+    - Rilevamento in tempo reale di Schivata (`DODGE`), Parata (`PARRY`) o Blocco (`BLOCK` o `blocked > 0`) subiti dal giocatore con impostazione finestra `start = GetTime(), dur = 5.0`.
+    - Meccanica di **Refresh Dinamico**: ogni nuova schivata/parata/blocco durante la disponibilità ricarica istantaneamente il timer a 5,0s.
+    - Azzeramento immediato al lancio di Revenge (`SPELL_CAST_SUCCESS` per spell ID 57823, 6572, ecc.).
+  - [ ] Integrazione dello swipe circolare nativo (`customDuration` che ritorna `5.0, start + 5.0`) e visualizzazione del conto alla rovescia in secondi (`%p` a dimensione 10) con label `REV` centrata.
+  - [ ] Sostituzione definitiva del glow nativo difettoso (causa della linea gialla congelata) con **`LibCustomGlow-1.0` Pixel Glow arancione/ambra** (`0.95, 0.45, 0.10, 1.0`) e arresto garantito `LCG.PixelGlow_Stop` in `actions.finish`.
+  - [ ] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [ ] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`).
+  - [ ] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [ ] Commit Git con messaggio descrittivo.
 - [x] **Task 11: Fix e Perfezionamento di Revenge Ready (Timer Interno 5.0s, Refresh Dinamico Schivata/Parata/Blocco, Eliminazione Glitch Glow con LibCustomGlow-1.0 & Standardizzazione warTank)**:
   - [x] Ridenominazione e standardizzazione ID da `Revenge Ready` a `Revenge Ready warTank` (UID `PWHUD_PROC_REVENGE`) in `builder/components/procs.py`.
   - [x] Implementazione del motore event-driven `_G.PWHUD_Revenge` con listener `COMBAT_LOG_EVENT_UNFILTERED`:
@@ -182,5 +218,29 @@
   - [x] Sostituzione definitiva del glow nativo difettoso (causa della linea gialla congelata) con **`LibCustomGlow-1.0` Pixel Glow arancione/ambra** (`0.95, 0.45, 0.10, 1.0`) e arresto garantito `LCG.PixelGlow_Stop` in `actions.finish`.
   - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`).
+  - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [x] Commit Git con messaggio descrittivo.
+- [ ] **Task 11: Fix e Perfezionamento di Revenge Ready (Timer Interno 5.0s, Refresh Dinamico Schivata/Parata/Blocco, Eliminazione Glitch Glow con LibCustomGlow-1.0 & Standardizzazione warTank)**:
+  - [ ] Ridenominazione e standardizzazione ID da `Revenge Ready` a `Revenge Ready warTank` (UID `PWHUD_PROC_REVENGE`) in `builder/components/procs.py`.
+  - [ ] Implementazione del motore event-driven `_G.PWHUD_Revenge` con listener `COMBAT_LOG_EVENT_UNFILTERED`:
+    - Rilevamento in tempo reale di Schivata (`DODGE`), Parata (`PARRY`) o Blocco (`BLOCK` o `blocked > 0`) subiti dal giocatore con impostazione finestra `start = GetTime(), dur = 5.0`.
+    - Meccanica di **Refresh Dinamico**: ogni nuova schivata/parata/blocco durante la disponibilità ricarica istantaneamente il timer a 5,0s.
+    - Azzeramento immediato al lancio di Revenge (`SPELL_CAST_SUCCESS` per spell ID 57823, 6572, ecc.).
+  - [ ] Integrazione dello swipe circolare nativo (`customDuration` che ritorna `5.0, start + 5.0`) e visualizzazione del conto alla rovescia in secondi (`%p` a dimensione 10) con label `REV` centrata.
+  - [ ] Sostituzione definitiva del glow nativo difettoso (causa della linea gialla congelata) con **`LibCustomGlow-1.0` Pixel Glow arancione/ambra** (`0.95, 0.45, 0.10, 1.0`) e arresto garantito `LCG.PixelGlow_Stop` in `actions.finish`.
+  - [ ] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [ ] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`).
+  - [ ] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [ ] Commit Git con messaggio descrittivo.
+- [x] **Task 12: Filtraggio Intelligente di 09 - Enchants warTank (Visibile Solo con Incanti Arma Proccabili, Soppressione Totale Incanti Statici)**:
+  - [x] Riconfigurazione dell'engine di rilevamento `_G.PWHUD_CheckEnchantsEquipped` in `builder/components/utility.py`:
+    - Verifica dell'incanto presente sull'arma principale (Slot 16) tramite ID esatto contro il database incanti con proc `_G.PWHUD_WeaponEnchantDB` (*Blade Ward*, *Blood Draining*, *Mongoose*, *Berserking*, *Executioner*, *Crusader*, *Lifeward*, *Black Magic*, ecc.).
+    - Soppressione esplicita e immediata (`cache.hasEnchant = false`) per tutti gli incanti statici censiti in `_G.PWHUD_StaticWeaponEnchants` (*Titanguard* +30 Stamina, *Accuracy* +25 Hit/+25 Crit, *Titanium Weapon Chain* +28 Hit/-50% Disarm, *Superior Potency* +65 AP, *Exceptional Agility* +26 Agi, *Major Defense* +12 Def, ecc.) e in assenza di incanto (`enchantID == 0`).
+    - Ispezione fallback dei buff proccati attivi sul giocatore e scansione del tooltip per keyword di proc sul testo verde dell'incanto (`chance on`, `probabilità`, `proc`, `blade ward`, `blood draining`, `mongoose`, ecc.).
+    - Impostazione del fallback predefinito a `false` (invece di `true`), eliminando la comparsa non voluta dell'aura con incanti statici.
+  - [x] Allineamento della barra utility dinamica `_G.PWHUD_UpdateUtilityRowPositions`: in presenza di incanti statici, `09 - Enchants warTank` non viene inserito nella lista `activeOrder`, ricentrando armoniosamente le restanti icone utility senza lasciare spazi vuoti.
+  - [x] Icona dinamica `defIcon` in `_G.PWHUD_CheckEnchants` sincronizzata con la texture specifica dell'incanto proccabile equipaggiato.
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
   - [x] Commit Git con messaggio descrittivo.
