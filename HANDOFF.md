@@ -129,6 +129,12 @@ protection-warrior-335a-am/
   4. `Block:` with block chance % and Shield Block Value (SBV).
   5. `Hit:` with Draenei *Heroic Presence* (+1.0%) and `Exp:` with Soft Cap 26 and Hard Cap 56.
 
+### 4.5 Revenge Ready Engine & Dynamic Refresh
+- **Internal 5.0s Window with CLEU Tracking**: Subscribed to `COMBAT_LOG_EVENT_UNFILTERED` detecting incoming `DODGE`, `PARRY`, and `BLOCK` (`blocked > 0`) on the player.
+- **Dynamic Real-Time Refresh**: Each subsequent avoid or block immediately resets the internal timer back to full 5.0 seconds.
+- **Reset on Cast**: `SPELL_CAST_SUCCESS` for Revenge (all spell IDs) immediately clears the active timer.
+- **Visual Polish**: Circular cooldown swipe, `%p` countdown seconds text, centered `REV` tag, and amber Pixel Glow via `LibCustomGlow-1.0` with explicit `LCG.PixelGlow_Stop` in both `finish` and `untrigger` to eliminate stuck yellow line artifacts.
+
 ### 4.4 Static Rotational Queue Indicator (Heroic Strike & Cleave)
 - Occupies the allocated 278x7px space at $y = -7$ as a static, solid bar without swipe animation and without remaining time countdown numbers.
 - Dynamic queueing logic inherited from Fury Warrior via `IsCurrentSpell()`:

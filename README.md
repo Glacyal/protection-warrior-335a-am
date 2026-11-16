@@ -35,7 +35,7 @@ The suite is structured into 20 sequential nodes controlled by the master group 
 ### 1. Dynamic Procs Group (`01 - Procs warTank`)
 Positioned at the upper region of the HUD ($y = 52$), managing up to 6 icons ($34 \times 34\text{px}$, spacing $6\text{px}$) with centered horizontal auto-alignment:
 1. **Sword and Board (Buff 50227)**: Zero-rage Shield Slam proc with instant CD reset, pulsing golden Pixel Glow, and a 5-second countdown.
-2. **Revenge Ready**: Highlights with a vivid orange glowing border following any successful Dodge, Parry, or Block.
+2. **Revenge Ready warTank**: Triggered by any Dodge, Parry, or Block (`blocked > 0`) with an internal 5.0-second window, dynamic real-time refresh upon subsequent avoids/blocks, circular swipe animation, `%p` seconds countdown, and amber Pixel Glow (`LibCustomGlow-1.0`) with guaranteed cleanup to prevent yellow line artifacts.
 3. **Shield Block Active (Buff 2565)**: 10-second active duration countdown with `100%` block bonus label.
 4. **Emergency Low HP Alert**: Flashing red Pixel Glow icon when health drops below 35%, surfacing the icon of the optimal ready cooldown (*Shield Wall* or *Last Stand*).
 5. **Boss Enrage Alert**: Instant red glow alert whenever the boss triggers Enrage / Frenzy / Berserk to pop defensive cooldowns or call for Tranq Shot.

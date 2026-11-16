@@ -172,6 +172,15 @@
   - [x] Aggiornamento documentazione bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`.
   - [x] Esecuzione e superamento della suite parallela multi-core (8/8 test).
   - [x] Commit Git con messaggio descrittivo.
-  - [x] Aggiornamento documentazione bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`.
-  - [x] Esecuzione e superamento della suite parallela multi-core (8/8 test).
+- [x] **Task 11: Fix e Perfezionamento di Revenge Ready (Timer Interno 5.0s, Refresh Dinamico Schivata/Parata/Blocco, Eliminazione Glitch Glow con LibCustomGlow-1.0 & Standardizzazione warTank)**:
+  - [x] Ridenominazione e standardizzazione ID da `Revenge Ready` a `Revenge Ready warTank` (UID `PWHUD_PROC_REVENGE`) in `builder/components/procs.py`.
+  - [x] Implementazione del motore event-driven `_G.PWHUD_Revenge` con listener `COMBAT_LOG_EVENT_UNFILTERED`:
+    - Rilevamento in tempo reale di Schivata (`DODGE`), Parata (`PARRY`) o Blocco (`BLOCK` o `blocked > 0`) subiti dal giocatore con impostazione finestra `start = GetTime(), dur = 5.0`.
+    - Meccanica di **Refresh Dinamico**: ogni nuova schivata/parata/blocco durante la disponibilità ricarica istantaneamente il timer a 5,0s.
+    - Azzeramento immediato al lancio di Revenge (`SPELL_CAST_SUCCESS` per spell ID 57823, 6572, ecc.).
+  - [x] Integrazione dello swipe circolare nativo (`customDuration` che ritorna `5.0, start + 5.0`) e visualizzazione del conto alla rovescia in secondi (`%p` a dimensione 10) con label `REV` centrata.
+  - [x] Sostituzione definitiva del glow nativo difettoso (causa della linea gialla congelata) con **`LibCustomGlow-1.0` Pixel Glow arancione/ambra** (`0.95, 0.45, 0.10, 1.0`) e arresto garantito `LCG.PixelGlow_Stop` in `actions.finish`.
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`).
+  - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
   - [x] Commit Git con messaggio descrittivo.

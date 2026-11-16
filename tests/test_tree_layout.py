@@ -33,6 +33,9 @@ def run_tests():
     # Verifiche gruppi e icone
     procs = children_by_id["01 - Procs warTank"]
     assert procs["yOffset"] == 52 and procs["regionType"] == "dynamicgroup"
+    assert "Revenge Ready warTank" in procs["controlledChildren"]
+    assert "Revenge Ready warTank" in children_by_id
+    assert children_by_id["Revenge Ready warTank"]["uid"] == "PWHUD_PROC_REVENGE"
 
     bs = children_by_id["02 - Battle Shout warTank"]
     assert bs["xOffset"] == -222 and bs["yOffset"] == 0

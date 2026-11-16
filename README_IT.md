@@ -35,7 +35,7 @@ La suite è strutturata in 20 nodi sequenziali controllati dal gruppo principale
 ### 1. Gruppo Dinamico Procs (`01 - Procs warTank`)
 Posizionato nella parte superiore dell'HUD ($y = 52$), gestisce fino a 6 icone ($34 \times 34\text{px}$, space $6\text{px}$) con riposizionamento orizzontale centrato:
 1. **Sword and Board (Buff 50227)**: Shield Slam a costo 0 rabbia e azzeramento del CD, con Pixel Glow dorato pulsante e conto alla rovescia di 5 secondi.
-2. **Revenge Ready**: Si attiva con bordo luminoso arancione vivo post Schivata/Parata/Blocco.
+2. **Revenge Ready warTank**: Attivato da Schivata, Parata o Blocco (`blocked > 0`) con finestra interna di 5,0 secondi, refresh dinamico in tempo reale ad ogni nuovo avoid/blocco subito, animazione di swipe circolare, conto alla rovescia in secondi `%p` e Pixel Glow ambra (`LibCustomGlow-1.0`) con disattivazione pulita per prevenire glitch o righe gialle residue.
 3. **Shield Block Active (Buff 2565)**: Durata attiva di 10 secondi con conto alla rovescia ed etichetta `100%`.
 4. **Emergency Low HP Alert**: Icona con Pixel Glow rosso lampeggiante quando la salute scende sotto il 35%, mostrando l'icona del cooldown consigliato pronto (*Shield Wall* o *Last Stand*).
 5. **Boss Enrage Alert**: Segnalazione immediata con Glow rosso quando il boss entra in Enrage/Frenzy/Berserk per attivare mitigazioni pesanti o chiamare il Tranq Shot.

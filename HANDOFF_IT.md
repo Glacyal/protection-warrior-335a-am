@@ -129,6 +129,12 @@ protection-warrior-335a-am/
   4. `Block:` con % di blocco e Shield Block Value (SBV).
   5. `Hit:` con Draenei *Heroic Presence* (+1.0%) ed `Exp:` con Soft Cap 26 ed Hard Cap 56.
 
+### 4.5 Motore Revenge Ready & Refresh Dinamico
+- **Finestra Interna di 5.0s con Tracking CLEU**: Ascolto in tempo reale su `COMBAT_LOG_EVENT_UNFILTERED` per Schivata (`DODGE`), Parata (`PARRY`) e Blocco (`BLOCK` o `blocked > 0`) subiti dal giocatore.
+- **Refresh Dinamico in Tempo Reale**: Ogni nuova schivata, parata o blocco mentre Revenge è utilizzabile ripristina istantaneamente il timer a 5,0 secondi pieni.
+- **Azzeramento Immediato al Lancio**: L'evento `SPELL_CAST_SUCCESS` di Revenge (tutti i rank/spell ID) azzera immediatamente il timer.
+- **Perfezionamento Grafico**: Swipe circolare, conto alla rovescia in secondi `%p`, label `REV` centrata e Pixel Glow ambra tramite `LibCustomGlow-1.0` con spegnimento esplicito `LCG.PixelGlow_Stop` sia in `actions.finish` che in `untrigger`, eliminando definitivamente i glitch grafici della linea gialla congelata.
+
 ### 4.4 Indicatore Statico di Accodamento Rotazionale (Heroic Strike & Cleave)
 - Occupa l'intero spazio assegnato di 278x7px a $y = -7$ come barra statica e solida, senza animazione di scorrimento/swipe e senza numeri di tempo rimanente.
 - Logica di queuing dinamico mutuata da Fury Warrior tramite `IsCurrentSpell()`:

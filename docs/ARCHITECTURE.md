@@ -45,7 +45,7 @@ builder/
 │   └── __init__.py              # Export pubblico del modulo core
 │
 ├── components/                  # Moduli verticali dei 20 componenti HUD
-│   ├── procs.py                 # 01 - Procs warTank (Dynamic Group: Sword & Board, Revenge, Shield Block, VR, Emergency HP, Boss Enrage, Tank Buster)
+│   ├── procs.py                 # 01 - Procs warTank (Dynamic Group: Sword & Board, Revenge Ready warTank, Shield Block, Emergency HP, Boss Enrage, Tank Buster)
 │   ├── buffs.py                 # 02 - Battle Shout (x=-222), 03 - Commanding Shout (x=-190), 04 - Defensive Stance (x=-158)
 │   ├── utility.py               # 05-13 - Riga Utility Adattiva (Trinket 1/2, Ring, Cloak, Tier 10, Enchants, Gloves, Shield Wall warTank, Last Stand warTank, Boots)
 │   ├── bars.py                  # 14 - Rage Bar warTank & 16 - Castbar warTank (con Kick Advisor integrato)
@@ -107,7 +107,7 @@ Le tre barre orizzontali condividono la larghezza calibrata di **278 px**:
 | ID Modulo | Nome Componente | Dimensioni | Coordinate (X, Y) | Comportamento e Funzionalità |
 | :--- | :--- | :--- | :--- | :--- |
 | **Root** | `Class Warrior (Protection)` | Scale 1.2 | X: 0, Y: -190 | Gruppo master contenitore con icona Defensive Stance e bootstrap core |
-| **01** | `01 - Procs warTank` | 34x34 px (icone) | X: 0, Y: +52 | Dynamic group orizzontale centrato a 6 icone: Sword & Board, Revenge, Shield Block, Low HP Alert, Boss Enrage, Tank Buster |
+| **01** | `01 - Procs warTank` | 34x34 px (icone) | X: 0, Y: +52 | Dynamic group orizzontale centrato a 6 icone: Sword & Board, Revenge Ready warTank (finestra 5s con refresh dinamico su Schivata/Parata/Blocco e LibCustomGlow-1.0), Shield Block, Low HP Alert, Boss Enrage, Tank Buster |
 | **02** | `02 - Battle Shout warTank` | 28x28 px | X: -222, Y: 0 | Monitoraggio buff; soppresso intelligentemente da Blessing of Might del Paladino |
 | **03** | `03 - Commanding Shout warTank`| 28x28 px | X: -190, Y: 0 | Buff salute; soppresso intelligentemente da Blood Pact dell'Imp del Warlock |
 | **04** | `04 - Defensive Stance warTank`| 28x28 px | X: -158, Y: 0 | Allerta visiva immediata e glow rosso se in combat fuori dalla Postura Difensiva |
