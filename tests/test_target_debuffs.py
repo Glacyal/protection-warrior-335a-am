@@ -6,10 +6,12 @@ Verifica:
    [Emergency Low HP Alert] -> [Tank Buster Alert] -> [Revenge Ready] -> [Sword and Board] -> [Demo] -> [Clap] -> [Rend].
 2. Se i debuff sono applicati sul bersaglio con durata abbondante (>10s per Demo/Clap, >5s per Rend), SCOMPAIONO (return false, "HEALTHY").
 3. Quando i debuff applicati stanno per scadere (<=10s per Demo/Clap, <=5s per Rend), COMPAIONO CON TIMER e conto alla rovescia (return true, "EXPIRING").
-4. Se i debuff MANCANO in combattimento su bersaglio attaccabile valido, compaiono con avviso MISS (return true, "MISS").
-5. Rend filtra i bersagli immuni (Meccanici) sia in lingua inglese che italiana (return false, "IMMUNE").
-6. Icone con texture dinamiche native C++ risolte tramite select(3, GetSpellInfo(spellId)) per prevenire question mark '?'.
-7. Dual key subtext check (%c per timer/MISS in basso e acronimo al centro) con customText nel trigger.
+4. Se non c'è un bersaglio attivo, se è morto o non attaccabile, o fuori combattimento: SCOMPAIONO ISTANTANEAMENTE (untrigger return not show).
+5. Al cambio di bersaglio (PLAYER_TARGET_CHANGED), la cache si aggiorna istantaneamente valutando il nuovo target.
+6. Se i debuff MANCANO in combattimento su bersaglio attaccabile valido, compaiono con avviso MISS (return true, "MISS").
+7. Rend filtra i bersagli immuni (Meccanici) sia in lingua inglese che italiana (return false, "IMMUNE").
+8. Icone con texture dinamiche native C++ risolte tramite select(3, GetSpellInfo(spellId)) per prevenire question mark '?'.
+9. Dual key subtext check (%c per timer/MISS in basso e acronimo al centro) con customText nel trigger e untrigger funzionante.
 """
 import os
 import sys
@@ -52,6 +54,9 @@ def run_tests():
     assert 'return false, "HEALTHY"' in trig_demo["custom"]
     assert 'return true, "EXPIRING"' in trig_demo["custom"]
     assert 'return true, "MISS"' in trig_demo["custom"]
+    # Check untrigger reactive hiding (no target, dead target, OOC)
+    untrig_demo = demo["triggers"][1]["untrigger"]
+    assert "return not show" in untrig_demo["custom"], "Untrigger must return not show to hide when no target"
     # Check raid-aware spell IDs in shared logic
     custom_demo = trig_demo["custom"]
     assert "47437" in custom_demo  # Demo Shout Rank 8
@@ -74,6 +79,8 @@ def run_tests():
     assert 'rem <= 10.0' in trig_clap["custom"]
     assert 'return false, "HEALTHY"' in trig_clap["custom"]
     assert 'return true, "EXPIRING"' in trig_clap["custom"]
+    untrig_clap = clap["triggers"][1]["untrigger"]
+    assert "return not show" in untrig_clap["custom"], "Untrigger must return not show to hide when no target"
     # Check raid-aware spell IDs in shared logic
     custom_clap = trig_clap["custom"]
     assert "47502" in custom_clap  # Thunder Clap Rank 9
@@ -94,6 +101,8 @@ def run_tests():
     assert 'rem <= 5.0' in trig_rend["custom"]
     assert 'return false, "HEALTHY"' in trig_rend["custom"]
     assert 'return true, "EXPIRING"' in trig_rend["custom"]
+    untrig_rend = rend["triggers"][1]["untrigger"]
+    assert "return not show" in untrig_rend["custom"], "Untrigger must return not show to hide when no target"
     # Check mechanical immunity filter
     custom_rend = trig_rend["custom"]
     assert 'cType == "Mechanical"' in custom_rend
@@ -111,7 +120,7 @@ def run_tests():
         assert st.get("text_text") == "%c"
         assert st.get("anchorPoint") == "INNER_BOTTOM"
 
-    print("[OK] test_target_debuffs completato con successo (tutti i 3 debuff tracker verificati).")
+    print("[OK] test_target_debuffs completato con successo (tutti i 3 debuff tracker verificati con untrigger reattivo).")
     return True
 
 if __name__ == "__main__":

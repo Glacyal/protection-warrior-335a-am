@@ -449,3 +449,17 @@
     - Rigenerata la stringa di importazione `IMPORT_STRING_v5.21.8.txt` (72252 caratteri) e aggiornato `docs/index.html`.
     - Documentazione tecnica allineata (`README.md`, `README_IT.md`, `HANDOFF.md`, `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
     - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 27: Fix Untrigger Reattivo Target Debuffs (Scomparsa Immediata Senza Target / Target Morto e Reattività al Cambio Target)**:
+  - [x] **Causa del Blocco Visivo Senza Target**:
+    - La funzione `untrigger` nei 3 tracker restituiva `false` staticamente (`function() return false end`), impedendo al motore di WeakAuras di disattivare l'aura una volta attivata, anche in assenza di target o a target morto.
+  - [x] **Implementazione Untrigger Dinamico Reattivo**:
+    - Creata la funzione `make_target_debuff_untrigger(kind)` che valuta `return not show`: non appena `show` diventa `false` (nessun bersaglio attivo `not UnitExists("target")`, bersaglio morto `UnitIsDead("target")`, non attaccabile `not UnitCanAttack` o fuori combattimento), l'aura riceve segnale `true` di untrigger e **scompare istantaneamente**.
+    - Inserito lo svuotamento cache `_G.PWHUD_TargetDebuffScanCache = nil` ad ogni deselezione bersaglio per azzerare lo stato.
+  - [x] **Aggiornamento Istantaneo al Cambio Target (`PLAYER_TARGET_CHANGED`)**:
+    - La scansione frame-accurate confronta `cache.targetGUID ~= tGUID`: non appena si seleziona un nuovo mob o boss, la cache viene ricalcolata al primo tick, mostrando i debuff mancanti sul nuovo target o nascondendo quelli già presenti con durata >10s/5s.
+  - [x] **Test Suite & Documentazione**:
+    - Aggiornato [`tests/test_target_debuffs.py`](file:///d:/0Progetti/protection-warrior-335a-am/tests/test_target_debuffs.py) a verifica di `untrigger` reattivo (`return not show`).
+    - Suite parallela: 10/10 test superati in 0.41s.
+    - Rigenerata `IMPORT_STRING_v5.21.8.txt` (72672 caratteri) e aggiornato `docs/index.html`.
+    - Esecuzione CP (Commit & Push su `origin/master`).

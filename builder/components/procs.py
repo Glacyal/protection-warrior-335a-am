@@ -228,9 +228,11 @@ end"""
 # =============================================================================
 SHARED_TARGET_DEBUFFS_LUA = r"""function(kind)
     if not UnitAffectingCombat("player") then
+        _G.PWHUD_TargetDebuffScanCache = nil
         return false, "OOC", 0, 0, 0
     end
     if not UnitExists("target") or UnitIsDead("target") or not UnitCanAttack("player", "target") then
+        _G.PWHUD_TargetDebuffScanCache = nil
         return false, "INVALID", 0, 0, 0
     end
 
@@ -394,8 +396,16 @@ end"""
 def make_target_debuff_trigger(kind: str) -> str:
     return f"""function(event, ...)
     _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
-    local show, status = _G.PWHUD_CheckTargetDebuff("{kind}")
+    local show = _G.PWHUD_CheckTargetDebuff("{kind}")
     return show
+end"""
+
+
+def make_target_debuff_untrigger(kind: str) -> str:
+    return f"""function(event, ...)
+    _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
+    local show = _G.PWHUD_CheckTargetDebuff("{kind}")
+    return not show
 end"""
 
 
@@ -495,7 +505,7 @@ def build_procs_auras() -> list[dict]:
                     },
                     "untrigger": {
                         "type": "custom",
-                        "custom": "function() return false end",
+                        "custom": make_target_debuff_untrigger("DEMO"),
                     },
                 },
                 "activeTriggerMode": -10,
@@ -541,7 +551,7 @@ def build_procs_auras() -> list[dict]:
                     },
                     "untrigger": {
                         "type": "custom",
-                        "custom": "function() return false end",
+                        "custom": make_target_debuff_untrigger("CLAP"),
                     },
                 },
                 "activeTriggerMode": -10,
@@ -587,7 +597,7 @@ def build_procs_auras() -> list[dict]:
                     },
                     "untrigger": {
                         "type": "custom",
-                        "custom": "function() return false end",
+                        "custom": make_target_debuff_untrigger("REND"),
                     },
                 },
                 "activeTriggerMode": -10,
