@@ -50,7 +50,7 @@ Posizionati a sinistra direttamente sopra il pannello statistiche a $x = -271, -
 Centratura automatica orizzontale adattiva sotto la barra della rabbia con icone $28 \times 28\text{px}$:
 - **05 - Trinket 1 warTank** & **06 - Trinket 2 warTank**: Slot 13 e 14 con rilevamento automatico monili tank (*Sindragosa's Flawless Fang*, *Glyph of Indomitability*, *Corpse Tongue Coin*, *Satrina's Impeding Scarab*, *Corroded Skeleton Key*, ecc.).
 - **06b - Ring warTank**: Rilevamento anello tanking (*Ashen Band of Endless Courage*).
-- **07 - Cloak warTank**: Paracadute/Flexweave e incanti mantello.
+- **07 - Cloak warTank**: Tracciamento incanti mantello con proc da combattimento (*Ricamo della Spada* +400 AP; il paracadute di Ingegneria e gli incanti statici come +22 Agilità o +16 Difesa vengono automaticamente soppressi per pulizia visiva).
 - **08 - Tier Set warTank**: Tracciamento bonus set con proc attivo (T10 4P assorbimento *Blood Frenzy* e T8 4P *Riduzione Danno Magico*; bonus statici come T10 2P o T9 2P/4P vengono automaticamente soppressi per pulizia visiva).
 - **09 - Enchants warTank**: Monitoraggio incanti arma proccabili (*Blade Ward*, *Blood Draining*, *Mongoose*, *Berserking*, ecc.). Visibile esclusivamente quando l'arma equipaggia un incanto che può realmente proccare; soppresso e nascosto automaticamente in presenza di incanti statici (+30 Stamina Titanguard, +25 Hit/+25 Crit Accuracy, Titanium Weapon Chain, +26 Agility, +65 AP) o nessun incanto, con ricalcolo e ricentratura automatica della barra utility.
 - **10 - Gloves warTank**: *Reticulated Armor Webbing* (+885 Armatura) o *Acceleratori Ipersonici*.

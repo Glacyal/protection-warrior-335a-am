@@ -283,3 +283,15 @@
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
   - [x] Commit Git con messaggio descrittivo.
+
+- [x] **Task 16: Filtraggio Rigoroso di 07 - Cloak warTank (Soppressione Totale Paracadute/Flexweave e Incanti Statici, Visibilità Esclusiva per Proc Attivi come Swordguard)**:
+  - [x] Riconfigurazione dei filtri Mantello (Slot 15) in `builder/components/utility.py`:
+    - **Soppressione Totale Paracadute (Ingegneria)**: Rimosso completamente il tracciamento del paracadute (*Flexweave Underlay*, incanto ID 3605, spell IDs 55002 e 54865, keyword "flexweave", "parachute", "flessibile", "paracadute"). L'uso del paracadute è un'utility di movimento/caduta e non deve occupare uno slot nella riga utility di combattimento del tank.
+    - **Soppressione Totale Incanti Statici**: Tutti gli incanti statici da mantello (+22 Agilità, +16 Difesa, +225 Armatura, resistenze magiche) o mantelli senza incanto valutano rigorosamente `cache.isEquipped = false`.
+    - **Tracciamento Esclusivo Proc da Combattimento**: `07 - Cloak warTank` compare unicamente se sul mantello è presente un vero incanto proccabile da combattimento, specificamente *Swordguard Embroidery* (*Ricamo della Spada* di Sartoria, incanto ID 3730, spell ID 55775, buff +400 AP per 15s con 45s ICD) o se il relativo buff è attivo.
+  - [x] Allineamento della barra utility dinamica `_G.PWHUD_UpdateUtilityRowPositions`: in presenza di paracadute o incanti statici, `07 - Cloak warTank` viene escluso da `activeOrder`, ricentrando armoniosamente le restanti icone utility senza lasciare spazi vuoti.
+  - [x] Rimozione artefatto grafico: impostato `"cooldownEdge": False` su `07 - Cloak warTank`.
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+  - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [x] Commit Git con messaggio descrittivo.

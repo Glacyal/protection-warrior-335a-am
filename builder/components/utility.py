@@ -366,9 +366,11 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         [17] = { lastStart = 0, lastEnd = 0, isProc = false }
     }
 
-    _G.PWHUD_CloakKeywords = { "flexweave", "parachute", "flessibile", "paracadute", "swordguard" }
-    _G.PWHUD_CloakSpellIds = { [55002] = true, [55775] = true, [54865] = true }
-    _G.PWHUD_CloakEnchantIDs = { [3605] = true, [3730] = true }
+    -- Cloak (Slot 15): Parachute tinker (Flexweave Underlay) and static enchants (+22 Agi, +16 Def, +225 Armor) are strictly suppressed.
+    -- Only active combat proc enchants (Tailoring Swordguard Embroidery / Ricamo della Spada) are tracked.
+    _G.PWHUD_CloakKeywords = { "swordguard", "ricamo della spada" }
+    _G.PWHUD_CloakSpellIds = { [55775] = true }
+    _G.PWHUD_CloakEnchantIDs = { [3730] = true }
 
     _G.PWHUD_GlovesSpellIds = { [54758] = true, [54998] = true }
     _G.PWHUD_GlovesKeywords = { "armor webbing", "reticulated", "corazza reticolare", "hyperspeed", "accelerat" }
@@ -624,8 +626,8 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
                 end
             end
         end
-        local targetICD = (entry and entry.icd) or (slot == 10 and 60) or (slot == 8 and 180) or (slot == 15 and 60) or 45
-        local defaultDur = (entry and entry.dur) or (slot == 10 and 12) or (slot == 8 and 5) or (slot == 15 and 10) or 15
+        local targetICD = (entry and entry.icd) or (slot == 10 and 60) or (slot == 8 and 180) or (slot == 15 and 45) or 45
+        local defaultDur = (entry and entry.dur) or (slot == 10 and 12) or (slot == 8 and 5) or (slot == 15 and 15) or 15
 
         local itemStart, itemDur = GetInventoryItemCooldown("player", slot)
         if slot == 8 then
@@ -675,7 +677,7 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
             elseif slot == 8 then
                 if b.spellId == 54861 or (b.name and b.name:find("Nitro")) then isMatch = true end
             elseif slot == 15 then
-                if b.spellId == 55002 or (b.name and (b.name:find("Parachute") or b.name:find("Flexweave"))) then isMatch = true end
+                if b.spellId == 55775 or (b.name and (b.name:find("Swordguard") or b.name:find("Spada"))) then isMatch = true end
             elseif slot == 13 or slot == 14 then
                 if entry and entry.spellIds and b.spellId and entry.spellIds[b.spellId] then
                     isMatch = true
@@ -1789,7 +1791,7 @@ def build_utility_auras() -> list[dict]:
             "displayIcon": "Interface\\Icons\\INV_Misc_Cape_19",
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "inverse": False,
             "customTextUpdate": "update",

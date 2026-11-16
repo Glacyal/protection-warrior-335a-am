@@ -134,6 +134,11 @@ protection-warrior-335a-am/
 - **Top Shouts & Stance Grid (34x34px at X: -271, -216, -161, Y: 0)**: Icon size standardized to 34x34px (matching procs row); left edge (-288) aligns with the left edge of the stats panel, center (-216) aligns with Commanding Shout, and right edge (-144) aligns with Defensive Stance.
 - **Clean Vertical Separation**: 3px gap between icon labels (`OFF`, `STANCE` at Y: -17) and panel top edge (Y: -19.6), completely eliminating visual collisions.
 
+### 4.8 Cloak Proc-Only Filtering (Slot 15) & Parachute/Static Suppression
+- **Strict Cloak Proc-Only Visibility**: `07 - Cloak warTank` is exclusively displayed when an enchantment with actual combat procs is present on the Cloak (Slot 15), specifically Tailoring *Swordguard Embroidery* (*Ricamo della Spada*, +400 AP for 15s, 45s ICD, Spell ID 55775, Enchant ID 3730).
+- **Parachute & Static Enchant Suppression**: The Engineering parachute tinker (*Flexweave Underlay*, Enchant ID 3605, Spell ID 55002) as well as static enchants (+22 Agility, +16 Defense, +225 Armor, resistances) or unenchanted cloaks strictly evaluate `_G.PWHUD_CheckSlotEquipped(15) == false`.
+- **Dynamic Centering & Visual Polish**: When suppressed, `07 - Cloak warTank` is omitted from `activeOrder` in `_G.PWHUD_UpdateUtilityRowPositions()`, automatically re-centering remaining icons. Set `cooldownEdge: False` to avoid yellow tick artifacts.
+
 ### 4.7 Tier Set Proc-Only Filtering & Revenge Edge Polish
 - **Strict Tier Set Proc-Only Visibility**: `08 - Tier Set warTank` is exclusively displayed when the equipped Tier set bonus possesses a genuine triggerable proc / active combat buff:
   - **T10 4P (*Blood Frenzy* / *Frenesia del Sangue*, Spell ID 70844)**: 20% max HP damage absorption for 10s triggered on Bloodrage.
