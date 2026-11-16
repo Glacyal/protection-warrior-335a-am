@@ -434,3 +434,18 @@
     - Rigenerata la stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzato `docs/index.html`.
     - Documentazione tecnica bilingue allineata (`README.md`, `README_IT.md`, `HANDOFF.md`, `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
     - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 26: Integrazione Timer Conto alla Rovescia & Soppressione Dinamica per Target Debuffs in '01 - Procs warTank' (Scomparsa con Durata Abbondante, Timer <=10s / <=5s, e Allerta MISS)**:
+  - [x] **Logica di Visibilità e Timer per Debuff Applicati**:
+    - Se applicati con durata abbondante (>10s per Demoralizing Shout e Thunder Clap, >5s per Rend), le icone **scompaiono completamente** (`return false, "HEALTHY"`), garantendo zero ingombro visivo.
+    - Se applicati e in fase di scadenza ($\le 10\text{s}$ per Demo/Clap, $\le 5\text{s}$ per Rend), le icone **compaiono con il timer** e lo swipe circolare attivo (`return true, "EXPIRING"`). Il subtext `%c` mostra il countdown numerico in secondi (giallo `%.1fs`, rosso `%.1fs` a $\le 3\text{s}$).
+    - Se mancanti in combattimento su bersaglio attaccabile valido, compaiono con dicitura rossa `MISS` (`return true, "MISS"`).
+  - [x] **Attivazione Frame-Accurate OnUpdate & Subtext %c**:
+    - Impostato `check: "update"` sui trigger dei 3 tracker per consentire la comparsa istantanea non appena il debuff scende sotto la soglia di 10s/5s senza dipendere da eventi discontinui.
+    - Registrato `customText` sia all'interno di `trigger.customText` che nella root dell'aura, garantendo la risoluzione infallibile di `%c` in `subRegions`.
+  - [x] **Test Suite & Documentazione Sincronizzata**:
+    - Aggiornato [`tests/test_target_debuffs.py`](file:///d:/0Progetti/protection-warrior-335a-am/tests/test_target_debuffs.py) con test dedicati a soglie temporali, swipe, stati `HEALTHY`, `EXPIRING`, `MISS` e `IMMUNE`.
+    - 10/10 test paralleli superati con successo in 0.45s.
+    - Rigenerata la stringa di importazione `IMPORT_STRING_v5.21.8.txt` (72252 caratteri) e aggiornato `docs/index.html`.
+    - Documentazione tecnica allineata (`README.md`, `README_IT.md`, `HANDOFF.md`, `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+    - Esecuzione CP (Commit & Push su `origin/master`).

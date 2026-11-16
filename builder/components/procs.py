@@ -244,8 +244,14 @@ SHARED_TARGET_DEBUFFS_LUA = r"""function(kind)
             targetGUID = tGUID,
             isMechanical = false,
             demoFound = false,
+            demoDur = 0,
+            demoExp = 0,
             clapFound = false,
+            clapDur = 0,
+            clapExp = 0,
             rendFound = false,
+            rendDur = 0,
+            rendExp = 0,
         }
 
         local cType = UnitCreatureType("target")
@@ -304,30 +310,42 @@ SHARED_TARGET_DEBUFFS_LUA = r"""function(kind)
             if not name then break end
 
             local lIcon = icon and string.lower(icon) or ""
+            local dur = (duration and duration > 0) and duration or 30
+            local exp = (expirationTime and expirationTime > 0) and expirationTime or (now + dur)
 
             -- 1. Demoralizing Shout & Raid Equivalents
-            if not cache.demoFound then
-                if (spellId and lookup.demo[spellId]) or lookup.demo[name] or
-                   (lIcon ~= "" and (string.find(lIcon, "warcry") or string.find(lIcon, "demoralizingroar") or string.find(lIcon, "curseofmannoroth"))) then
+            if (spellId and lookup.demo[spellId]) or lookup.demo[name] or
+               (lIcon ~= "" and (string.find(lIcon, "warcry") or string.find(lIcon, "demoralizingroar") or string.find(lIcon, "curseofmannoroth"))) then
+                if not cache.demoFound or exp > cache.demoExp then
                     cache.demoFound = true
+                    cache.demoDur = dur
+                    cache.demoExp = exp
                 end
             end
 
             -- 2. Thunder Clap & Raid Equivalents
-            if not cache.clapFound then
-                if (spellId and lookup.clap[spellId]) or lookup.clap[name] or
-                   (lIcon ~= "" and (string.find(lIcon, "thunderclap") or string.find(lIcon, "frostfever") or string.find(lIcon, "righteousfury") or string.find(lIcon, "infectedwound"))) then
+            if (spellId and lookup.clap[spellId]) or lookup.clap[name] or
+               (lIcon ~= "" and (string.find(lIcon, "thunderclap") or string.find(lIcon, "frostfever") or string.find(lIcon, "righteousfury") or string.find(lIcon, "infectedwound"))) then
+                if not cache.clapFound or exp > cache.clapExp then
                     cache.clapFound = true
+                    cache.clapDur = dur
+                    cache.clapExp = exp
                 end
             end
 
             -- 3. Rend (Player Bleed)
-            if not cache.rendFound and not cache.isMechanical then
+            if not cache.isMechanical then
                 if (spellId and lookup.rend[spellId]) or lookup.rend[name] or
                    (lIcon ~= "" and string.find(lIcon, "gouge")) then
                     local isMine = (unitCaster == "player") or (unitCaster and pGUID and UnitGUID(unitCaster) == pGUID)
                     if isMine or not unitCaster then
-                        cache.rendFound = true
+                        local rDur = (duration and duration > 0) and duration or 15
+                        local rExp = (expirationTime and expirationTime > 0) and expirationTime or (now + rDur)
+                        if not cache.rendFound or rExp > cache.rendExp then
+                            cache.rendFound = true
+                            cache.rendDur = rDur
+                            cache.rendExp = rExp
+                        end
                     end
                 end
             end
@@ -337,22 +355,37 @@ SHARED_TARGET_DEBUFFS_LUA = r"""function(kind)
     end
 
     if kind == "DEMO" then
-        if cache.demoFound then
-            return false, "ACTIVE", 0, 0, 0
+        if not cache.demoFound then
+            return true, "MISS", 0, 30, 0
         end
-        return true, "MISS", 0, 0, 0
+        local rem = cache.demoExp - now
+        if rem > 0 and rem <= 10.0 then
+            return true, "EXPIRING", rem, cache.demoDur, cache.demoExp
+        end
+        return false, "HEALTHY", rem, cache.demoDur, cache.demoExp
 
     elseif kind == "CLAP" then
-        if cache.clapFound then
-            return false, "ACTIVE", 0, 0, 0
+        if not cache.clapFound then
+            return true, "MISS", 0, 30, 0
         end
-        return true, "MISS", 0, 0, 0
+        local rem = cache.clapExp - now
+        if rem > 0 and rem <= 10.0 then
+            return true, "EXPIRING", rem, cache.clapDur, cache.clapExp
+        end
+        return false, "HEALTHY", rem, cache.clapDur, cache.clapExp
 
     elseif kind == "REND" then
-        if cache.isMechanical or cache.rendFound then
-            return false, cache.isMechanical and "IMMUNE" or "ACTIVE", 0, 0, 0
+        if cache.isMechanical then
+            return false, "IMMUNE", 0, 0, 0
         end
-        return true, "MISS", 0, 0, 0
+        if not cache.rendFound then
+            return true, "MISS", 0, 15, 0
+        end
+        local rem = cache.rendExp - now
+        if rem > 0 and rem <= 5.0 then
+            return true, "EXPIRING", rem, cache.rendDur, cache.rendExp
+        end
+        return false, "HEALTHY", rem, cache.rendDur, cache.rendExp
     end
 
     return false, "UNKNOWN", 0, 0, 0
@@ -366,12 +399,14 @@ def make_target_debuff_trigger(kind: str) -> str:
 end"""
 
 
-def make_target_debuff_custom_duration(kind: str) -> str:
+def make_target_debuff_custom_duration(kind: str, default_dur: int) -> str:
     return f"""function()
     _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
-    local show, status = _G.PWHUD_CheckTargetDebuff("{kind}")
+    local show, status, rem, dur, expTime = _G.PWHUD_CheckTargetDebuff("{kind}")
     if show then
-        return 0, 0
+        if status == "EXPIRING" and expTime and expTime > 0 then
+            return dur or {default_dur}, expTime
+        end
     end
     return 0, 0
 end"""
@@ -380,9 +415,17 @@ end"""
 def make_target_debuff_custom_text(kind: str) -> str:
     return f"""function()
     _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
-    local show, status = _G.PWHUD_CheckTargetDebuff("{kind}")
-    if show and status == "MISS" then
-        return "|cFFFF2020MISS|r"
+    local show, status, rem = _G.PWHUD_CheckTargetDebuff("{kind}")
+    if show then
+        if status == "MISS" then
+            return "|cFFFF2020MISS|r"
+        elseif status == "EXPIRING" and rem and rem > 0 then
+            if rem <= 3.0 then
+                return string.format("|cFFFF2020%.1fs|r", rem)
+            else
+                return string.format("|cFFFFFF00%.1fs|r", rem)
+            end
+        end
     end
     return ""
 end"""
@@ -441,10 +484,11 @@ def build_procs_auras() -> list[dict]:
                     "trigger": {
                         "type": "custom",
                         "custom_type": "status",
-                        "check": "event",
+                        "check": "update",
                         "events": "UNIT_AURA,PLAYER_TARGET_CHANGED,PLAYER_REGEN_DISABLED,PLAYER_REGEN_ENABLED,PLAYER_ENTERING_WORLD",
                         "custom": make_target_debuff_trigger("DEMO"),
-                        "customDuration": make_target_debuff_custom_duration("DEMO"),
+                        "customDuration": make_target_debuff_custom_duration("DEMO", 30),
+                        "customText": make_target_debuff_custom_text("DEMO"),
                         "customIcon": r"""function()
                             return select(3, GetSpellInfo(47437)) or "Interface\\Icons\\Ability_Warrior_WarCry"
                         end""",
@@ -486,10 +530,11 @@ def build_procs_auras() -> list[dict]:
                     "trigger": {
                         "type": "custom",
                         "custom_type": "status",
-                        "check": "event",
+                        "check": "update",
                         "events": "UNIT_AURA,PLAYER_TARGET_CHANGED,PLAYER_REGEN_DISABLED,PLAYER_REGEN_ENABLED,PLAYER_ENTERING_WORLD",
                         "custom": make_target_debuff_trigger("CLAP"),
-                        "customDuration": make_target_debuff_custom_duration("CLAP"),
+                        "customDuration": make_target_debuff_custom_duration("CLAP", 30),
+                        "customText": make_target_debuff_custom_text("CLAP"),
                         "customIcon": r"""function()
                             return select(3, GetSpellInfo(47502)) or "Interface\\Icons\\Spell_Nature_ThunderClap"
                         end""",
@@ -531,10 +576,11 @@ def build_procs_auras() -> list[dict]:
                     "trigger": {
                         "type": "custom",
                         "custom_type": "status",
-                        "check": "event",
+                        "check": "update",
                         "events": "UNIT_AURA,PLAYER_TARGET_CHANGED,PLAYER_REGEN_DISABLED,PLAYER_REGEN_ENABLED,PLAYER_ENTERING_WORLD",
                         "custom": make_target_debuff_trigger("REND"),
-                        "customDuration": make_target_debuff_custom_duration("REND"),
+                        "customDuration": make_target_debuff_custom_duration("REND", 15),
+                        "customText": make_target_debuff_custom_text("REND"),
                         "customIcon": r"""function()
                             return select(3, GetSpellInfo(47465)) or "Interface\\Icons\\Ability_Gouge"
                         end""",

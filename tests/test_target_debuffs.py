@@ -4,11 +4,12 @@ Test Target Debuff Trackers — Class Warrior (Protection 3.3.5a)
 Verifica:
 1. 01 - Procs warTank ha sort="none" per rispettare rigorosamente l'ordine visivo prioritario da sinistra a destra:
    [Emergency Low HP Alert] -> [Tank Buster Alert] -> [Revenge Ready] -> [Sword and Board] -> [Demo] -> [Clap] -> [Rend].
-2. Se i debuff sono applicati sul bersaglio, essi spariscono (return false, "ACTIVE").
-   Compaiono solo in combattimento su bersaglio ostile valido quando MANCANO (return true, "MISS").
-3. Rend filtra i bersagli immuni (Meccanici) sia in lingua inglese che italiana (return false, "IMMUNE").
-4. Icone con texture dinamiche native C++ risolte tramite select(3, GetSpellInfo(spellId)) per prevenire question mark '?'.
-5. Dual key subtext check (%c per MISS in basso e acronimo al centro).
+2. Se i debuff sono applicati sul bersaglio con durata abbondante (>10s per Demo/Clap, >5s per Rend), SCOMPAIONO (return false, "HEALTHY").
+3. Quando i debuff applicati stanno per scadere (<=10s per Demo/Clap, <=5s per Rend), COMPAIONO CON TIMER e conto alla rovescia (return true, "EXPIRING").
+4. Se i debuff MANCANO in combattimento su bersaglio attaccabile valido, compaiono con avviso MISS (return true, "MISS").
+5. Rend filtra i bersagli immuni (Meccanici) sia in lingua inglese che italiana (return false, "IMMUNE").
+6. Icone con texture dinamiche native C++ risolte tramite select(3, GetSpellInfo(spellId)) per prevenire question mark '?'.
+7. Dual key subtext check (%c per timer/MISS in basso e acronimo al centro) con customText nel trigger.
 """
 import os
 import sys
@@ -44,15 +45,20 @@ def run_tests():
     assert demo["cooldownSwipe"] is True
     assert demo.get("desaturate", False) is False
     trig_demo = demo["triggers"][1]["trigger"]
+    assert trig_demo["check"] == "update", f"Expected check 'update', got {trig_demo.get('check')}"
     assert "_G.PWHUD_CheckTargetDebuff" in trig_demo["custom"]
     assert "cache.demoFound" in trig_demo["custom"]
-    assert 'return false, "ACTIVE"' in trig_demo["custom"]
+    assert 'rem <= 10.0' in trig_demo["custom"]
+    assert 'return false, "HEALTHY"' in trig_demo["custom"]
+    assert 'return true, "EXPIRING"' in trig_demo["custom"]
+    assert 'return true, "MISS"' in trig_demo["custom"]
     # Check raid-aware spell IDs in shared logic
     custom_demo = trig_demo["custom"]
     assert "47437" in custom_demo  # Demo Shout Rank 8
     assert "48560" in custom_demo  # Demoralizing Roar Rank 8 (Druid)
     assert "50511" in custom_demo  # Curse of Weakness Rank 9 (Warlock)
     assert demo["customText"] != ""
+    assert trig_demo["customText"] != ""
     assert trig_demo["customDuration"] != ""
     assert "GetSpellInfo(47437)" in trig_demo["customIcon"]
 
@@ -62,9 +68,12 @@ def run_tests():
     assert clap["cooldown"] is True
     assert clap["cooldownSwipe"] is True
     trig_clap = clap["triggers"][1]["trigger"]
+    assert trig_clap["check"] == "update"
     assert "_G.PWHUD_CheckTargetDebuff" in trig_clap["custom"]
     assert "cache.clapFound" in trig_clap["custom"]
-    assert 'return false, "ACTIVE"' in trig_clap["custom"]
+    assert 'rem <= 10.0' in trig_clap["custom"]
+    assert 'return false, "HEALTHY"' in trig_clap["custom"]
+    assert 'return true, "EXPIRING"' in trig_clap["custom"]
     # Check raid-aware spell IDs in shared logic
     custom_clap = trig_clap["custom"]
     assert "47502" in custom_clap  # Thunder Clap Rank 9
@@ -79,9 +88,12 @@ def run_tests():
     assert rend["cooldown"] is True
     assert rend["cooldownSwipe"] is True
     trig_rend = rend["triggers"][1]["trigger"]
+    assert trig_rend["check"] == "update"
     assert "_G.PWHUD_CheckTargetDebuff" in trig_rend["custom"]
     assert "cache.rendFound" in trig_rend["custom"]
-    assert 'cache.isMechanical and "IMMUNE" or "ACTIVE"' in trig_rend["custom"]
+    assert 'rem <= 5.0' in trig_rend["custom"]
+    assert 'return false, "HEALTHY"' in trig_rend["custom"]
+    assert 'return true, "EXPIRING"' in trig_rend["custom"]
     # Check mechanical immunity filter
     custom_rend = trig_rend["custom"]
     assert 'cType == "Mechanical"' in custom_rend
