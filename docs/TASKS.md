@@ -409,3 +409,28 @@
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione CP (Commit & Push su `origin/master`).
 
+
+- [x] **Task 25: Risoluzione Texture Question Mark '?', Soppressione Completa Debuff Applicati e Priorità Gerarchica Emergenze > Procs > Debuff in '01 - Procs warTank'**:
+  - [x] **Risoluzione Texture Question Mark '?'**:
+    - Risolto il problema delle icone rosse con punto interrogativo '?' visualizzate in gioco su WotLK 3.3.5a, causato dall'escape di backslash non raw nelle stringhe Lua `customIcon`.
+    - Implementata la risoluzione dinamica nativa tramite chiamata C++ `select(3, GetSpellInfo(spellId))` per Demoralizing Shout (47437), Thunder Clap (47502) e Rend (47465), garantendo il recupero immediato e corretto della texture client per qualsiasi lingua e server core.
+  - [x] **Soppressione Totale dei Debuff se Applicati ("se applicate devono sparire")**:
+    - I tracker debuff (`DEMO`, `CLAP`, `REND`) ora si nascondono istantaneamente se il debuff è presente sul bersaglio (`return false, "ACTIVE"`).
+    - Compaiono esclusivamente durante il combattimento su bersaglio ostile valido quando sono MANCANTI (`return true, "MISS"`), con dicitura visibile `|cFFFF2020MISS|r`.
+    - Mantenuto il filtro immunità meccanica per Rend (`cType == "Mechanical"` o `"Meccanico"`) con soppressione completa (`return false, "IMMUNE"`).
+    - Lookup table precalcolata globale `_G.PWHUD_DebuffLookup` con ID raid-aware, nomi localizzati e pattern substring su icona (`warcry`, `thunderclap`, `gouge`) per scansione per-frame senza fallimenti.
+  - [x] **Ordinamento e Priorità Visiva da Sinistra verso Destra (`sort: "none"`)**:
+    - Riconfigurato `"sort": "none"` nel gruppo dinamico `01 - Procs warTank` per disattivare l'ordinamento dinamico per durata residua (che forzava i debuff MISS all'estrema sinistra) e imporre l'ordine fisso e gerarchico di `controlledChildren`:
+      1. `Emergency Low HP Alert` (Salute critica < 35%, allarme prioritario all'estrema sinistra).
+      2. `Tank Buster Alert` (Debuff letali raid/dungeon 3.3.5a: Soul Reaper, Impale, Fusion Punch...).
+      3. `Revenge Ready warTank` (Proc offensivo/difensivo Ritorsione, 5s).
+      4. `Sword and Board` (Proc Spada e Scudo, Shield Slam istantaneo).
+      5. `Demoralizing Shout Tracker warTank` (Debuff mancante sul target).
+      6. `Thunder Clap Tracker warTank` (Debuff mancante sul target).
+      7. `Rend Tracker warTank` (Debuff mancante sul target, estrema destra).
+  - [x] **Test Suite e Documentazione**:
+    - Aggiornato `tests/test_target_debuffs.py` per verificare `sort == "none"`, la lista ordinata dei figli, la soppressione ad applicazione e le icone C++.
+    - Suite parallela multi-core: 10/10 test superati in 0.39s.
+    - Rigenerata la stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzato `docs/index.html`.
+    - Documentazione tecnica bilingue allineata (`README.md`, `README_IT.md`, `HANDOFF.md`, `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+    - Esecuzione CP (Commit & Push su `origin/master`).

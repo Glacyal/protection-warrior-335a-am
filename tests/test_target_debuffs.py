@@ -2,12 +2,13 @@
 Test Target Debuff Trackers — Class Warrior (Protection 3.3.5a)
 ==============================================================
 Verifica:
-1. 01 - Procs warTank ha sort="ascending" per ordinare da sinistra a destra (scadenza minore o MISS a sinistra).
-2. Presenza dei 3 tracker in controlledChildren:
-   - Demoralizing Shout Tracker warTank (soglia <= 10s o MISS, raid-aware con Roar e Curse of Weakness)
-   - Thunder Clap Tracker warTank (soglia <= 10s o MISS, raid-aware con Frost Fever, Judgements of the Just, Infected Wounds)
-   - Rend Tracker warTank (soglia <= 5s o MISS, solo player, filtro immunità Meccanici)
-3. Struttura trigger custom, customDuration, customText e per-frame caching (_G.PWHUD_ScanTargetDebuffs).
+1. 01 - Procs warTank ha sort="none" per rispettare rigorosamente l'ordine visivo prioritario da sinistra a destra:
+   [Emergency Low HP Alert] -> [Tank Buster Alert] -> [Revenge Ready] -> [Sword and Board] -> [Demo] -> [Clap] -> [Rend].
+2. Se i debuff sono applicati sul bersaglio, essi spariscono (return false, "ACTIVE").
+   Compaiono solo in combattimento su bersaglio ostile valido quando MANCANO (return true, "MISS").
+3. Rend filtra i bersagli immuni (Meccanici) sia in lingua inglese che italiana (return false, "IMMUNE").
+4. Icone con texture dinamiche native C++ risolte tramite select(3, GetSpellInfo(spellId)) per prevenire question mark '?'.
+5. Dual key subtext check (%c per MISS in basso e acronimo al centro).
 """
 import os
 import sys
@@ -20,14 +21,21 @@ def run_tests():
     tree = build_wa_tree()
     children_by_id = {c["id"]: c for c in tree["c"]}
 
-    # 1. 01 - Procs warTank configurazione di gruppo
+    # 1. 01 - Procs warTank configurazione di gruppo e priorità visiva
     procs_group = children_by_id["01 - Procs warTank"]
-    assert procs_group["sort"] == "ascending", f"Expected sort 'ascending', got {procs_group.get('sort')}"
+    assert procs_group["sort"] == "none", f"Expected sort 'none', got {procs_group.get('sort')}"
     ctrl = procs_group["controlledChildren"]
 
-    assert "Demoralizing Shout Tracker warTank" in ctrl, "Missing Demoralizing Shout Tracker in 01 - Procs"
-    assert "Thunder Clap Tracker warTank" in ctrl, "Missing Thunder Clap Tracker in 01 - Procs"
-    assert "Rend Tracker warTank" in ctrl, "Missing Rend Tracker in 01 - Procs"
+    expected_order = [
+        "Emergency Low HP Alert",
+        "Tank Buster Alert",
+        "Revenge Ready warTank",
+        "Sword and Board",
+        "Demoralizing Shout Tracker warTank",
+        "Thunder Clap Tracker warTank",
+        "Rend Tracker warTank",
+    ]
+    assert ctrl == expected_order, f"Expected controlledChildren order {expected_order}, got {ctrl}"
 
     # 2. Demoralizing Shout Tracker
     demo = children_by_id["Demoralizing Shout Tracker warTank"]
@@ -38,7 +46,7 @@ def run_tests():
     trig_demo = demo["triggers"][1]["trigger"]
     assert "_G.PWHUD_CheckTargetDebuff" in trig_demo["custom"]
     assert "cache.demoFound" in trig_demo["custom"]
-    assert "<= 10.0" in trig_demo["custom"]
+    assert 'return false, "ACTIVE"' in trig_demo["custom"]
     # Check raid-aware spell IDs in shared logic
     custom_demo = trig_demo["custom"]
     assert "47437" in custom_demo  # Demo Shout Rank 8
@@ -46,6 +54,7 @@ def run_tests():
     assert "50511" in custom_demo  # Curse of Weakness Rank 9 (Warlock)
     assert demo["customText"] != ""
     assert trig_demo["customDuration"] != ""
+    assert "GetSpellInfo(47437)" in trig_demo["customIcon"]
 
     # 3. Thunder Clap Tracker
     clap = children_by_id["Thunder Clap Tracker warTank"]
@@ -55,13 +64,14 @@ def run_tests():
     trig_clap = clap["triggers"][1]["trigger"]
     assert "_G.PWHUD_CheckTargetDebuff" in trig_clap["custom"]
     assert "cache.clapFound" in trig_clap["custom"]
-    assert "<= 10.0" in trig_clap["custom"]
+    assert 'return false, "ACTIVE"' in trig_clap["custom"]
     # Check raid-aware spell IDs in shared logic
     custom_clap = trig_clap["custom"]
     assert "47502" in custom_clap  # Thunder Clap Rank 9
     assert "55095" in custom_clap  # Frost Fever (DK)
     assert "53696" in custom_clap  # Judgements of the Just (Paladin)
     assert "48485" in custom_clap  # Infected Wounds (Druid)
+    assert "GetSpellInfo(47502)" in trig_clap["customIcon"]
 
     # 4. Rend Tracker
     rend = children_by_id["Rend Tracker warTank"]
@@ -71,7 +81,7 @@ def run_tests():
     trig_rend = rend["triggers"][1]["trigger"]
     assert "_G.PWHUD_CheckTargetDebuff" in trig_rend["custom"]
     assert "cache.rendFound" in trig_rend["custom"]
-    assert "<= 5.0" in trig_rend["custom"]
+    assert 'cache.isMechanical and "IMMUNE" or "ACTIVE"' in trig_rend["custom"]
     # Check mechanical immunity filter
     custom_rend = trig_rend["custom"]
     assert 'cType == "Mechanical"' in custom_rend
@@ -79,6 +89,7 @@ def run_tests():
     # Check player filter
     assert 'unitCaster == "player"' in custom_rend
     assert "47465" in custom_rend  # Rend Rank 10
+    assert "GetSpellInfo(47465)" in trig_rend["customIcon"]
 
     # 5. Dual key subtext check
     for item in [demo, clap, rend]:

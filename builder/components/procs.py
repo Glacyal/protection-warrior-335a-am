@@ -244,14 +244,8 @@ SHARED_TARGET_DEBUFFS_LUA = r"""function(kind)
             targetGUID = tGUID,
             isMechanical = false,
             demoFound = false,
-            demoDur = 0,
-            demoExp = 0,
             clapFound = false,
-            clapDur = 0,
-            clapExp = 0,
             rendFound = false,
-            rendDur = 0,
-            rendExp = 0,
         }
 
         local cType = UnitCreatureType("target")
@@ -259,87 +253,106 @@ SHARED_TARGET_DEBUFFS_LUA = r"""function(kind)
             cache.isMechanical = true
         end
 
+        if not _G.PWHUD_DebuffLookup then
+            local t = { demo = {}, clap = {}, rend = {} }
+            local demoIds = { 47437, 25203, 25202, 11556, 11555, 11554, 6190, 1160, 48560, 26998, 9898, 9747, 9490, 1735, 739, 99, 50511, 47864, 30908, 27224, 11708, 11707, 702, 1108, 704 }
+            for _, id in ipairs(demoIds) do
+                t.demo[id] = true
+                local n = GetSpellInfo(id)
+                if n then t.demo[n] = true end
+            end
+            t.demo["Demoralizing Shout"] = true
+            t.demo["Urlo Demoralizzante"] = true
+            t.demo["Demoralizing Roar"] = true
+            t.demo["Ruggito Demoralizzante"] = true
+            t.demo["Curse of Weakness"] = true
+            t.demo["Maledizione della Debolezza"] = true
+
+            local clapIds = { 47502, 25264, 11581, 11580, 8205, 8204, 8198, 6343, 55095, 53696, 53695, 48485, 48484, 48483 }
+            for _, id in ipairs(clapIds) do
+                t.clap[id] = true
+                local n = GetSpellInfo(id)
+                if n then t.clap[n] = true end
+            end
+            t.clap["Thunder Clap"] = true
+            t.clap["Tuono"] = true
+            t.clap["Frost Fever"] = true
+            t.clap["Febbre del Gelo"] = true
+            t.clap["Judgements of the Just"] = true
+            t.clap["Giudizi dei Giusti"] = true
+            t.clap["Giudizio dei Giusti"] = true
+            t.clap["Infected Wounds"] = true
+            t.clap["Ferite Infette"] = true
+
+            local rendIds = { 47465, 25208, 11574, 11573, 11572, 6548, 6547, 6546, 284, 772 }
+            for _, id in ipairs(rendIds) do
+                t.rend[id] = true
+                local n = GetSpellInfo(id)
+                if n then t.rend[n] = true end
+            end
+            t.rend["Rend"] = true
+            t.rend["Lacerazione"] = true
+
+            _G.PWHUD_DebuffLookup = t
+        end
+
+        local lookup = _G.PWHUD_DebuffLookup
         local pGUID = UnitGUID("player")
+
         for i = 1, 40 do
             local name, _, icon, count, debuffType, duration, expirationTime, unitCaster, _, _, spellId = UnitDebuff("target", i)
             if not name then break end
 
-            -- 1. Demoralizing Shout & Raid Equivalents (Demoralizing Roar, Curse of Weakness)
+            local lIcon = icon and string.lower(icon) or ""
+
+            -- 1. Demoralizing Shout & Raid Equivalents
             if not cache.demoFound then
-                if spellId == 47437 or spellId == 25203 or spellId == 25202 or spellId == 11556 or spellId == 11555 or spellId == 11554 or spellId == 6190 or spellId == 1160 or
-                   spellId == 48560 or spellId == 26998 or spellId == 9898 or spellId == 9747 or spellId == 9490 or spellId == 1735 or spellId == 739 or spellId == 99 or
-                   spellId == 50511 or spellId == 47864 or spellId == 30908 or spellId == 27224 or spellId == 11708 or spellId == 11707 or spellId == 702 or spellId == 1108 or spellId == 704 or
-                   name == "Demoralizing Shout" or name == "Urlo Demoralizzante" or
-                   name == "Demoralizing Roar" or name == "Ruggito Demoralizzante" or
-                   name == "Curse of Weakness" or name == "Maledizione della Debolezza" then
+                if (spellId and lookup.demo[spellId]) or lookup.demo[name] or
+                   (lIcon ~= "" and (string.find(lIcon, "warcry") or string.find(lIcon, "demoralizingroar") or string.find(lIcon, "curseofmannoroth"))) then
                     cache.demoFound = true
-                    cache.demoDur = (duration and duration > 0) and duration or 30
-                    cache.demoExp = (expirationTime and expirationTime > 0) and expirationTime or (now + cache.demoDur)
                 end
             end
 
-            -- 2. Thunder Clap & Raid Equivalents (Frost Fever, Judgements of the Just, Infected Wounds)
+            -- 2. Thunder Clap & Raid Equivalents
             if not cache.clapFound then
-                if spellId == 47502 or spellId == 25264 or spellId == 11581 or spellId == 11580 or spellId == 8205 or spellId == 8204 or spellId == 8198 or spellId == 6343 or
-                   spellId == 55095 or spellId == 53696 or spellId == 53695 or spellId == 48485 or spellId == 48484 or spellId == 48483 or
-                   name == "Thunder Clap" or name == "Tuono" or
-                   name == "Frost Fever" or name == "Febbre del Gelo" or
-                   name == "Judgements of the Just" or name == "Giudizi dei Giusti" or name == "Giudizio dei Giusti" or
-                   name == "Infected Wounds" or name == "Ferite Infette" then
+                if (spellId and lookup.clap[spellId]) or lookup.clap[name] or
+                   (lIcon ~= "" and (string.find(lIcon, "thunderclap") or string.find(lIcon, "frostfever") or string.find(lIcon, "righteousfury") or string.find(lIcon, "infectedwound"))) then
                     cache.clapFound = true
-                    cache.clapDur = (duration and duration > 0) and duration or 30
-                    cache.clapExp = (expirationTime and expirationTime > 0) and expirationTime or (now + cache.clapDur)
                 end
             end
 
             -- 3. Rend (Player Bleed)
             if not cache.rendFound and not cache.isMechanical then
-                if spellId == 47465 or spellId == 25208 or spellId == 11574 or spellId == 11573 or spellId == 11572 or spellId == 6548 or spellId == 6547 or spellId == 6546 or spellId == 284 or spellId == 772 or
-                   name == "Rend" or name == "Lacerazione" then
+                if (spellId and lookup.rend[spellId]) or lookup.rend[name] or
+                   (lIcon ~= "" and string.find(lIcon, "gouge")) then
                     local isMine = (unitCaster == "player") or (unitCaster and pGUID and UnitGUID(unitCaster) == pGUID)
                     if isMine or not unitCaster then
                         cache.rendFound = true
-                        cache.rendDur = (duration and duration > 0) and duration or 15
-                        cache.rendExp = (expirationTime and expirationTime > 0) and expirationTime or (now + cache.rendDur)
                     end
                 end
             end
         end
+
         _G.PWHUD_TargetDebuffScanCache = cache
     end
 
     if kind == "DEMO" then
-        if not cache.demoFound then
-            return true, "MISS", 0, 30, now
+        if cache.demoFound then
+            return false, "ACTIVE", 0, 0, 0
         end
-        local rem = cache.demoExp - now
-        if rem > 0 and rem <= 10.0 then
-            return true, "EXPIRING", rem, cache.demoDur, cache.demoExp
-        end
-        return false, "HEALTHY", rem, cache.demoDur, cache.demoExp
+        return true, "MISS", 0, 0, 0
 
     elseif kind == "CLAP" then
-        if not cache.clapFound then
-            return true, "MISS", 0, 30, now
+        if cache.clapFound then
+            return false, "ACTIVE", 0, 0, 0
         end
-        local rem = cache.clapExp - now
-        if rem > 0 and rem <= 10.0 then
-            return true, "EXPIRING", rem, cache.clapDur, cache.clapExp
-        end
-        return false, "HEALTHY", rem, cache.clapDur, cache.clapExp
+        return true, "MISS", 0, 0, 0
 
     elseif kind == "REND" then
-        if cache.isMechanical then
-            return false, "IMMUNE", 0, 0, 0
+        if cache.isMechanical or cache.rendFound then
+            return false, cache.isMechanical and "IMMUNE" or "ACTIVE", 0, 0, 0
         end
-        if not cache.rendFound then
-            return true, "MISS", 0, 15, now
-        end
-        local rem = cache.rendExp - now
-        if rem > 0 and rem <= 5.0 then
-            return true, "EXPIRING", rem, cache.rendDur, cache.rendExp
-        end
-        return false, "HEALTHY", rem, cache.rendDur, cache.rendExp
+        return true, "MISS", 0, 0, 0
     end
 
     return false, "UNKNOWN", 0, 0, 0
@@ -353,16 +366,12 @@ def make_target_debuff_trigger(kind: str) -> str:
 end"""
 
 
-def make_target_debuff_custom_duration(kind: str, default_dur: int) -> str:
+def make_target_debuff_custom_duration(kind: str) -> str:
     return f"""function()
     _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
-    local show, status, rem, dur, expTime = _G.PWHUD_CheckTargetDebuff("{kind}")
+    local show, status = _G.PWHUD_CheckTargetDebuff("{kind}")
     if show then
-        if status == "MISS" then
-            return 0, GetTime()
-        else
-            return dur or {default_dur}, expTime or (GetTime() + rem)
-        end
+        return 0, 0
     end
     return 0, 0
 end"""
@@ -371,17 +380,9 @@ end"""
 def make_target_debuff_custom_text(kind: str) -> str:
     return f"""function()
     _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
-    local show, status, rem = _G.PWHUD_CheckTargetDebuff("{kind}")
-    if show then
-        if status == "MISS" then
-            return "|cFFFF2020MISS|r"
-        else
-            if rem <= 3 then
-                return string.format("|cFFFF2020%.1fs|r", rem)
-            else
-                return string.format("|cFFFFFF00%.1fs|r", rem)
-            end
-        end
+    local show, status = _G.PWHUD_CheckTargetDebuff("{kind}")
+    if show and status == "MISS" then
+        return "|cFFFF2020MISS|r"
     end
     return ""
 end"""
@@ -403,17 +404,17 @@ def build_procs_auras() -> list[dict]:
             "grow": "HORIZONTAL",
             "align": "CENTER",
             "space": 6,
-            "sort": "ascending",
+            "sort": "none",
             "xOffset": 0,
             "yOffset": 52,
             "controlledChildren": [
+                "Emergency Low HP Alert",
+                "Tank Buster Alert",
+                "Revenge Ready warTank",
+                "Sword and Board",
                 "Demoralizing Shout Tracker warTank",
                 "Thunder Clap Tracker warTank",
                 "Rend Tracker warTank",
-                "Sword and Board",
-                "Revenge Ready warTank",
-                "Emergency Low HP Alert",
-                "Tank Buster Alert",
             ],
         },
         # Target Debuff 1: Demoralizing Shout
@@ -425,7 +426,7 @@ def build_procs_auras() -> list[dict]:
             "internalVersion": 90,
             "width": 34,
             "height": 34,
-            "displayIcon": "Interface\\Icons\\Ability_Warrior_WarCry",
+            "displayIcon": r"Interface\Icons\Ability_Warrior_WarCry",
             "auto": False,
             "color": [1, 1, 1, 1],
             "cooldown": True,
@@ -443,9 +444,9 @@ def build_procs_auras() -> list[dict]:
                         "check": "event",
                         "events": "UNIT_AURA,PLAYER_TARGET_CHANGED,PLAYER_REGEN_DISABLED,PLAYER_REGEN_ENABLED,PLAYER_ENTERING_WORLD",
                         "custom": make_target_debuff_trigger("DEMO"),
-                        "customDuration": make_target_debuff_custom_duration("DEMO", 30),
-                        "customIcon": """function()
-                            return "Interface\\Icons\\Ability_Warrior_WarCry"
+                        "customDuration": make_target_debuff_custom_duration("DEMO"),
+                        "customIcon": r"""function()
+                            return select(3, GetSpellInfo(47437)) or "Interface\\Icons\\Ability_Warrior_WarCry"
                         end""",
                     },
                     "untrigger": {
@@ -470,7 +471,7 @@ def build_procs_auras() -> list[dict]:
             "internalVersion": 90,
             "width": 34,
             "height": 34,
-            "displayIcon": "Interface\\Icons\\Spell_Nature_ThunderClap",
+            "displayIcon": r"Interface\Icons\Spell_Nature_ThunderClap",
             "auto": False,
             "color": [1, 1, 1, 1],
             "cooldown": True,
@@ -488,9 +489,9 @@ def build_procs_auras() -> list[dict]:
                         "check": "event",
                         "events": "UNIT_AURA,PLAYER_TARGET_CHANGED,PLAYER_REGEN_DISABLED,PLAYER_REGEN_ENABLED,PLAYER_ENTERING_WORLD",
                         "custom": make_target_debuff_trigger("CLAP"),
-                        "customDuration": make_target_debuff_custom_duration("CLAP", 30),
-                        "customIcon": """function()
-                            return "Interface\\Icons\\Spell_Nature_ThunderClap"
+                        "customDuration": make_target_debuff_custom_duration("CLAP"),
+                        "customIcon": r"""function()
+                            return select(3, GetSpellInfo(47502)) or "Interface\\Icons\\Spell_Nature_ThunderClap"
                         end""",
                     },
                     "untrigger": {
@@ -515,7 +516,7 @@ def build_procs_auras() -> list[dict]:
             "internalVersion": 90,
             "width": 34,
             "height": 34,
-            "displayIcon": "Interface\\Icons\\Ability_Gouge",
+            "displayIcon": r"Interface\Icons\Ability_Gouge",
             "auto": False,
             "color": [1, 1, 1, 1],
             "cooldown": True,
@@ -533,9 +534,9 @@ def build_procs_auras() -> list[dict]:
                         "check": "event",
                         "events": "UNIT_AURA,PLAYER_TARGET_CHANGED,PLAYER_REGEN_DISABLED,PLAYER_REGEN_ENABLED,PLAYER_ENTERING_WORLD",
                         "custom": make_target_debuff_trigger("REND"),
-                        "customDuration": make_target_debuff_custom_duration("REND", 15),
-                        "customIcon": """function()
-                            return "Interface\\Icons\\Ability_Gouge"
+                        "customDuration": make_target_debuff_custom_duration("REND"),
+                        "customIcon": r"""function()
+                            return select(3, GetSpellInfo(47465)) or "Interface\\Icons\\Ability_Gouge"
                         end""",
                     },
                     "untrigger": {
