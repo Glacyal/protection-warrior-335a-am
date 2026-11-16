@@ -41,7 +41,11 @@ Positioned at the upper region of the HUD ($y = 52$), managing up to 5 icons ($3
 5. **Tank Buster Alert**: High-priority alert on lethal tank debuffs (*Soul Reaper*, *Impale* $\ge 2$ stacks, *Gastric Bloat* $\ge 8$ stacks) to coordinate Taunt swaps.
 
 ### 2. Class Buffs & Defensive Stance (`02`, `03`, `04`)
-Positioned on the left side directly above the Stats Panel at $x = -253, -216, -179$ and $y = 0$ ($34 \times 34\text{px}$, tightly clustered with 3px spacing centered above the 126px stats panel):
+Positioned on the left side directly above the Stats Panel at $x = -264, -232, -200, -168$ and $y = 0$ ($30 \times 30\text{px}$, 4-icon grid perfectly spanning the 126px width of the stats panel with 2px spacing):
+- **02 - Battle Shout warTank**: Battle Shout active timer / missing alert (OFF).
+- **03 - Commanding Shout warTank**: Commanding Shout active timer / missing alert (OFF).
+- **04b - Vigilance warTank**: Vigilance missing alert on ally (OFF) when talented (Focus Magic model).
+- **04 - Defensive Stance warTank**: Wrong stance combat warning (STANCE).
 - **02 - Battle Shout warTank**: Displays countdown timer only when expiring ($\le 30\text{s}$) or desaturated with red `OFF` label when neither Battle Shout nor Paladin *Blessing of Might* is present.
 - **03 - Commanding Shout warTank**: Displays countdown timer only when expiring ($\le 30\text{s}$) or desaturated with red `OFF` label when neither Commanding Shout nor Warlock *Blood Pact* is present.
 - **04 - Defensive Stance warTank**: Aligned 1:1 with Fury Warrior (completely hidden during correct Defensive Stance; visible with red alert border and `STANCE` subtext only when out-of-stance during combat via `04 - Defensive Stance - OutOfStance warTank`).

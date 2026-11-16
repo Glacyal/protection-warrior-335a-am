@@ -315,6 +315,199 @@ def make_cs_untrigger() -> str:
 end"""
 
 
+
+# =============================================================================
+# LOGICA LUA CONDIVISA: VIGILANCE (VIGILANZA - MODELLO FOCUS MAGIC)
+# =============================================================================
+SHARED_VIGILANCE_CHECK_LUA = r"""function(event, ...)
+    local state = _G.PWHUD_VigilanceState
+    if not state then
+        state = { targetGUID = nil, targetName = nil, expires = 0, playerGUID = UnitGUID("player") }
+        _G.PWHUD_VigilanceState = state
+    end
+    local playerGUID = state.playerGUID
+    if not playerGUID then
+        playerGUID = UnitGUID("player")
+        state.playerGUID = playerGUID
+    end
+
+    local now = GetTime()
+
+    -- 0. Verifica se il giocatore conosce il talento Vigilance
+    local hasTalent = false
+    if IsSpellKnown and (IsSpellKnown(50720) or IsSpellKnown(59665)) then
+        hasTalent = true
+    else
+        local vigName = (GetSpellInfo and select(1, GetSpellInfo(50720))) or "Vigilance"
+        for i = 1, 120 do
+            local sName = GetSpellName(i, BOOKTYPE_SPELL)
+            if not sName then break end
+            if sName == "Vigilance" or sName == "Vigilanza" or sName == vigName then
+                hasTalent = true
+                break
+            end
+        end
+    end
+    state.hasTalent = hasTalent
+    if not hasTalent then
+        return false, false, 0, 1800, 0
+    end
+
+    -- 1. Gestione Eventi Assegnazione, Rimozione e Morte
+    if event == "UNIT_SPELLCAST_SUCCEEDED" then
+        local unit, spell = ...
+        if unit == "player" and (spell == "Vigilance" or spell == "Vigilanza" or spell == 50720) then
+            state.targetName = UnitName("target")
+            state.targetGUID = UnitGUID("target")
+            state.expires = now + 1800
+        end
+    elseif event == "COMBAT_LOG_EVENT_UNFILTERED" or event == "CLEU" then
+        local _, subEvent, sourceGUID, _, _, destGUID, destName, _, spellId, spellName = ...
+        local isRelevant = false
+        if sourceGUID == playerGUID and (spellId == 50720 or spellId == 59665 or spellName == "Vigilance" or spellName == "Vigilanza") then
+            isRelevant = true
+            if subEvent == "SPELL_AURA_APPLIED" or subEvent == "SPELL_AURA_REFRESH" or subEvent == "SPELL_CAST_SUCCESS" then
+                state.targetName = destName
+                state.targetGUID = destGUID
+                state.expires = now + 1800
+            elseif subEvent == "SPELL_AURA_REMOVED" or subEvent == "SPELL_AURA_BROKEN" then
+                state.targetName = nil
+                state.targetGUID = nil
+                state.expires = 0
+            end
+        elseif subEvent == "UNIT_DIED" then
+            if (state.targetGUID and destGUID == state.targetGUID) or (state.targetName and destName == state.targetName) then
+                isRelevant = true
+                state.targetName = nil
+                state.targetGUID = nil
+                state.expires = 0
+            end
+        end
+        if not isRelevant then
+            local isAllyActive = (state.expires and state.expires > now) or false
+            return true, isAllyActive, (isAllyActive and (state.expires - now) or 0), 1800, (state.expires or 0)
+        end
+    end
+
+    -- 2. Verifica se l'alleato registrato ha ancora il buff ed e vivo
+    if state.expires and state.expires > now then
+        if state.targetName and UnitExists(state.targetName) and UnitIsDead(state.targetName) then
+            state.targetName = nil
+            state.targetGUID = nil
+            state.expires = 0
+        else
+            return true, true, (state.expires - now), 1800, state.expires
+        end
+    end
+
+    -- 3. Scansione attiva su target, focus, raid o party (utile al login, reload o cambio zona)
+    local allyActive = false
+    local expTime = 0
+    local function checkUnit(u)
+        if UnitExists(u) and UnitIsFriend("player", u) and not UnitIsDead(u) then
+            for i = 1, 40 do
+                local n, _, _, _, _, dur, exp, c, _, _, spellId = UnitBuff(u, i)
+                if not n then break end
+                if (spellId == 50720 or spellId == 59665 or n == "Vigilance" or n == "Vigilanza") and (c == "player" or not c) then
+                    state.targetName = UnitName(u)
+                    state.targetGUID = UnitGUID(u)
+                    expTime = (exp and exp > 0) and exp or (now + 1800)
+                    state.expires = expTime
+                    return true
+                end
+            end
+        end
+        return false
+    end
+
+    if checkUnit("target") or checkUnit("focus") then
+        allyActive = true
+    else
+        local nr = GetNumRaidMembers and GetNumRaidMembers() or 0
+        if nr > 0 then
+            for r = 1, nr do
+                if checkUnit("raid" .. r) then
+                    allyActive = true
+                    break
+                end
+            end
+        else
+            local np = GetNumPartyMembers and GetNumPartyMembers() or 0
+            if np > 0 then
+                for p = 1, np do
+                    if checkUnit("party" .. p) then
+                        allyActive = true
+                        break
+                    end
+                end
+            end
+        end
+    end
+
+    local rem = allyActive and (expTime > now and (expTime - now) or 1800) or 0
+    return true, allyActive, rem, 1800, expTime
+end"""
+
+
+def make_vigilance_off_trigger() -> str:
+    """Trigger Lua per Vigilance OFF (visibile se nessun alleato ha il buff e il talento e appreso)."""
+    return f"""function(event, ...)
+    _G.PWHUD_CheckVigilance = _G.PWHUD_CheckVigilance or {SHARED_VIGILANCE_CHECK_LUA}
+    local hasTalent, allyActive = _G.PWHUD_CheckVigilance(event, ...)
+    return hasTalent and (not allyActive)
+end"""
+
+
+def make_vigilance_off_untrigger() -> str:
+    """Untrigger Lua per Vigilance OFF."""
+    return f"""function(event, ...)
+    _G.PWHUD_CheckVigilance = _G.PWHUD_CheckVigilance or {SHARED_VIGILANCE_CHECK_LUA}
+    local hasTalent, allyActive = _G.PWHUD_CheckVigilance(event, ...)
+    return (not hasTalent) or allyActive
+end"""
+
+
+def make_vigilance_active_trigger() -> str:
+    """Trigger Lua per Vigilance Active (visibile solo se sta per scadere <= 60s)."""
+    return f"""function(event, ...)
+    _G.PWHUD_CheckVigilance = _G.PWHUD_CheckVigilance or {SHARED_VIGILANCE_CHECK_LUA}
+    local hasTalent, allyActive, rem = _G.PWHUD_CheckVigilance(event, ...)
+    return hasTalent and allyActive and rem > 0 and rem <= 60
+end"""
+
+
+def make_vigilance_active_untrigger() -> str:
+    """Untrigger Lua per Vigilance Active."""
+    return f"""function(event, ...)
+    _G.PWHUD_CheckVigilance = _G.PWHUD_CheckVigilance or {SHARED_VIGILANCE_CHECK_LUA}
+    local hasTalent, allyActive, rem = _G.PWHUD_CheckVigilance(event, ...)
+    return (not hasTalent) or (not allyActive) or rem > 60 or rem <= 0
+end"""
+
+
+def make_vigilance_custom_duration() -> str:
+    """Durata e scadenza dello swipe di ricarica per Vigilance."""
+    return """function()
+    if not _G.PWHUD_CheckVigilance then return 0, 0 end
+    local hasTalent, allyActive, rem, dur, exp = _G.PWHUD_CheckVigilance()
+    if hasTalent and allyActive and rem > 0 and rem <= 60 then
+        return dur or 1800, exp or (GetTime() + rem)
+    end
+    return 0, 0
+end"""
+
+
+def make_vigilance_custom_text() -> str:
+    """Conto alla rovescia formattato per Vigilance (visibile quando rem <= 60)."""
+    return """function()
+    if not _G.PWHUD_CheckVigilance then return "" end
+    local hasTalent, allyActive, rem = _G.PWHUD_CheckVigilance()
+    if hasTalent and allyActive and rem > 0 and rem <= 60 then
+        return string.format("|cFFFF4444%.0fs|r", rem)
+    end
+    return ""
+end"""
+
 def build_buffs_auras() -> list[dict]:
     return [
         # =====================================================================
@@ -326,7 +519,7 @@ def build_buffs_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
             "internalVersion": 90,
-            "xOffset": -253,
+            "xOffset": -264,
             "yOffset": 0,
             "controlledChildren": [
                 "Battle Shout - Active warTank",
@@ -342,8 +535,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 34,
-            "height": 34,
+            "width": 30,
+            "height": 30,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_BattleShout",
             "auto": False,
             "color": [1, 1, 1, 1],
@@ -384,8 +577,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 34,
-            "height": 34,
+            "width": 30,
+            "height": 30,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_BattleShout",
             "auto": False,
             "desaturate": True,
@@ -426,7 +619,7 @@ def build_buffs_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
             "internalVersion": 90,
-            "xOffset": -216,
+            "xOffset": -232,
             "yOffset": 0,
             "controlledChildren": [
                 "Commanding Shout - Active warTank",
@@ -442,8 +635,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 34,
-            "height": 34,
+            "width": 30,
+            "height": 30,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_RallyingCry",
             "auto": False,
             "color": [1, 1, 1, 1],
@@ -484,8 +677,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 34,
-            "height": 34,
+            "width": 30,
+            "height": 30,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_RallyingCry",
             "auto": False,
             "desaturate": True,
@@ -516,6 +709,102 @@ def build_buffs_auras() -> list[dict]:
         },
 
         # =====================================================================
+        # 04b - VIGILANCE (Gruppo Madre a x = -200, y = 0 - Modello Focus Magic)
+        # =====================================================================
+        {
+            "id": "04b - Vigilance warTank",
+            "uid": "PWHUD_VIGILANCE_GRP",
+            "parent": "Class Warrior (Protection)",
+            "regionType": "group",
+            "internalVersion": 90,
+            "xOffset": -200,
+            "yOffset": 0,
+            "controlledChildren": [
+                "Vigilance - Active warTank",
+                "Vigilance - OFF warTank",
+            ],
+        },
+        # 04b - Active (mostra timer solo se il buff su alleato ha <= 60 secondi rimanenti)
+        {
+            "id": "Vigilance - Active warTank",
+            "uid": "PWHUD_VIGILANCE_ACTIVE",
+            "parent": "04b - Vigilance warTank",
+            "regionType": "icon",
+            "internalVersion": 90,
+            "xOffset": 0,
+            "yOffset": 0,
+            "width": 30,
+            "height": 30,
+            "displayIcon": "Interface\\Icons\\Ability_Warrior_Vigilance",
+            "auto": False,
+            "color": [1, 1, 1, 1],
+            "cooldown": True,
+            "cooldownSwipe": True,
+            "cooldownEdge": False,
+            "cooldownTextDisabled": True,
+            "inverse": False,
+            "customTextUpdate": "update",
+            "customText": make_vigilance_custom_text(),
+            "triggers": {
+                1: {
+                    "trigger": {
+                        "type": "custom",
+                        "custom_type": "status",
+                        "check": "event",
+                        "events": "CLEU:SPELL_AURA_APPLIED:SPELL_AURA_REFRESH:SPELL_AURA_REMOVED:SPELL_AURA_BROKEN:UNIT_DIED,UNIT_SPELLCAST_SUCCEEDED,UNIT_AURA,PLAYER_TARGET_CHANGED,PLAYER_FOCUS_CHANGED,RAID_ROSTER_UPDATE,PARTY_MEMBERS_CHANGED,PLAYER_ENTERING_WORLD,ZONE_CHANGED_NEW_AREA",
+                        "custom": make_vigilance_active_trigger(),
+                        "customDuration": make_vigilance_custom_duration(),
+                        "customIcon": """function()
+    return "Interface\\\\Icons\\\\Ability_Warrior_Vigilance"
+end""",
+                    },
+                    "untrigger": {
+                        "custom": make_vigilance_active_untrigger(),
+                    }
+                },
+                "activeTriggerMode": -10,
+            },
+            "subRegions": [
+                {"type": "subbackground"},
+                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10),
+            ],
+        },
+        # 04b - OFF (allerta prominente con icona desaturata e testo rosso 'OFF' se nessun alleato ha il buff)
+        {
+            "id": "Vigilance - OFF warTank",
+            "uid": "PWHUD_VIGILANCE_OFF",
+            "parent": "04b - Vigilance warTank",
+            "regionType": "icon",
+            "internalVersion": 90,
+            "xOffset": 0,
+            "yOffset": 0,
+            "width": 30,
+            "height": 30,
+            "displayIcon": "Interface\\Icons\\Ability_Warrior_Vigilance",
+            "desaturate": True,
+            "color": [0.6, 0.6, 0.6, 0.8],
+            "triggers": {
+                1: {
+                    "trigger": {
+                        "type": "custom",
+                        "custom_type": "status",
+                        "check": "event",
+                        "events": "CLEU:SPELL_AURA_APPLIED:SPELL_AURA_REFRESH:SPELL_AURA_REMOVED:SPELL_AURA_BROKEN:UNIT_DIED,UNIT_SPELLCAST_SUCCEEDED,UNIT_AURA,PLAYER_TARGET_CHANGED,PLAYER_FOCUS_CHANGED,RAID_ROSTER_UPDATE,PARTY_MEMBERS_CHANGED,PLAYER_ENTERING_WORLD,ZONE_CHANGED_NEW_AREA,CHARACTER_POINTS_CHANGED,PLAYER_TALENT_UPDATE",
+                        "custom": make_vigilance_off_trigger(),
+                    },
+                    "untrigger": {
+                        "custom": make_vigilance_off_untrigger(),
+                    }
+                },
+                "activeTriggerMode": -10,
+            },
+            "subRegions": [
+                {"type": "subbackground"},
+                make_subtext("|cFFFF4444OFF|r", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10),
+            ],
+        },
+
+        # =====================================================================
         # 04 - DEFENSIVE STANCE (Gruppo Madre a x = -158, y = 0)
         # =====================================================================
         {
@@ -524,7 +813,7 @@ def build_buffs_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
             "internalVersion": 90,
-            "xOffset": -179,
+            "xOffset": -168,
             "yOffset": 0,
             "controlledChildren": [
                 "04 - Defensive Stance - OutOfStance warTank",
@@ -536,8 +825,8 @@ def build_buffs_auras() -> list[dict]:
             "parent": "04 - Defensive Stance warTank",
             "regionType": "icon",
             "internalVersion": 90,
-            "width": 34,
-            "height": 34,
+            "width": 30,
+            "height": 30,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_DefensiveStance",
             "auto": False,
             "color": [1, 0.2, 0.1, 1],

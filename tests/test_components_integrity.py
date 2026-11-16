@@ -26,6 +26,7 @@ def run_tests():
         "01 - Procs warTank",
         "02 - Battle Shout warTank",
         "03 - Commanding Shout warTank",
+        "04b - Vigilance warTank",
         "04 - Defensive Stance warTank",
         "05 - Trinket 1 warTank",
         "06 - Trinket 2 warTank",
@@ -46,7 +47,7 @@ def run_tests():
     ]
 
     ctrl = root["controlledChildren"]
-    assert len(ctrl) == 20, f"Expected 20 controlled children, got {len(ctrl)}"
+    assert len(ctrl) == 21, f"Expected 20 controlled children, got {len(ctrl)}"
     for exp in expected_children:
         assert exp in ctrl, f"Missing child in root controlledChildren: {exp}"
 

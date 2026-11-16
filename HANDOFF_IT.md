@@ -134,6 +134,21 @@ protection-warrior-335a-am/
 - **Griglia Shouts e Stance Sovrastante (34x34px a X: -271, -216, -161, Y: 0)**: Icone standardizzate a 34x34px (identiche alla riga procs); bordo sinistro (-288) allineato a filo con il pannello, centro (-216) allineato a Commanding Shout, e bordo destro (-144) allineato a Defensive Stance.
 - **Separazione Verticale Pulita**: Spazio di 3px tra le label inferiori delle icone (`OFF`, `STANCE` a Y: -17) e il bordo superiore del pannello (Y: -19.6), azzerando ogni sovrapposizione visiva.
 
+### 4.11 Allerta Mancanza Vigilanza (04b - Vigilance warTank — Architettura Focus Magic)
+- **Verifica Presenza Talento**: Rileva in tempo reale l'apprendimento di *Vigilance* (Spell ID 50720 / 59665) tramite `IsSpellKnown` e scansione spellbook. Se non presente nei talenti, l'aura resta disattivata.
+- **Ciclo di Vita Event-Driven su Alleati**:
+  - `UNIT_SPELLCAST_SUCCEEDED`: Rileva l'assegnazione di Vigilanza su alleato (`expires = now + 1800`).
+  - `COMBAT_LOG_EVENT_UNFILTERED`: Traccia `SPELL_AURA_APPLIED`, `SPELL_AURA_REFRESH`, `SPELL_AURA_REMOVED`, `SPELL_AURA_BROKEN` e azzera il buff alla morte dell'alleato protetto (`UNIT_DIED`).
+  - Scansione automatica di fallback su `target`, `focus`, `party1..4` e `raid1..40`.
+- **Modello Visivo Anti-Clutter (Stile Focus Magic del Mago)**:
+  - `Vigilance - OFF warTank`: Icona desaturata con `OFF` rosso in basso, compare solo se il talento è appreso e nessun alleato ha il buff attivo.
+  - `Vigilance - Active warTank`: Compare solo in prossimità di scadenza (`rem <= 60s`).
+- **Geometria Armonizzata a 4 Icone (30x30px con gap 2px)**: Copre esattamente i 126px del pannello statistiche sottostante (da X: -279 a X: -153):
+  - `02 - Battle Shout warTank`: `X: -264, Y: 0`
+  - `03 - Commanding Shout warTank`: `X: -232, Y: 0`
+  - `04b - Vigilance warTank`: `X: -200, Y: 0`
+  - `04 - Defensive Stance warTank`: `X: -168, Y: 0`
+
 ### 4.10 Ottimizzazione Compatta Stats Panel (126x60px) & Ravvicinamento Icone a 3px
 - **Pannello Statistiche Snello (126x60px)**: Riconfigurato a 126x60px (`X: -216, Y: -49`), eliminando il vuoto superfluo a destra e in basso, mantenendo un margine interno perfetto di 6px per lato sul testo difensivo.
 - **Icone Sovrastanti Ravvicinate (Gap 3px)**: Sostituito l'eccessivo distacco di 21px con un passo compatto di 37px (34px icona + 3px gap):

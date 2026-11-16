@@ -134,6 +134,21 @@ protection-warrior-335a-am/
 - **Top Shouts & Stance Grid (34x34px at X: -271, -216, -161, Y: 0)**: Icon size standardized to 34x34px (matching procs row); left edge (-288) aligns with the left edge of the stats panel, center (-216) aligns with Commanding Shout, and right edge (-144) aligns with Defensive Stance.
 - **Clean Vertical Separation**: 3px gap between icon labels (`OFF`, `STANCE` at Y: -17) and panel top edge (Y: -19.6), completely eliminating visual collisions.
 
+### 4.10 Vigilance Missing Alert (04b - Vigilance warTank — Focus Magic Architecture)
+- **Talent-Grounded Tracking**: Subscribed to spellbook/talent inspection for *Vigilance* (Spell ID 50720 / 59665). If not talented, the aura is completely dormant.
+- **Event-Driven Ally Lifecycle**:
+  - `UNIT_SPELLCAST_SUCCEEDED`: Detects player casting Vigilance on a friendly target (`expires = now + 1800`).
+  - `COMBAT_LOG_EVENT_UNFILTERED`: Tracks `SPELL_AURA_APPLIED`, `SPELL_AURA_REFRESH`, `SPELL_AURA_REMOVED`, `SPELL_AURA_BROKEN`, and instantly resets if the protected ally dies (`UNIT_DIED`).
+  - Automatic fallback scanning across `target`, `focus`, `party1..4`, and `raid1..40`.
+- **Anti-Clutter Visual Model (Focus Magic Style)**:
+  - `Vigilance - OFF warTank`: Prominent desaturated icon with red `OFF` at `INNER_BOTTOM`, displayed only when the warrior is talented into Vigilance and no group/raid ally carries the buff.
+  - `Vigilance - Active warTank`: Only triggers if expiration is imminent (`rem <= 60s`).
+- **Harmonized 4-Icon Row Geometry**: Standardized to 30x30px with 2px gap (step = 32px), spanning exactly 126px from $x = -279$ to $x = -153$:
+  - `02 - Battle Shout warTank`: `X: -264, Y: 0`
+  - `03 - Commanding Shout warTank`: `X: -232, Y: 0`
+  - `04b - Vigilance warTank`: `X: -200, Y: 0`
+  - `04 - Defensive Stance warTank`: `X: -168, Y: 0`
+
 ### 4.9 Compact Stats Panel Optimization (126x60px) & Tight 3px Icon Spacing
 - **Snug 126x60px Stats Panel**: Resized from 144x68px to 126x60px at `X: -216, Y: -49`, eliminating redundant negative space on the right and bottom while preserving an exact 6px horizontal text margin on both sides without clipping.
 - **Tight 3px Adjacent Shouts & Stance Grid**: Replaced the wide 21px gap with a crisp 3px margin between 34x34px icons (step = 37px):

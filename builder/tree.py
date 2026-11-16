@@ -63,6 +63,7 @@ def build_wa_tree(target_version: str = "5.21.8", load_override: dict = None) ->
                 "01 - Procs warTank",
                 "02 - Battle Shout warTank",
                 "03 - Commanding Shout warTank",
+                "04b - Vigilance warTank",
                 "04 - Defensive Stance warTank",
                 "05 - Trinket 1 warTank",
                 "06 - Trinket 2 warTank",

@@ -266,3 +266,25 @@
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
   - [x] Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 18: Integrazione Componente 04b - Vigilance warTank (Allerta 'OFF' su Mancanza Buff Alleato - Modello Focus Magic Fire Mage)**:
+  - [x] Implementazione del modulo e della logica event-driven `SHARED_VIGILANCE_CHECK_LUA` in `builder/components/buffs.py`:
+    - Verifica del talento appreso: `_G.PWHUD_CheckVigilance` controlla in tempo reale se il giocatore ha appreso il talento *Vigilance* (Spell ID 50720 / 59665) tramite `IsSpellKnown` e scansione spellbook. Se il talento non è presente, il componente rimane totalmente inattivo.
+    - Tracciamento dinamico su alleati:
+      - Listener `UNIT_SPELLCAST_SUCCEEDED`: registra l'assegnazione di Vigilanza sull'alleato target (`expires = now + 1800`).
+      - Listener `COMBAT_LOG_EVENT_UNFILTERED`: gestisce `SPELL_AURA_APPLIED`, `SPELL_AURA_REFRESH`, `SPELL_AURA_REMOVED`, `SPELL_AURA_BROKEN` e azzera il tracciamento alla morte dell'alleato registrato (`UNIT_DIED`).
+      - Scansione reattiva automatica su `target`, `focus`, `party1..4` e `raid1..40` al login, reload o cambio zona.
+    - Sotto-aura `Vigilance - OFF warTank` (UID `PWHUD_VIGILANCE_OFF`): compare con icona desaturata e label `OFF` rossa in basso solo quando il guerriero ha appreso il talento ma nessun alleato del gruppo/raid possiede il buff attivo.
+    - Sotto-aura `Vigilance - Active warTank` (UID `PWHUD_VIGILANCE_ACTIVE`): attiva solo durante l'avviso di scadenza imminente (`rem <= 60s`). A durata piena rimane invisibile per evitare clutter.
+  - [x] Riorganizzazione geometrica della riga a 4 componenti (30x30px con gap di 2px, passo 32px):
+    - `02 - Battle Shout warTank`: `X: -264, Y: 0` (span da -279 a -249).
+    - `03 - Commanding Shout warTank`: `X: -232, Y: 0` (span da -247 a -217, gap 2px).
+    - `04b - Vigilance warTank`: `X: -200, Y: 0` (span da -215 a -185, gap 2px).
+    - `04 - Defensive Stance warTank`: `X: -168, Y: 0` (span da -183 a -153, gap 2px).
+    - La riga delle 4 componenti combacia al singolo pixel con i 126px di larghezza del pannello statistiche sottostante (da X: -279 a X: -153).
+  - [x] Aggiornamento albero master in `builder/tree.py` (21 nodi controllati) e test di regressione (`tests/test_components_integrity.py`, `tests/test_tree_layout.py`, `tests/test_danger_alerts.py`).
+  - [x] Aggiornamento simulatore web in `docs/index.html` (aggiunto `#iconVigilance` e classe `.size-30`).
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+  - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [x] Esecuzione CP (Commit & Push su `origin/master`).
