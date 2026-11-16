@@ -24,8 +24,11 @@ def run_tests():
     assert rage["yOffset"] == -20
 
     cast = children_by_id["16 - Castbar warTank"]
-    assert cast["width"] == 278 and cast["height"] == 20
     assert cast["yOffset"] == 8
+    target_cast = children_by_id["Castbar - Target warTank"]
+    assert target_cast["width"] == 278 and target_cast["height"] == 20
+    player_cast = children_by_id["Castbar - Player warTank"]
+    assert player_cast["width"] == 278 and player_cast["height"] == 20
 
     rot = children_by_id["15 - Rotational Bar warTank"]
     assert rot["yOffset"] == -7

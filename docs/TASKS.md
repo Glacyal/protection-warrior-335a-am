@@ -390,3 +390,22 @@
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione CP (Commit & Push su `origin/master`).
 
+- [x] **Task 24: Castbar Speculare Intelligente '16 - Castbar warTank' (Player sx->dx vs Target dx->sx con Priorità Assoluta, Shield Bash & Spell Reflection Advisor)**:
+  - [x] Riorganizzazione architetturale del modulo `16 - Castbar warTank` (`builder/components/bars.py`) come gruppo contenitore $278 	imes 20\text{px}$ a $y = +8$ con 2 aurabar speculari:
+    1. **Castbar - Target warTank** (UID `PWHUD_CASTBAR_TARGET`, $278 	imes 20\text{px}$, `inverse: True`):
+       - **Scorrimento inverso da destra verso sinistra**: effetto visivo di pericolo e conto alla rovescia del cast in arrivo.
+       - **Priorità Assoluta sul Player Cast**: in caso di sovrapposizione temporale con un cast del giocatore, il cast del target prende immediatamente possesso della barra.
+       - **Advisor Intelligente Dicitura Opzione A**:
+         - *Shield Bash*: `NomeSpell [SHIELD BASH]` o `[BASH / REFLECT]` se a raggio di mischia ($\le 5\text{yd}$) con barra ciano viva (`[0.0, 0.85, 1.0]`).
+         - *Spell Reflection*: `NomeSpell [SPELL REFLECTION]` se il target sta mirando al tank (`UnitIsUnit("targettarget", "player")`), il tank ha lo scudo e Spell Reflection è pronto (consigliato prioritariamente anche a distanza $> 5\text{yd}$ o con Shield Bash in CD), con barra magenta/viola (`[0.78, 0.25, 0.95]`).
+         - *Immune*: `NomeSpell [IMMUNE]` con barra grigio piombo (`[0.50, 0.50, 0.50]`) se il cast è non interrompibile e non riflettibile.
+    2. **Castbar - Player warTank** (UID `PWHUD_CASTBAR_PLAYER`, $278 	imes 20\text{px}$, `inverse: False`):
+       - **Scorrimento standard da sinistra verso destra**: identico al modello Fire Mage, visualizza i lanci e le cannellature del giocatore (Shoot, Throw, professioni, Slam, ecc.) con icona a sinistra, nome incantesimo e tempo residuo a destra.
+       - Soppressione automatica se il bersaglio sta lanciando un incantesimo (`if targetSpell then return false end`).
+  - [x] Aggiornamento delle costanti grafiche (`COLOR_CASTBAR_REFLECT = [0.78, 0.25, 0.95, 1.0]` in `builder/core/constants.py`).
+  - [x] Aggiornamento dei test di regressione (`tests/test_interrupts.py` e `tests/test_tree_layout.py`) a copertura del gruppo, delle due barre speculari, dell'inversione e dell'advisor.
+  - [x] Aggiornamento del simulatore web interattivo in `docs/index.html` (nuovi preset per Target Kick dx->sx, Target Reflect dx->sx, Target Immune dx->sx e Player Cast sx->dx).
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` (69073 caratteri) e sincronizzazione `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+  - [x] Esecuzione CP (Commit & Push su `origin/master`).
+

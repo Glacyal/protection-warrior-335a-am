@@ -115,7 +115,7 @@ Le tre barre orizzontali condividono la larghezza calibrata di **278 px**:
 | **05-13**| Utility Row (11 Icone) | 28x28 px | Y: -45, X centrato | Trinket 1/2, Ring, Cloak (Proc-Only: Swordguard), Tier 10 (Bloodrage CD), Enchants (Proc-Only), Gloves, Shield Block warTank (Durata 10s & CD 30s/60s), Shield Wall warTank (-60%), Last Stand warTank (+30%), Boots/Enraged Regen |
 | **14** | `14 - Rage Bar warTank` | 278x14 px | X: 0, Y: -20 | Barra risorsa con cambio colore a soglia Heroic Strike/Cleave (>= 45 Rage) |
 | **15** | `15 - Rotational Bar warTank` | 278x7 px | X: 0, Y: -7 | Indicatore statico di accodamento a 278x7px (OnUpdate frame-rate): barra rame neutra a riposo, oro vibrante + Pixel Glow su Heroic Strike accodato, verde smeraldo + Pixel Glow su Cleave accodato |
-| **16** | `16 - Castbar warTank` | 278x20 px | X: 0, Y: +8 | Barra di lancio target con **Kick Advisor integrato**: rileva lanci interrompibili vs immuni e suggerisce Shield Bash, Pummel o Stun in base a stance e scudo |
+| **16** | `16 - Castbar warTank` | 278x20 px | X: 0, Y: +8 | Gruppo Castbar speculare: Target dx->sx (Priorità 1, Shield Bash, Spell Reflection viola, Immune) e Player sx->dx (Priorità 2, stile Fire Mage) |
 | **17** | `17 - Alerts warTank` | Testo 20pt | X: 0, Y: +78 | Avvisi sonori e testuali per emergenza difensiva, debuff letali e richiesta interrupt |
 | **18** | `18 - Stats Panel warTank` | 126x60 px | X: -216, Y: -49 | Pannello difensivo compatto a 5 righe stile Fury Warrior (Def 540 Cap, Armor DR%, CTC 102.4%, Block % & SBV, Hit & Exp) |
 | **19** | `19 - Sunder Armor Tracker warTank` | 32x32 px | X: +160, Y: -7 | Monitoraggio cariche (1-5) e durata Sunder Armor (Warrior), Expose Armor (Rogue) o Acid Spit (Hunter); nome univoco anti-conflitto |

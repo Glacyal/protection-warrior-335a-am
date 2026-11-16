@@ -27,6 +27,7 @@ COLOR_RAGE_STARVED = [0.45, 0.05, 0.05, 1.0]  # Rosso scuro (< 25)
 COLOR_RAGE_BG = [0.10, 0.04, 0.04, 0.85]     # Sfondo scuro barra rabbia
 
 COLOR_CASTBAR = [0.0, 0.77, 1.0, 1.0]         # Azzurro/Ciano classico castbar (interrompibile)
+COLOR_CASTBAR_REFLECT = [0.78, 0.25, 0.95, 1.0] # Magenta/Viola per incantesimo riflettibile con Spell Reflection
 COLOR_CASTBAR_IMMUNE = [0.55, 0.55, 0.55, 0.90] # Grigio castbar protetta/immune
 COLOR_CASTBAR_BG = [0.05, 0.08, 0.12, 0.80]   # Sfondo castbar
 

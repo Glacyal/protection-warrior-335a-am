@@ -72,7 +72,12 @@ Centratura automatica orizzontale adattiva sotto la barra della rabbia con icone
   - Barra Oro brillante (`[1.0, 0.84, 0.0, 1.0]`) con Pixel Glow dorato `LibCustomGlow-1.0` all'accodamento di *Heroic Strike*.
   - Barra Verde Smeraldo brillante (`[0.1, 0.95, 0.2, 1.0]`) con Pixel Glow verde `LibCustomGlow-1.0` all'accodamento di *Cleave*.
   - Ritorno immediato all'aspetto neutro al rilascio del colpo o alla cancellazione.
-- **16 - Castbar warTank ($278 \times 20\text{px}$ a $y = +8$)**: Barra di lancio sincronizzata con il bersaglio (o player). Mostra icona a sinistra, nome incantesimo con **Kick Advisor** integrato a sinistra (es. `Frostbolt [KICK: SHIELD BASH]` in ciano, o `[IMMUNE]` in grigio) e tempo residuo a destra (%p).
+- **16 - Castbar warTank ($278 \times 20\text{px}$ a $y = +8$)**: Barra di lancio speculare sincronizzata con intelligenza direzionale e priorità assoluta del target:
+  - **Castbar Bersaglio (Destra &rarr; Sinistra, `inverse: true`)**: Scorrimento inverso di pericolo da destra verso sinistra per incantesimi di mob e boss. Icona a sinistra, tempo residuo a destra e advisor contestuale Opzione A:
+    * `Spell [SHIELD BASH]` (Ciano `[0.0, 0.85, 1.0]`) per lanci interrompibili a raggio di mischia.
+    * `Spell [SPELL REFLECTION]` (Magenta/Viola `[0.78, 0.25, 0.95]`) per magie dirette puntate sul tank con scudo equipaggiato, suggerito con priorità anche a distanza ($> 5\text{yd}$) o con Shield Bash in ricarica.
+    * `Spell [IMMUNE]` (Grigio piombo `[0.50, 0.50, 0.50]`) per abilità protette non interrompibili.
+  - **Castbar Giocatore (Sinistra &rarr; Destra, `inverse: false`)**: Scorrimento classico in avanti da sinistra a destra per lanci del player (Tiro, Lancio, professioni) in perfetto stile Fire Mage; si nasconde istantaneamente per cedere il passo ogni volta che il bersaglio inizia a castare.
 
 ### 5. Avvisi Testuali Centrali (`17 - Alerts warTank`)
 Gruppo posizionato a $y = 78$ appena sopra i procs:
