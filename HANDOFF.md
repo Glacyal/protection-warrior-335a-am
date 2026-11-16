@@ -49,7 +49,7 @@ protection-warrior-335a-am/
 │       ├── buffs.py                 # 02 - Battle Shout, 03 - Commanding Shout, 04 - Defensive Stance (x = -222, -190, -158, y = 0)
 │       ├── utility.py               # 05-13 - Utility Row (Trinkets, Ring, Cloak, Tier, Enchants, Gloves, Shield Wall, Last Stand, Boots) at y = -45
 │       ├── bars.py                  # 14 - Rage Bar (278x14px at y = -20) & 16 - Castbar warTank (278x20px at y = +8 with Kick Advisor)
-│       ├── rotational.py            # 15 - Rotational Bar (Composite Swing Timer 278x7px at y = -7 with HS/Cleave backlight)
+│       ├── rotational.py            # 15 - Rotational Bar (Static Queue Indicator 278x7px at y = -7 with HS/Cleave Pixel Glow)
 │       ├── alerts.py                # 17 - Alerts warTank (Central text alerts at y = 78)
 │       ├── stats.py                 # 18 - Stats Panel warTank (Compact panel 88x60px at x = -190, y = -45)
 │       └── sunder.py                # 19 - Sunder Armor Tracker (32x32px at x = 160, y = -7)
@@ -128,6 +128,13 @@ protection-warrior-335a-am/
   3. `CTC:` Combat Table Coverage with non-stacking engine for *Insect Swarm* and *Scorpid Sting* (+3.0% max Miss).
   4. `Block:` with block chance % and Shield Block Value (SBV).
   5. `Hit:` with Draenei *Heroic Presence* (+1.0%) and `Exp:` with Soft Cap 26 and Hard Cap 56.
+
+### 4.4 Static Rotational Queue Indicator (Heroic Strike & Cleave)
+- Occupies the allocated 278x7px space at $y = -7$ as a static, solid bar without swipe animation and without remaining time countdown numbers.
+- Dynamic queueing logic inherited from Fury Warrior via `IsCurrentSpell()`:
+  - Gold pixel glow (`LibCustomGlow-1.0`) and ADD vertex tint when *Heroic Strike* (`47450`) is queued.
+  - Emerald Green pixel glow and ADD vertex tint when *Cleave* (`47520`) is queued.
+  - Returns to neutral warrior copper/bronze static appearance when no ability is queued.
 
 ---
 

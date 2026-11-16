@@ -126,3 +126,14 @@
   - [x] Creazione di `HANDOFF.md` (Inglese primario) e `HANDOFF_IT.md` (Italiano secondario) con identica architettura tecnica e glossario bilingue.
   - [x] Traduzione integrale in lingua inglese del simulatore web `docs/index.html` (interfaccia, controlli, preset di test, allarmi, slider e schede documentali/glossario).
   - [x] Istituzione della regola permanente non negoziabile in `docs/RULES.md` e memoria tecnica in `docs/MEMORY.md`.
+- [x] **Task 7: Allineamento Componente 15 - Rotational Bar (Static Queue Indicator Senza Scorrimento e Senza Timer Rimanente, 278x7px)**:
+  - [x] Riconfigurazione di `15 - Rotational Bar` in `builder/components/rotational.py`: la barra occupa l'intero spazio assegnato (278x7px a $y = -7$) senza animazione di scorrimento/swipe e senza testo del tempo rimanente (`%c` rimosso/invisibile).
+  - [x] Implementazione del meccanismo di Queue Indicator ereditato dal Fury Warrior:
+    - Rilevamento in tempo reale dell'accodamento di *Heroic Strike* (`47450`) o *Cleave* (`47520`) tramite `IsCurrentSpell()`.
+    - Retroilluminazione additiva con blend mode `ADD` e Pixel Glow via `LibCustomGlow-1.0`: Oro (`1.0, 0.84, 0.0`) per Heroic Strike, Verde Smeraldo (`0.1, 0.95, 0.2`) per Cleave.
+    - Spegnimento del glow e ripristino della barra base quando nessuna abilità è accodata.
+  - [x] Aggiornamento simulatore web in `docs/index.html`: barra statica solida 278x7px, eliminazione dello scorrimento e del testo countdown dei secondi, aggiunta di controlli interattivi/toggle per simulare Heroic Strike Queued (Glow Oro) e Cleave Queued (Glow Verde).
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione automatica in `docs/index.html`.
+  - [x] Aggiornamento sincronizzato di tutti i documenti bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`.
+  - [x] Esecuzione e superamento della suite di test (8/8 test paralleli).
+  - [x] Commit Git con messaggio descrittivo.

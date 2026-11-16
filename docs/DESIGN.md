@@ -45,11 +45,14 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
   - `0 - 44 Rage`: Rosso scuro/sangue (Rabbia riservata a Shield Slam, Revenge, Shockwave e Shield Block).
   - `>= 45 Rage`: Transizione istantanea ad ambra dorato (Rabbia in eccedenza: via libera per accodare Heroic Strike o Cleave senza rischiare di prosciugare la risorsa per le abilità di mitigazione e minaccia primaria).
 
-### 4.2 Barra Rotazionale Swing Timer (`15 - Rotational Bar`)
+### 4.2 Barra Rotazionale Indicatore di Accodamento (`15 - Rotational Bar`)
 - **Dimensioni**: 278 x 7 px
 - **Posizione**: X = 0, Y = -7 px
-- **Funzione**: Timer del colpo bianco dell'arma primaria (Main Hand).
-- **Pixel Glow**: Bordo dorato pulsante attivo durante l'accodamento di Heroic Strike o Cleave, confermando visivamente al tank che il prossimo swing consumerà rabbia per generare minaccia extra.
+- **Design Statico a Piena Larghezza**: Occupa interamente lo spazio assegnato (278px) con barra base Warrior copper/bronze, **senza animazione di scorrimento/swipe** e **senza testo o numeri del tempo residuo** (timer invisibile, zero clutter).
+- **Sistema di Accodamento Dinamico (Modello Fury Warrior)**:
+  - **Heroic Strike accodato (`47450`)**: Retroilluminazione additiva con blend mode `ADD` e Pixel Glow `LibCustomGlow-1.0` Oro (`1.0, 0.84, 0.0`), confermando istantaneamente che il prossimo attacco consumerà rabbia per generare massimo threat single-target.
+  - **Cleave accodato (`47520`)**: Retroilluminazione additiva e Pixel Glow Verde Smeraldo (`0.1, 0.95, 0.2`) per la gestione multi-target/aoe.
+  - **Nessuna abilità accodata**: Glow disattivato, barra statica pulita a perfetta integrazione con il layout centrale a 278px.
 
 ### 4.3 Castbar con Kick Advisor Integrato (`16 - Castbar warTank`)
 - **Dimensioni**: 278 x 20 px

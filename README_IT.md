@@ -62,7 +62,7 @@ Centratura automatica orizzontale adattiva sotto la barra della rabbia con icone
 
 ### 4. Barre Centrali Sincronizzate a 278px (`14`, `15`, `16`)
 - **14 - Rage Bar ($278 \times 14\text{px}$ a $y = -20$)**: Valore numerico esatto al centro (%p) con colorazione a 3 stadi: rosso scuro sotto 25 punti (starvation), crimson pieno tra 25 e 44 punti e ambra/oro sopra i 45 punti (soglia scarico sicuro Heroic Strike/Cleave).
-- **15 - Rotational Bar ($278 \times 7\text{px}$ a $y = -7$)**: Barra centrale con swing timer della mano primaria e retroilluminazione dinamica additiva (Pixel Glow dorato quando *Heroic Strike* è accodato, verde smeraldo quando *Cleave* è accodato).
+- **15 - Rotational Bar ($278 \times 7\text{px}$ a $y = -7$)**: Indicatore statico di accodamento rotazionale a piena larghezza (278px) senza scorrimento/swipe e senza conto alla rovescia del tempo rimanente. Dotato di retroilluminazione additiva e Pixel Glow LibCustomGlow-1.0 (Oro per *Colpo Eroico*, Verde Smeraldo per *Fendente*), perfettamente allineato alla logica di queuing di Fury Warrior.
 - **16 - Castbar warTank ($278 \times 20\text{px}$ a $y = +8$)**: Barra di lancio sincronizzata con il bersaglio (o player). Mostra icona a sinistra, nome incantesimo con **Kick Advisor** integrato a sinistra (es. `Frostbolt [KICK: SHIELD BASH]` in ciano, o `[IMMUNE]` in grigio) e tempo residuo a destra (%p).
 
 ### 5. Avvisi Testuali Centrali (`17 - Alerts warTank`)

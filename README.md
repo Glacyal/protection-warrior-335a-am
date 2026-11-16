@@ -62,7 +62,7 @@ Adaptive horizontal centering below the rage bar featuring $28 \times 28\text{px
 
 ### 4. Synchronized 278px Center Bars (`14`, `15`, `16`)
 - **14 - Rage Bar ($278 \times 14\text{px}$ at $y = -20$)**: Precise numeric value centered with 3-tier dynamic color shifts: dark red under 25 points (starvation), deep crimson between 25 and 44 points, and bright amber/gold above 45 points (safe rage-dumping threshold for Heroic Strike / Cleave).
-- **15 - Rotational Bar ($278 \times 7\text{px}$ at $y = -7$)**: Main-hand swing timer bar with additive backlight (golden Pixel Glow when *Heroic Strike* is queued, emerald green when *Cleave* is queued).
+- **15 - Rotational Bar ($278 \times 7\text{px}$ at $y = -7$)**: Static rotational queue indicator occupying the full 278px width without scroll/swipe animation and without remaining time countdown. Features dynamic additive illumination and LibCustomGlow-1.0 Pixel Glow (Gold for *Heroic Strike*, Emerald Green for *Cleave*), fully aligned with the Fury Warrior queueing mechanics.
 - **16 - Castbar warTank ($278 \times 20\text{px}$ at $y = +8$)**: Target (or player) castbar. Features left spell icon, contextual **Kick Advisor** spell label (e.g. `Frostbolt [KICK: SHIELD BASH]` in cyan, or `[IMMUNE]` in dark gray), and remaining cast time on the right.
 
 ### 5. Central Text Alerts (`17 - Alerts warTank`)

@@ -49,7 +49,7 @@ protection-warrior-335a-am/
 │       ├── buffs.py                 # 02 - Battle Shout, 03 - Commanding Shout, 04 - Defensive Stance (x = -222, -190, -158, y = 0)
 │       ├── utility.py               # 05-13 - Utility Row (Monili, Anello, Mantello, Tier, Incanti, Guanti, Shield Wall, Last Stand, Boots) a y = -45
 │       ├── bars.py                  # 14 - Rage Bar (278x14px a y = -20) & 16 - Castbar warTank (278x20px a y = +8 con Kick Advisor)
-│       ├── rotational.py            # 15 - Rotational Bar (Composite Swing Timer 278x7px a y = -7 con retroilluminazione HS/Cleave)
+│       ├── rotational.py            # 15 - Rotational Bar (Indicatore statico di accodamento 278x7px a y = -7 con Pixel Glow HS/Cleave)
 │       ├── alerts.py                # 17 - Alerts warTank (Avvisi testuali centrali a y = 78)
 │       ├── stats.py                 # 18 - Stats Panel warTank (Pannello 88x60px a x = -190, y = -45)
 │       └── sunder.py                # 19 - Sunder Armor Tracker (32x32px a x = 160, y = -7)
@@ -128,6 +128,13 @@ protection-warrior-335a-am/
   3. `CTC:` Combat Table Coverage con motore non-stacking per *Insect Swarm* e *Scorpid Sting* (+3.0% Miss max).
   4. `Block:` con % di blocco e Shield Block Value (SBV).
   5. `Hit:` con Draenei *Heroic Presence* (+1.0%) ed `Exp:` con Soft Cap 26 ed Hard Cap 56.
+
+### 4.4 Indicatore Statico di Accodamento Rotazionale (Heroic Strike & Cleave)
+- Occupa l'intero spazio assegnato di 278x7px a $y = -7$ come barra statica e solida, senza animazione di scorrimento/swipe e senza numeri di tempo rimanente.
+- Logica di queuing dinamico mutuata da Fury Warrior tramite `IsCurrentSpell()`:
+  - Pixel Glow dorato (`LibCustomGlow-1.0`) e tinta vertex ADD quando *Heroic Strike* (`47450`) è accodato.
+  - Pixel Glow verde smeraldo e tinta vertex ADD quando *Cleave* (`47520`) è accodato.
+  - Ritorno all'aspetto copper/bronze neutro quando nessuna abilità è accodata.
 
 ---
 
