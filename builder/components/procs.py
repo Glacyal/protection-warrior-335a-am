@@ -38,7 +38,6 @@ def build_procs_auras() -> list[dict]:
                 "Sword and Board",
                 "Revenge Ready",
                 "Shield Block Active",
-                "Victory Rush warTank",
                 "Emergency Low HP Alert",
                 "Boss Enrage Alert",
                 "Tank Buster Alert",
@@ -159,40 +158,6 @@ def build_procs_auras() -> list[dict]:
             "subRegions": [
                 make_subtext("%p", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=12, y_offset=0),
                 make_subtext("100%", justify="CENTER", anchor_point="CENTER", font_size=9, y_offset=0),
-            ],
-        },
-        # 4. Victory Rush
-        {
-            "id": "Victory Rush warTank",
-            "uid": "PWHUD_PROC_VICTORY_RUSH",
-            "parent": "01 - Procs warTank",
-            "regionType": "icon",
-            "internalVersion": 90,
-            "width": 34,
-            "height": 34,
-            "displayIcon": "Interface\\Icons\\Ability_Warrior_Devastate",
-            "auto": True,
-            "color": [1, 1, 1, 1],
-            "cooldown": True,
-            "cooldownSwipe": True,
-            "cooldownEdge": True,
-            "triggers": {
-                1: {
-                    "trigger": {
-                        "type": "custom",
-                        "custom_type": "status",
-                        "check": "update",
-                        "custom": r"""function()
-                            local usable = IsUsableSpell("Victory Rush") or IsUsableSpell("Vittoria Imminente") or IsUsableSpell(34428)
-                            return (usable == 1 or usable == true)
-                        end""",
-                    },
-                    "untrigger": {"type": "custom", "custom": "function() return false end"}
-                },
-                "activeTriggerMode": -10,
-            },
-            "subRegions": [
-                make_subtext("VR", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=9, y_offset=0),
             ],
         },
         # 5. Emergency Low HP Alert (< 35% HP)

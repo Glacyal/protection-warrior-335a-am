@@ -107,7 +107,7 @@ Le tre barre orizzontali condividono la larghezza calibrata di **278 px**:
 | ID Modulo | Nome Componente | Dimensioni | Coordinate (X, Y) | Comportamento e Funzionalità |
 | :--- | :--- | :--- | :--- | :--- |
 | **Root** | `Class Warrior (Protection)` | Scale 1.2 | X: 0, Y: -190 | Gruppo master contenitore con icona Defensive Stance e bootstrap core |
-| **01** | `01 - Procs warTank` | 34x34 px (icone) | X: 0, Y: +52 | Dynamic group orizzontale centrato: Sword & Board, Revenge, Shield Block, VR, Low HP Alert, Boss Enrage, Tank Buster |
+| **01** | `01 - Procs warTank` | 34x34 px (icone) | X: 0, Y: +52 | Dynamic group orizzontale centrato a 6 icone: Sword & Board, Revenge, Shield Block, Low HP Alert, Boss Enrage, Tank Buster |
 | **02** | `02 - Battle Shout warTank` | 28x28 px | X: -222, Y: 0 | Monitoraggio buff; soppresso intelligentemente da Blessing of Might del Paladino |
 | **03** | `03 - Commanding Shout warTank`| 28x28 px | X: -190, Y: 0 | Buff salute; soppresso intelligentemente da Blood Pact dell'Imp del Warlock |
 | **04** | `04 - Defensive Stance warTank`| 28x28 px | X: -158, Y: 0 | Allerta visiva immediata e glow rosso se in combat fuori dalla Postura Difensiva |

@@ -45,7 +45,7 @@ protection-warrior-335a-am/
 │   │   ├── encoder.py               # Final string generator (!WA:1!...)
 │   │   └── helpers.py               # Dual-key subtext generators and UI helpers
 │   └── components/                  # Component modules (identical architecture to Fury)
-│       ├── procs.py                 # 01 - Procs warTank (Horizontal 7-icon dynamic group 34x34 at y = 52)
+│       ├── procs.py                 # 01 - Procs warTank (Horizontal 6-icon dynamic group 34x34 at y = 52)
 │       ├── buffs.py                 # 02 - Battle Shout warTank, 03 - Commanding Shout warTank, 04 - Defensive Stance warTank (x = -222, -190, -158, y = 0)
 │       ├── utility.py               # 05-13 - Utility Row (Trinkets, Ring, Cloak, Tier, Enchants, Gloves, Shield Wall warTank, Last Stand warTank, Boots) at y = -45
 │       ├── bars.py                  # 14 - Rage Bar warTank (278x14px at y = -20) & 16 - Castbar warTank (278x20px at y = +8 with Kick Advisor)

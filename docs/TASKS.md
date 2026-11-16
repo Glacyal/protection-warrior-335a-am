@@ -158,10 +158,20 @@
     - `11 - Shield Wall warTank` & `12 - Last Stand warTank`.
     - `14 - Rage Bar warTank`.
     - `15 - Rotational Bar warTank` (e figli `Rotational Bar - Background warTank`, `Rotational Bar - Base Bar warTank`, `Rotational Bar - Queue Glow warTank`).
-    - `Victory Rush warTank` all'interno di `01 - Procs warTank`.
   - [x] Aggiornamento `builder/tree.py` e di tutti i moduli in `builder/components/`.
   - [x] Aggiornamento dei test di regressione (`tests/test_components_integrity.py`, `tests/test_tree_layout.py`, `tests/test_defensives.py`, `tests/test_danger_alerts.py`).
   - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione automatica in `docs/index.html`.
   - [x] Aggiornamento sincronizzato di tutti i documenti bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`.
+  - [x] Esecuzione e superamento della suite parallela multi-core (8/8 test).
+  - [x] Commit Git con messaggio descrittivo.
+- [x] **Task 10: Rimozione Completa di Victory Rush dal Pacchetto Tank (01 - Procs warTank)**:
+  - [x] Rimozione dell'aura `Victory Rush warTank` da `builder/components/procs.py` e dalla lista `controlledChildren` del gruppo `01 - Procs warTank` (la riga procs passa da 7 a 6 icone dinamiche focalizzate sulla sopravvivenza del tank).
+  - [x] Pulizia helper `_G.PWHUD_VRState` e `_G.PWHUD_CheckVictoryRush` in `builder/components/utility.py`.
+  - [x] Rimozione dell'elemento `#procVR` dal simulatore web in `docs/index.html`.
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione automatica.
+  - [x] Aggiornamento documentazione bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`.
+  - [x] Esecuzione e superamento della suite parallela multi-core (8/8 test).
+  - [x] Commit Git con messaggio descrittivo.
+  - [x] Aggiornamento documentazione bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`.
   - [x] Esecuzione e superamento della suite parallela multi-core (8/8 test).
   - [x] Commit Git con messaggio descrittivo.

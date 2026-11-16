@@ -185,35 +185,6 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         }
     end
 
-    _G.PWHUD_VRState = _G.PWHUD_VRState or {
-        lastStart = 0,
-        lastEnd = 0,
-        isUsable = false,
-    }
-
-    _G.PWHUD_CheckVictoryRush = _G.PWHUD_CheckVictoryRush or function()
-        local now = GetTime()
-        local vr = _G.PWHUD_VRState
-        if not vr then return false, 0, 0 end
-        local usable = IsUsableSpell(34428)
-        if not usable and GetSpellInfo then
-            usable = IsUsableSpell(GetSpellInfo(34428) or "Victory Rush")
-        end
-        if usable then
-            if not vr.isUsable or now > vr.lastEnd then
-                vr.lastStart = now
-                vr.lastEnd = now + 20.0
-                vr.isUsable = true
-            end
-        else
-            vr.isUsable = false
-            vr.lastEnd = 0
-        end
-        if vr.isUsable and vr.lastEnd > now then
-            return true, vr.lastEnd - now, 20.0
-        end
-        return false, 0, 0
-    end
 
     -- =========================================================================
     -- BANCA DATI MONILI WOTLK 3.3.5A (TANK & PHYSICAL DPS / THREAT)
