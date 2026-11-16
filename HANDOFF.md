@@ -1,103 +1,109 @@
-# Class Warrior (Protection) — Handoff Tecnico
+> 🇮🇹 **Versione Italiana**: [HANDOFF_IT.md](HANDOFF_IT.md)
+>
+> 🌐 **Live Web Simulator**: [https://glacyal.github.io/protection-warrior-335a-am/](https://glacyal.github.io/protection-warrior-335a-am/)
 
-Manuale di riferimento tecnico per lo sviluppo, la manutenzione e l'estensione della suite **Class Warrior (Protection)** per World of Warcraft 3.3.5a (*WotLK Build 12340*).
+# Class Warrior (Protection) — Technical Handoff
+
+Technical reference manual for the development, maintenance, and architectural extension of the **Class Warrior (Protection)** suite for World of Warcraft 3.3.5a (*WotLK Build 12340*).
 
 ---
 
-## 1. Panoramica del Progetto
+## 1. Project Overview
 
-La suite è distribuita come **WeakAura autonoma** in formato compresso `!WA:1!` (serializzazione binaria `AceSerializer-3.0` + compressione Deflate RFC 1951 livello 9 + codifica di stampa `LibDeflate`).  
-Rispetta l'identica geometria visiva a 278px introdotta con **Class Warrior (Fury)** e **Class Mage (TTW Fire)**, garantendo Zero Warning nativa su WeakAuras 5.21.8+ (`internalVersion = 90`).
+The suite is distributed as a **standalone WeakAura** in compressed `!WA:1!` format (`AceSerializer-3.0` binary serialization + Deflate RFC 1951 level 9 compression + `LibDeflate` character print encoding).  
+It strictly complies with the synchronized 278px visual geometry established with **Class Warrior (Fury)** and **Class Mage (TTW Fire)**, guaranteeing Zero Native Warnings on WeakAuras 5.21.8+ (`internalVersion = 90`).
 
-| Proprietà | Dettaglio |
+| Property | Detail |
 | :--- | :--- |
-| **Piattaforma Target** | World of Warcraft 3.3.5a (WotLK Build 12340) |
-| **Engine WeakAuras Target** | **WeakAuras 5.21.8+** (`internalVersion = 90`, `w = "5.21.8"`). |
-| **File di Distribuzione** | [`IMPORT_STRING_v5.21.8.txt`](file:///d:/0Progetti/protection-warrior-335a-am/IMPORT_STRING_v5.21.8.txt) (stringa ufficiale pronta per l'importazione) |
-| **Simulatore Web** | [`docs/index.html`](file:///d:/0Progetti/protection-warrior-335a-am/docs/index.html) |
-| **Live Demo Online** | [GitHub Pages Live Showcase](https://glacyal.github.io/protection-warrior-335a-am/) |
-| **Controllo Versione** | Git su GitHub: [Glacyal/protection-warrior-335a-am](https://github.com/Glacyal/protection-warrior-335a-am) |
+| **Target Platform** | World of Warcraft 3.3.5a (WotLK Build 12340) |
+| **Target WeakAuras Engine** | **WeakAuras 5.21.8+** (`internalVersion = 90`, `w = "5.21.8"`). |
+| **Distribution File** | [`IMPORT_STRING_v5.21.8.txt`](IMPORT_STRING_v5.21.8.txt) (official import string ready for production) |
+| **Web Simulator** | [`docs/index.html`](docs/index.html) |
+| **Online Live Demo** | [GitHub Pages Live Showcase](https://glacyal.github.io/protection-warrior-335a-am/) |
+| **Version Control** | Git on GitHub: [Glacyal/protection-warrior-335a-am](https://github.com/Glacyal/protection-warrior-335a-am) |
 
 ---
 
-## 2. Struttura del Repository
+## 2. Repository Layout
 
 ```text
 protection-warrior-335a-am/
-├── IMPORT_STRING_v5.21.8.txt        # Stringa WeakAuras 5.21.8+ nativa (Zero warning, internalVersion: 90)
-├── generate.py                      # Compilatore Python dell'albero WA
-├── README.md                        # Documentazione utente, guida installazione e compatibilità
-├── HANDOFF.md                       # Specifiche tecniche per sviluppatori e manutentori
-├── .gitignore                       # Esclusioni virtualenv, cache e policy docs/*.md
+├── IMPORT_STRING_v5.21.8.txt        # Native WeakAuras 5.21.8+ string (Zero warnings, internalVersion: 90)
+├── generate.py                      # Python compiler for the WeakAuras tree
+├── README.md                        # Primary user documentation (English)
+├── README_IT.md                     # Secondary user documentation (Italian)
+├── HANDOFF.md                       # Primary technical developer manual (English)
+├── HANDOFF_IT.md                    # Secondary technical developer manual (Italian)
+├── .gitignore                       # Virtualenv, cache, and policy ignore rules
 │
-├── builder/                         # Pacchetto Python modulare per la generazione dell'HUD
-│   ├── tree.py                      # Assemblatore dell'albero gerarchico (20 nodi controllati)
-│   ├── core/                        # Moduli core di serializzazione e codifica
-│   │   ├── constants.py             # Load conditions (Warrior), texture, font Expressway, cap difensivi
-│   │   ├── serializer.py            # Serializzatore AceSerializer-3.0 puro (^1...^^)
-│   │   ├── deflate.py               # Compressione Deflate RFC 1951 + LibDeflate Print Encoding
-│   │   ├── encoder.py               # Generatore stringa finale (!WA:1!...)
-│   │   └── helpers.py               # Generatori di subtext dual-key e helper grafici
-│   └── components/                  # Moduli dedicati ai singoli componenti dell'HUD (identici a Fury)
-│       ├── procs.py                 # 01 - Procs warTank (Dynamic Group orizzontale a 7 icone 34x34 a y = 52)
+├── builder/                         # Modular Python package for HUD generation
+│   ├── tree.py                      # Master hierarchical tree assembler (20 controlled nodes)
+│   ├── core/                        # Core serialization and encoding modules
+│   │   ├── constants.py             # Load conditions (Warrior), textures, Expressway font, defensive caps
+│   │   ├── serializer.py            # Pure Python AceSerializer-3.0 serializer (^1...^^)
+│   │   ├── deflate.py               # Deflate RFC 1951 compression + LibDeflate Print Encoding
+│   │   ├── encoder.py               # Final string generator (!WA:1!...)
+│   │   └── helpers.py               # Dual-key subtext generators and UI helpers
+│   └── components/                  # Component modules (identical architecture to Fury)
+│       ├── procs.py                 # 01 - Procs warTank (Horizontal 7-icon dynamic group 34x34 at y = 52)
 │       ├── buffs.py                 # 02 - Battle Shout, 03 - Commanding Shout, 04 - Defensive Stance (x = -222, -190, -158, y = 0)
-│       ├── utility.py               # 05-13 - Utility Row (Monili, Anello, Mantello, Tier, Incanti, Guanti, Shield Wall, Last Stand, Boots) a y = -45
-│       ├── bars.py                  # 14 - Rage Bar (278x14px a y = -20) & 16 - Castbar warTank (278x20px a y = +8 con Kick Advisor)
-│       ├── rotational.py            # 15 - Rotational Bar (Composite Swing Timer 278x7px a y = -7 con retroilluminazione HS/Cleave)
-│       ├── alerts.py                # 17 - Alerts warTank (Avvisi testuali centrali a y = 78)
-│       ├── stats.py                 # 18 - Stats Panel warTank (Pannello 88x60px a x = -190, y = -45)
-│       └── sunder.py                # 19 - Sunder Armor Tracker (32x32px a x = 160, y = -7)
+│       ├── utility.py               # 05-13 - Utility Row (Trinkets, Ring, Cloak, Tier, Enchants, Gloves, Shield Wall, Last Stand, Boots) at y = -45
+│       ├── bars.py                  # 14 - Rage Bar (278x14px at y = -20) & 16 - Castbar warTank (278x20px at y = +8 with Kick Advisor)
+│       ├── rotational.py            # 15 - Rotational Bar (Composite Swing Timer 278x7px at y = -7 with HS/Cleave backlight)
+│       ├── alerts.py                # 17 - Alerts warTank (Central text alerts at y = 78)
+│       ├── stats.py                 # 18 - Stats Panel warTank (Compact panel 88x60px at x = -190, y = -45)
+│       └── sunder.py                # 19 - Sunder Armor Tracker (32x32px at x = 160, y = -7)
 │
-├── docs/                            # Documentazione e anteprima interattiva per GitHub Pages
-│   └── index.html                   # Simulatore interattivo HTML/CSS/JS (proporzioni 1:1 identico a Fury)
+├── docs/                            # Documentation and interactive preview for GitHub Pages
+│   └── index.html                   # Interactive HTML/CSS/JS simulator (purely in English, 1:1 Fury layout)
 │
 ├── scripts/
-│   └── sync_docs.py                 # Sincronizzazione automatica della stringa v5 in docs/index.html
+│   └── sync_docs.py                 # Automatic sync script for v5 string into docs/index.html
 │
-└── tests/                           # Suite di test automatici e paralleli
-    ├── run_parallel_tests.py        # Test runner parallelo multi-processore (ProcessPoolExecutor)
-    ├── test_components_integrity.py # Verifica integrità strutturale moduli (20 nodi sequenziali e UIDs)
-    ├── test_lua.py                  # Validazione sintassi codice Lua (trigger, untrigger, actions)
-    ├── test_tree_layout.py          # Verifica conformità geometrica 1:1 con Fury Warrior
-    ├── test_string_sync.py          # Verifica corrispondenza tra builder e IMPORT_STRING_v5.21.8.txt
-    ├── test_stats_panel.py          # Verifica formule tank (Armor DR, EHP, CTC, Defense 540)
-    ├── test_defensives.py           # Verifica cooldown di mitigazione (Shield Wall, Last Stand, Shield Block)
-    ├── test_interrupts.py           # Verifica Kick Advisor (Shield Bash, Pummel, notInterruptible)
-    └── test_danger_alerts.py        # Verifica allarmi salute critica e boss mechanics
+└── tests/                           # Automated parallel test suite
+    ├── run_parallel_tests.py        # Multi-core test runner (ProcessPoolExecutor)
+    ├── test_components_integrity.py # Structural module integrity verification (20 sequential nodes & UIDs)
+    ├── test_lua.py                  # Lua syntax validation (triggers, untriggers, custom scripts)
+    ├── test_tree_layout.py          # Geometric 1:1 layout verification with Fury Warrior
+    ├── test_string_sync.py          # String consistency check between builder and IMPORT_STRING_v5.21.8.txt
+    ├── test_stats_panel.py          # Tank formulas verification (Contextual Armor DR, EHP, CTC, 540 Defense)
+    ├── test_defensives.py           # Defensive mitigation cooldown verification (Shield Wall, Last Stand, Shield Block)
+    ├── test_interrupts.py           # Contextual Kick Advisor check (Shield Bash, Pummel, notInterruptible)
+    └── test_danger_alerts.py        # Critical HP alerts and lethal boss mechanics verification
 ```
 
 ---
 
-## 3. Workflow di Sviluppo
+## 3. Development Workflow
 
-1. **Modifica Componenti**:
-   - Modifica i moduli in `builder/components/` o le formule in `builder/core/`.
-2. **Esecuzione Test Paralleli**:
-   - Lancia la suite di test completa sfruttando tutti i core della CPU:
+1. **Component Modification**:
+   - Edit modules in `builder/components/` or core formulas in `builder/core/`.
+2. **Execute Parallel Test Suite**:
+   - Run the multi-core parallel test runner:
      ```bash
      python tests/run_parallel_tests.py
      ```
-   - Tutti gli 8 test devono risultare `[OK] PASSED` in circa 0.3 secondi.
-3. **Compilazione Stringa di Importazione**:
-   - Ricompila la stringa nativa WA 5.21.8+ eseguendo:
+   - All 8 tests must report `[✓] PASS` in under 0.4 seconds.
+3. **Compile Import String**:
+   - Recompile the native WA 5.21.8+ string:
      ```bash
      python generate.py
      ```
-4. **Sincronizzazione Simulatore Web**:
-   - Sincronizza la stringa compilata all'interno del simulatore web:
+4. **Synchronize Web Simulator**:
+   - Inject the compiled string into the web simulator:
      ```bash
      python scripts/sync_docs.py
      ```
 5. **Commit & Push (`CP`)**:
-   - Esegui lo staging e il commit dei file di codice e documentazione pubblica.
+   - Stage and commit code, test, and documentation files simultaneously.
 
 ---
 
-## 4. Specifiche Tecniche Recenti
+## 4. Key Architectural Specifications
 
-### 4.1 Load Condition Specifica [Devastate]
-- Indice lineare WeakAuras: **`103`** (calcolato come $(3 - 1) \times 40 + 23$, corrispondente al Tab 3 Protection, Tier 8 Colonna 1, Spell ID `20243`).
-- Configurazione in `builder/core/constants.py`:
+### 4.1 Exclusive Load Condition: [Devastate]
+- Linear WeakAuras Index: **`103`** (calculated as $(3 - 1) \times 40 + 23$, corresponding to Tab 3 Protection, Tier 8 Column 1, Spell ID `20243`).
+- Configuration in `builder/core/constants.py`:
   ```python
   PROT_WARRIOR_LOAD = {
       "use_class": True,
@@ -107,37 +113,36 @@ protection-warrior-335a-am/
       "use_vehicle": False,
   }
   ```
-- Propagata uniformemente su root e su tutte le 43 aure figlie.
+- Uniformly inherited by the root group and all 43 child auras.
 
-### 4.2 Notifica Postura Errata in Combattimento (Wrong Stance Alert — Modello Fury Warrior)
-- In postura difensiva corretta (`GetShapeshiftForm() == 2`), l'icona è **completamente invisibile** (zero clutter a schermo, identico a Fury Warrior).
-- Doppio livello di allarme attivo quando `UnitAffectingCombat("player") and GetShapeshiftForm() ~= 2`:
-  1. Indicatore locale `04 - Defensive Stance - OutOfStance` (X: -158, Y: 0, 28x28px) con colore rosso e label `STANCE`.
-  2. Banner centrale `Alert - Wrong Stance` (X: 0, Y: +64) a 20pt `>> DEFENSIVE STANCE REQUIRED! <<` con audio `RaidWarning.ogg`.
+### 4.2 Out-of-Stance Alert in Combat (Fury Warrior Model)
+- In correct Defensive Stance (`GetShapeshiftForm() == 2`), the stance icon is **completely hidden** (zero visual clutter on screen, identical to Fury Warrior).
+- Dual-layer alert triggers whenever `UnitAffectingCombat("player") and GetShapeshiftForm() ~= 2`:
+  1. Local indicator `04 - Defensive Stance - OutOfStance` (X: -158, Y: 0, 28x28px) with red alert color and `STANCE` subtext.
+  2. Master banner `Alert - Wrong Stance` (X: 0, Y: +64) at 20pt `>> DEFENSIVE STANCE REQUIRED! <<` accompanied by `RaidWarning.ogg`.
 
-### 4.3 Motore Statistiche Tanking Stile Fury Warrior & Buff/Debuff Non-Stacking
-- Formattazione a 5 righe con etichette bianche `|cFFFFFFFFLabel:|r <Valore>`:
-  1. `Def:` (540 Cap per Lv.83, 535 per Lv.82).
-  2. `Armor:` con Physical DR% contestuale ($K=15232.5$ a Lv.80 default pari a 62.4% come scheda PG; $K=16635$ su Raid Boss Lv.83 pari a 60.3%, hard cap 75%).
-  3. `CTC:` Combat Table Coverage con motore non-stacking per *Insect Swarm* e *Scorpid Sting* (+3.0% Miss max).
-  4. `Block:` con % di blocco e Shield Block Value (SBV).
-  5. `Hit:` con Draenei *Heroic Presence* (+1.0%) ed `Exp:` con Soft Cap 26 ed Hard Cap 56.
+### 4.3 Fury Warrior-Style Tanking Stats Engine & Non-Stacking Debuffs
+- Clean 5-row presentation with white labels `|cFFFFFFFFLabel:|r <Value>`:
+  1. `Def:` (540 Cap for Lv.83 raid bosses, 535 for Lv.82 heroic dungeon bosses).
+  2. `Armor:` with contextual Physical DR% ($K=15232.5$ at Lv.80 default showing 62.4% identical to in-game character sheet; $K=16635$ on Lv.83 raid bosses showing 60.3% actual raid mitigation, hard cap 75.0%).
+  3. `CTC:` Combat Table Coverage with non-stacking engine for *Insect Swarm* and *Scorpid Sting* (+3.0% max Miss).
+  4. `Block:` with block chance % and Shield Block Value (SBV).
+  5. `Hit:` with Draenei *Heroic Presence* (+1.0%) and `Exp:` with Soft Cap 26 and Hard Cap 56.
 
 ---
 
-## 5. Glossario & Riferimento Sigle Tecniche Tanking (WotLK 3.3.5a)
+## 5. Technical Glossary & Tanking Acronyms (WotLK 3.3.5a)
 
-| Sigla | Termine Completo | Descrizione Meccanica e Formule WotLK |
+| Acronym | Full Name | Mechanics & Formulas |
 | :--- | :--- | :--- |
-| **`DEF`** | **Defense Skill** | Skill di difesa (`base + rating`). Cap **540** per immunità dai colpi critici dei boss Lv.83 (-5.6% crit subito), **535** in Eroiche Lv.82. |
-| **`ARM`** | **Effective Armor & Physical DR%** | Armatura effettiva del player. Calcola la riduzione del danno fisico contestuale: con costante Blizzard $K = 15232.5$ a Lv.80 default (25.253 armatura $\implies \mathbf{62.4\%}$, identico alla scheda PG in-game) e $K = 16635$ contro Raid Boss Lv.83 ($\implies \mathbf{60.3\%}$, mitigazione effettiva). Hard cap al 75.0%. |
-| **`CTC`** | **Combat Table Coverage** | Copertura totale della tabella colpi: $\text{Dodge} + \text{Parry} + \text{Block} + \text{BossMiss}$. A $\ge \mathbf{102.4\%}$ il tank è *Unhittable* (nessun colpo normale subito). Include debuff non-stacking (*Insect Swarm* / *Scorpid Sting* max +3%). |
-| **`Block`** | **Block Chance** | Percentuale di blocco con lo scudo. Raggiunge il 100% durante l'abilità attiva *Shield Block* (10s). |
-| **`SBV`** | **Shield Block Value** | Quantità fissa di danno assorbito per singolo blocco. Moltiplicatore primario che scala danno e threat di *Shield Slam*. |
-| **`Hit`** | **Melee Hit Chance** | Percentuale di colpo a segno con attacchi speciali e Taunt. Cap a **8.0%** (263 rating), ridotto al 7.0% con *Heroic Presence* Draenei. |
-| **`Exp`** | **Expertise** | Riduce le schivate e parate del boss. **Soft Cap 26** (214 rating, azzera schivate frontali), **Hard Cap 56** (azzera parate frontali ed elimina il rischio *Parry-Haste*). |
-| **`Avoid`** | **Avoidance Pura** | Somma di $\text{Dodge} + \text{Parry} + \text{Miss}$ (percentuale di colpi in cui si incassano **zero danni**). |
-| **`DR%`** | **Damage Reduction %** | Percentuale passiva di mitigazione fisica garantita dall'armatura effettiva. |
-| **`EHP`** | **Effective Health Pool** | Salute effettiva: $\text{Salute Massima} / (1 - \text{DR}\%)$. |
-| **`GCD`** | **Global Cooldown** | Finestra standard di 1.5 secondi tra abilità. |
-| **`ICD`** | **Internal Cooldown** | Tempo di ricarica interno dei proc monili (45s o 50s). |
+| **`DEF`** | **Defense Skill** | Defense skill rating (`base + rating`). Cap **540** for raid boss Lv.83 crit immunity (-5.6% incoming crit chance), **535** in Lv.82 heroics. |
+| **`ARM`** | **Effective Armor & Physical DR%** | Instantaneous effective armor. Evaluates contextual physical mitigation: Blizzard constant $K = 15232.5$ at Lv.80 default (25,253 armor $\implies \mathbf{62.4\%}$, matching in-game paperdoll) and $K = 16635$ against Lv.83 Raid Bosses ($\implies \mathbf{60.3\%}$, actual raid mitigation). Hard cap at 75.0%. |
+| **`CTC`** | **Combat Table Coverage** | Total attack table coverage: $\text{Dodge} + \text{Parry} + \text{Block} + \text{BossMiss}$. At $\ge \mathbf{102.4\%}$, the tank is **Unhittable** (zero unmitigated hits). Includes non-stacking debuffs (*Insect Swarm* / *Scorpid Sting* max +3%). |
+| **`Block`** | **Block Chance** | Shield block probability. Reaches 100% during active *Shield Block* (10s). |
+| **`SBV`** | **Shield Block Value** | Fixed amount of damage absorbed per block. Primary scaling multiplier for *Shield Slam* damage and threat. |
+| **`Hit`** | **Melee Hit Chance** | Hit accuracy for melee special attacks and Taunt. Cap is **8.0%** (263 rating), reduced to 7.0% with Draenei *Heroic Presence*. |
+| **`Exp`** | **Expertise** | Reduces enemy chance to dodge and parry. **Soft Cap 26** (214 rating, eliminates frontal dodges), **Hard Cap 56** (eliminates frontal parries and negates *Parry-Haste*). |
+| **`Avoid`** | **Pure Avoidance** | Sum of $\text{Dodge} + \text{Parry} + \text{Miss}$ (percentage of attacks dealing **zero damage**). |
+| **`DR%`** | **Damage Reduction %** | Passive physical damage reduction percentage provided by effective armor. |
+| **`EHP`** | **Effective Health Pool** | Raw physical damage pool: $\text{Max HP} / (1 - \text{DR}\%)$. |
+| **`GCD`** | **Global Cooldown** | Standard 1.5-second ability recovery window. |

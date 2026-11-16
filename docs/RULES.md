@@ -68,3 +68,15 @@
    python generate.py
    python scripts/sync_docs.py
    ```
+
+---
+
+## 4. Standard Bilingue Documentazione & HTML in Inglese (Regola Non Negoziabile)
+
+1. **Doppia Lingua Obbligatoria per Documentazione Radice**:
+   - **`README.md`** (Inglese, primario) e **`README_IT.md`** (Italiano, secondario).
+   - **`HANDOFF.md`** (Inglese, primario) e **`HANDOFF_IT.md`** (Italiano, secondario).
+   - I file devono mantenere **rigorosa coerenza e parità 1:1** in termini di struttura gerarchica, sezioni, tabelle, badge, code snippet e metadati, differendo unicamente per la lingua.
+   - Ogni modifica futura a `README` o `HANDOFF` deve essere applicata **contemporaneamente a entrambe le versioni** prima del commit.
+2. **HTML Esclusivamente in Inglese**:
+   - [`docs/index.html`](file:///D:/0Progetti/protection-warrior-335a-am/docs/index.html) (Live Web Simulator) deve essere **puramente in lingua inglese** in ogni sua componente testuale: titoli, sottotitoli, pulsanti, scenari/preset, controlli slider, messaggi toast, allarmi e tabelle documentali/glossario.

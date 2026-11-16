@@ -135,3 +135,16 @@ In WeakAuras 3.3.5a, la funzione `WeakAuras.CheckTalentByIndex(index)` non usa s
 | **`EHP`** | **Effective Health Pool** | Salute effettiva: $\text{EHP} = \frac{\text{Max HP}}{1 - (\text{DR}\% / 100)}$. |
 | **`GCD`** | **Global Cooldown** | Finestra standard di recupero tra abilità (1.5s). |
 | **`ICD`** | **Internal Cooldown** | Tempo di ricarica interno dei proc dei monili (tipicamente 45s o 50s). |
+
+---
+
+## 6. Standard di Bilinguismo della Documentazione & Lingua del Simulatore Web
+
+- **Lingua Principale**: **Inglese**. I file radice principali per gli utenti e per gli sviluppatori sono scritti in inglese:
+  - `README.md` (Inglese)
+  - `HANDOFF.md` (Inglese)
+- **Lingua Secondaria**: **Italiano**. Devono sempre esistere i corrispettivi file in lingua italiana:
+  - `README_IT.md` (Italiano)
+  - `HANDOFF_IT.md` (Italiano)
+- **Regola di Parità 1:1**: I file in inglese e in italiano devono mantenere la medesima struttura gerarchica, sezioni, badge, tabelle e comandi di compilazione, differendo esclusivamente per la lingua del testo. Ogni volta che viene modificato un `README` o un `HANDOFF`, è **obbligatorio** aggiornare entrambi contemporaneamente.
+- **Simulatore Web (`docs/index.html`)**: Deve essere **puramente in lingua inglese** in tutta l'interfaccia (titoli, sottotitoli, pulsanti, scenari di test, etichette dei preset, slider dei parametri, allarmi, avvisi toast e tabelle di documentazione/glossario).

@@ -663,10 +663,10 @@
         <div class="badge-header">World of Warcraft 3.3.5a — WotLK Build 12340</div>
         <h1>Class Warrior <span>(Protection)</span> — WeakAuras Suite</h1>
         <p class="subtitle">
-            Simulatore interattivo conforme 1:1 al layout di riferimento (barre 278px sincronizzate, riga utility a y = -45, gruppo procs a y = 52). Monitoraggio mitigazioni d'emergenza, kick advisor contestuale e calcolo difese real-time.
+            Interactive 1:1 simulator matching the reference layout (synchronized 278px bars, utility row at y = -45, procs group at y = 52). Emergency mitigation monitor, contextual kick advisor, and real-time defense calculations.
         </p>
         <div class="action-bar">
-            <button class="nav-btn primary" onclick="copyWaString()">📋 Copia Stringa WeakAuras (!WA:1!)</button>
+            <button class="nav-btn primary" onclick="copyWaString()">📋 Copy WeakAuras String (!WA:1!)</button>
             <a href="https://github.com/Glacyal/protection-warrior-335a-am" target="_blank" class="nav-btn">🐙 GitHub Repository</a>
         </div>
     </header>
@@ -851,54 +851,54 @@
 
         <!-- Testing & Scenario Controls -->
         <div class="control-panel">
-            <div class="section-title">⚡ Preset di Test & Scenari Tanking</div>
+            <div class="section-title">⚡ Test Presets & Tanking Scenarios</div>
             <div class="preset-grid">
-                <button class="ctrl-btn" onclick="applyPreset('standard')">🛡️ Combattimento Standard</button>
-                <button class="ctrl-btn" onclick="applyPreset('emergency')">🚨 Emergenza Vita Bassa (&lt;30%)</button>
-                <button class="ctrl-btn" onclick="applyPreset('kickable')">⚡ Cast Interrompibile (Kick)</button>
-                <button class="ctrl-btn" onclick="applyPreset('immune')">🛑 Cast Protetto (Immune a Kick)</button>
+                <button class="ctrl-btn" onclick="applyPreset('standard')">🛡️ Standard Combat</button>
+                <button class="ctrl-btn" onclick="applyPreset('emergency')">🚨 Low Health Emergency (&lt;30%)</button>
+                <button class="ctrl-btn" onclick="applyPreset('kickable')">⚡ Interruptible Cast (Kick)</button>
+                <button class="ctrl-btn" onclick="applyPreset('immune')">🛑 Protected Cast (Kick Immune)</button>
                 <button class="ctrl-btn" onclick="applyPreset('enrage')">🔥 Boss Enraged / Frenzy!</button>
                 <button class="ctrl-btn" onclick="applyPreset('buster')">💀 Tank Buster (Soul Reaper)</button>
                 <button class="ctrl-btn" onclick="applyPreset('sab')">✨ Sword and Board Proc</button>
-                <button class="ctrl-btn" onclick="applyPreset('stance_fail')">⚠️ Fuori Postura Difensiva!</button>
+                <button class="ctrl-btn" onclick="applyPreset('stance_fail')">⚠️ Out of Defensive Stance!</button>
             </div>
 
-            <div class="section-title">🎛️ Manovra Parametri Live</div>
+            <div class="section-title">🎛️ Live Parameter Controls</div>
             <div class="slider-row">
                 <div class="slider-header">
-                    <span>Salute del Tank (HP):</span>
+                    <span>Tank Health (HP):</span>
                     <span id="lblHp">85%</span>
                 </div>
                 <input type="range" id="sliderHp" min="10" max="100" value="85" oninput="setHealth(this.value)">
             </div>
             <div class="slider-row">
                 <div class="slider-header">
-                    <span>Punti Rabbia (Rage):</span>
+                    <span>Rage Points (Rage):</span>
                     <span id="lblRage">65</span>
                 </div>
                 <input type="range" id="sliderRage" min="0" max="100" value="65" oninput="setRage(this.value)">
             </div>
 
-            <div class="section-title">🛠️ Azioni Rapide</div>
+            <div class="section-title">🛠️ Quick Actions</div>
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button class="ctrl-btn" onclick="simulateKickAction()">🎯 Simula Kick Eseguito</button>
-                <button class="ctrl-btn" onclick="cycleSunderStacks()">⚔️ Stack Sunder (<span id="btnSunderNum">5</span>/5)</button>
+                <button class="ctrl-btn" onclick="simulateKickAction()">🎯 Simulate Kick Executed</button>
+                <button class="ctrl-btn" onclick="cycleSunderStacks()">⚔️ Sunder Stacks (<span id="btnSunderNum">5</span>/5)</button>
             </div>
         </div>
 
     </div>
 
-    <!-- Sezione Documentazione, Glossario & Architettura -->
+    <!-- Documentation & Glossary Section -->
     <section class="docs-section">
-        <!-- Card 1: Glossario Statistiche Tank -->
+        <!-- Card 1: Tanking Statistics & Acronyms Glossary -->
         <article class="doc-card">
-            <h2>📊 Glossario Dettagliato Statistiche & Acronimi Tank (WotLK 3.3.5a)</h2>
+            <h2>📊 Detailed Tanking Statistics &amp; Acronyms Glossary (WotLK 3.3.5a)</h2>
             <table class="glossary-table">
                 <thead>
                     <tr>
-                        <th style="width: 140px;">Sigla / Stat</th>
-                        <th style="width: 200px;">Nome Esteso & Cap</th>
-                        <th>Descrizione Meccanica & Formula WotLK 3.3.5a</th>
+                        <th style="width: 140px;">Acronym / Stat</th>
+                        <th style="width: 200px;">Full Name &amp; Cap</th>
+                        <th>Mechanical Description &amp; WotLK 3.3.5a Formula</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -906,80 +906,80 @@
                         <td><span class="code-badge">DEF</span></td>
                         <td><strong>Defense Skill</strong><br><span style="color: var(--cap-green);">Cap: 540 (Raid)</span> / 535 (HC)</td>
                         <td>
-                            Abilit&agrave; difensiva del Guerriero (+140 Defense Rating rispetto ai 400 base a Lv.80). Raggiungere <strong>540 Defense Skill</strong> (pari a 689 Defense Rating) garantisce una riduzione del <strong>5.60%</strong> della probabilit&agrave; di subire colpi critici fisici da parte dei Raid Boss di Livello 83, raggiungendo la totale immunit&agrave; ai colpi critici ("Crit Immunity").
+                            Warrior's defensive skill rating (+140 Defense Rating beyond the 400 base at Lv.80). Achieving <strong>540 Defense Skill</strong> (equivalent to 689 Defense Rating) reduces the chance of receiving critical melee strikes from Level 83 Raid Bosses by <strong>5.60%</strong>, achieving absolute "Crit Immunity".
                         </td>
                     </tr>
                     <tr>
                         <td><span class="code-badge">ARM</span> / <span class="code-badge">Armor</span></td>
-                        <td><strong>Effective Armor &amp; DR% Contestuale</strong><br><span style="color: var(--cap-green);">Cap Hard: 75.0% DR</span></td>
+                        <td><strong>Effective Armor &amp; Contextual DR%</strong><br><span style="color: var(--cap-green);">Hard Cap: 75.0% DR</span></td>
                         <td>
-                            Armatura effettiva comprensiva di tutti i modificatori attivi (+25% Inspiration / Ancestral Fortitude, Stoneskin, Devotion Aura) e debuff (Sunder Armor, Acid Spit, Faerie Fire). La percentuale di riduzione del danno fisico (Physical DR%) &egrave; <strong>dinamica e contestuale al bersaglio</strong>:
-                            <br>&bull; <strong>Default / Scheda Personaggio (Lv.80):</strong> costante Blizzard <code style="color: #38bdf8;">K = 15232.5</code> &rarr; per 25.253 di armatura calcola <strong>62.4%</strong> (identico al 62.38% visualizzato nel tooltip in-game della scheda PG).
-                            <br>&bull; <strong>Raid Boss (Lv.83 / Skull):</strong> costante Blizzard <code style="color: #38bdf8;">K = 16635</code> &rarr; per 25.253 di armatura calcola <strong>60.3%</strong>, indicando la mitigazione reale contro i boss di raid (Lich King, Halion).
+                            Effective armor encompassing all active modifiers (+25% Inspiration / Ancestral Fortitude, Stoneskin, Devotion Aura) and debuffs (Sunder Armor, Acid Spit, Faerie Fire). Physical Damage Reduction (DR%) is <strong>dynamic and contextual to the target</strong>:
+                            <br>&bull; <strong>Default / Character Sheet (Lv.80):</strong> Blizzard constant <code style="color: #38bdf8;">K = 15232.5</code> &rarr; 25,253 armor yields <strong>62.4%</strong> (matching the 62.38% shown on the in-game character sheet tooltip).
+                            <br>&bull; <strong>Raid Boss (Lv.83 / Skull):</strong> Blizzard constant <code style="color: #38bdf8;">K = 16635</code> &rarr; 25,253 armor yields <strong>60.3%</strong>, indicating true mitigation against raid bosses (Lich King, Halion).
                         </td>
                     </tr>
                     <tr>
                         <td><span class="code-badge">CTC</span></td>
-                        <td><strong>Combat Table Coverage</strong><br><span style="color: #00e5ff;">Cap Uncrushable: 102.4%</span></td>
+                        <td><strong>Combat Table Coverage</strong><br><span style="color: #00e5ff;">Uncrushable Cap: 102.4%</span></td>
                         <td>
-                            Copertura totale della Combat Table a singolo tiro di dadi di World of Warcraft:
+                            Total single-roll combat table coverage in World of Warcraft:
                             <br><code style="color: #00e5ff;">CTC = Dodge% + Parry% + Block% + Boss Miss%</code>
-                            <br>Contro un Boss Lv.83 (che gode di +0.6% bonus colpo), raggiungere il <strong>102.4% CTC</strong> esclude categoricamente qualsiasi colpo normale non mitigato: ogni singolo attacco in arrivo verr&agrave; schivato, parato, bloccato con lo scudo o andr&agrave; a vuoto. Include il supporto dinamico ai debuff sui boss non cumulabili (Insect Swarm / Scorpid Sting max +3%).
+                            <br>Against a Lv.83 Boss (+0.6% melee hit bonus), reaching <strong>102.4% CTC</strong> categorically excludes normal unmitigated hits: every single incoming swing is dodged, parried, blocked with the shield, or misses. Incorporates non-stacking boss debuffs (Insect Swarm / Scorpid Sting max +3%).
                         </td>
                     </tr>
                     <tr>
                         <td><span class="code-badge">SBV</span></td>
-                        <td><strong>Shield Block Value</strong><br><span style="color: var(--warrior-gold);">Valore Blocco Scudo</span></td>
+                        <td><strong>Shield Block Value</strong><br><span style="color: var(--warrior-gold);">Shield Block Absorption</span></td>
                         <td>
-                            Ammontare fisso di danno fisico sottratto a ogni colpo bloccato con lo scudo. Oltre alla mitigazione passiva/attiva (raddoppiato dal talento <em>Shield Block</em>), lo Shield Block Value costituisce la statistica cardine che scala direttamente il danno inflitto da <strong>Shield Slam</strong> (Colpo di Scudo) e <strong>Damage Shield</strong>.
+                            Fixed amount of physical damage subtracted from each blocked melee swing. Beyond passive/active mitigation (doubled by <em>Shield Block</em>), Shield Block Value is the cardinal attribute scaling <strong>Shield Slam</strong> and <strong>Damage Shield</strong> damage and threat.
                         </td>
                     </tr>
                     <tr>
-                        <td><span class="code-badge">Hit</span> & <span class="code-badge">Exp</span></td>
-                        <td><strong>Hit Rating & Expertise</strong><br><span style="color: var(--cap-green);">Soft Cap: 8% Hit | 26 Exp</span></td>
+                        <td><span class="code-badge">Hit</span> &amp; <span class="code-badge">Exp</span></td>
+                        <td><strong>Hit Rating &amp; Expertise</strong><br><span style="color: var(--cap-green);">Soft Cap: 8% Hit | 26 Exp</span></td>
                         <td>
-                            <strong>Melee Hit Cap (8.0% / 263 rating):</strong> azzera i miss degli attacchi in mischia e delle abilit&agrave; speciali (Taunt/Provocazione compreso; 7.0% per l'Alleanza in presenza di Draenei <em>Heroic Presence</em>).
-                            <br><strong>Expertise Cap (26 Exp / 214 rating soft cap, 56 hard cap):</strong> 26 Expertise elimina completamente le Schivate (Dodge) del boss. 56 Expertise elimina le Parate (Parry), vitale per impedire il fenomeno del <em>Parry-Haste</em> sui boss che lo supportano (es. Lady Deathwhisper, Sindragosa, Halion).
+                            <strong>Melee Hit Cap (8.0% / 263 rating):</strong> Eliminates misses on melee auto-attacks and special abilities (including Taunt; 7.0% for Alliance with Draenei <em>Heroic Presence</em>).
+                            <br><strong>Expertise Cap (26 Exp / 214 rating soft cap, 56 hard cap):</strong> 26 Expertise completely eliminates boss frontal Dodges. 56 Expertise eliminates frontal Parries, vital to prevent <em>Parry-Haste</em> on bosses that support it (e.g. Lady Deathwhisper, Sindragosa, Halion).
                         </td>
                     </tr>
                     <tr>
                         <td><span class="code-badge">Avoid</span></td>
-                        <td><strong>Avoidance Pura</strong><br><em>Dodge + Parry + Miss</em></td>
+                        <td><strong>Pure Avoidance</strong><br><em>Dodge + Parry + Miss</em></td>
                         <td>
-                            La quota combinata di attacchi in cui il Tank evita al 100% l'impatto subendo <strong>zero danno fisico</strong>. A differenza del Block (che mitiga un importo fisso pari a SBV), l'Avoidance pura azzera completamente il colpo.
+                            Combined share of attacks where the tank completely avoids impact, suffering <strong>zero physical damage</strong>. Unlike Block (which mitigates a flat amount equal to SBV), pure avoidance completely negates the attack.
                         </td>
                     </tr>
                     <tr>
                         <td><span class="code-badge">EHP</span></td>
                         <td><strong>Effective Health Pool</strong><br><code>EHP = HP / (1 - DR%)</code></td>
                         <td>
-                            La quantit&agrave; teorica totale di danno fisico grezzo che il Tank pu&ograve; incassare consecutivamente prima di morire, in assenza di cure o assorbimenti esterni. &Egrave; il parametro primario di sopravvivenza per reggere i colpi pi&ugrave; devastanti (Tank Busters come <em>Soul Reaper</em> su Lich King o <em>Impale</em> su Gormok).
+                            Theoretical raw physical damage pool a tank can absorb consecutively before dying without external heals or absorbs. Primary survival metric for enduring Tank Busters (such as <em>Soul Reaper</em> on Lich King or <em>Impale</em> on Gormok).
                         </td>
                     </tr>
                 </tbody>
             </table>
         </article>
 
-        <!-- Card 2: Architettura, Caricamento Esclusivo & Sicurezza Combat -->
+        <!-- Card 2: Architecture, Load Conditions & Combat Safety -->
         <article class="doc-card">
-            <h2>🛡️ Architettura, Condizioni di Caricamento & Combat Safety</h2>
+            <h2>🛡️ Architecture, Load Conditions &amp; Combat Safety</h2>
             <div class="info-grid">
                 <div class="info-pill-box">
-                    <div class="info-pill-title">✨ Condizione di Caricamento Esclusiva [Devastate]</div>
+                    <div class="info-pill-title">✨ Exclusive Load Condition [Devastate]</div>
                     <div class="info-pill-desc">
-                        L'intera suite WeakAuras &egrave; vincolata al talento esclusivo <strong>[Devastate]</strong> (Talent ID 103, albero Protezione riga 9 colonna 2). La suite si compila e carica nella memoria di WoW solo se il Guerriero ha attivo il talento, garantendo zero interferenze e zero spreco di CPU quando si gioca con le spec Fury, Arms o ibride PvP.
+                        The entire WeakAuras suite is bound to the exclusive talent <strong>[Devastate]</strong> (Talent ID 103, Protection tree Tier 8 Column 1). The suite compiles and loads into WoW memory only when the warrior has this talent active, guaranteeing zero CPU waste and zero overlap when playing Arms, Fury, or PvP specs.
                     </div>
                 </div>
                 <div class="info-pill-box">
-                    <div class="info-pill-title">⚠️ Allarme Postura Errata (Alert - Wrong Stance)</div>
+                    <div class="info-pill-title">⚠️ Wrong Stance Alert (Alert - Wrong Stance)</div>
                     <div class="info-pill-desc">
-                        Durante il combattimento, se il Tank si trova erroneamente in <em>Battle Stance</em> o <em>Berserker Stance</em>, scatta immediatamente l'allarme ad altissima priorit&agrave; <strong>&gt;&gt; DEFENSIVE STANCE REQUIRED! &lt;&lt;</strong> con pulsazione rossa sincronizzata sull'icona della stance per prevenire disastri da mancata mitigazione passiva (-10% DR).
+                        During combat, if the tank is mistakenly in <em>Battle Stance</em> or <em>Berserker Stance</em>, a high-priority alarm immediately triggers: <strong>&gt;&gt; DEFENSIVE STANCE REQUIRED! &lt;&lt;</strong> with synchronized red pulsing on the stance icon to prevent catastrophic loss of passive mitigation (-10% DR).
                     </div>
                 </div>
                 <div class="info-pill-box">
-                    <div class="info-pill-title">⚡ Sincronizzazione 1:1 con Fury Warrior</div>
+                    <div class="info-pill-title">⚡ 1:1 Synchronization with Fury Warrior</div>
                     <div class="info-pill-desc">
-                        Il layout visivo adotta proporzioni identiche alla suite Fury Warrior: barre centrate su <strong>278px</strong> esatti, timer swing e rage bar sincronizzati, riga procs primaria a <strong>y = 52</strong> (34x34px) e riga utility coordinata a <strong>y = -45</strong> (28x28px).
+                        Visual layout adopts identical proportions to the Fury Warrior suite: center bars locked at exactly <strong>278px</strong>, synchronized swing timer and rage bar, primary procs row at <strong>y = 52</strong> (34x34px), and coordinated utility row at <strong>y = -45</strong> (28x28px).
                     </div>
                 </div>
             </div>

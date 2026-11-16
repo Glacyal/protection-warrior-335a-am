@@ -121,3 +121,8 @@
   - [x] Aggiornamento test suite in `tests/test_stats_panel.py` con verifica formale sia di $K_{80} = 15232.5$ che di $K_{83} = 16635$.
   - [x] Rigenerazione stringa `IMPORT_STRING_v5.21.8.txt` e sincronizzazione in `docs/index.html`.
   - [x] Aggiornamento documentazione tecnica (`docs/ARCHITECTURE.md`, `docs/DESIGN.md`, `README.md`, `HANDOFF.md`).
+- [x] **Task 6: Standard Bilingue Documentazione (Inglese Primario, Italiano Secondario) & Traduzione Integrale HTML**:
+  - [x] Creazione di `README.md` (Inglese primario) e `README_IT.md` (Italiano secondario) con struttura e contenuti speculari 1:1 e link incrociati di testata.
+  - [x] Creazione di `HANDOFF.md` (Inglese primario) e `HANDOFF_IT.md` (Italiano secondario) con identica architettura tecnica e glossario bilingue.
+  - [x] Traduzione integrale in lingua inglese del simulatore web `docs/index.html` (interfaccia, controlli, preset di test, allarmi, slider e schede documentali/glossario).
+  - [x] Istituzione della regola permanente non negoziabile in `docs/RULES.md` e memoria tecnica in `docs/MEMORY.md`.
