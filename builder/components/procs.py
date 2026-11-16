@@ -222,6 +222,170 @@ TANK_BUSTER_CHECK_LUA = f"""function(force)
     return false, nil, 0, nil, 0, 0, ""
 end"""
 
+
+# =============================================================================
+# LOGICA LUA CONDIVISA: TARGET DEBUFFS TRACKER (Demo, Clap, Rend)
+# =============================================================================
+SHARED_TARGET_DEBUFFS_LUA = r"""function(kind)
+    if not UnitAffectingCombat("player") then
+        return false, "OOC", 0, 0, 0
+    end
+    if not UnitExists("target") or UnitIsDead("target") or not UnitCanAttack("player", "target") then
+        return false, "INVALID", 0, 0, 0
+    end
+
+    local now = GetTime()
+    local tGUID = UnitGUID("target")
+    local cache = _G.PWHUD_TargetDebuffScanCache
+
+    if not cache or cache.time ~= now or cache.targetGUID ~= tGUID then
+        cache = {
+            time = now,
+            targetGUID = tGUID,
+            isMechanical = false,
+            demoFound = false,
+            demoDur = 0,
+            demoExp = 0,
+            clapFound = false,
+            clapDur = 0,
+            clapExp = 0,
+            rendFound = false,
+            rendDur = 0,
+            rendExp = 0,
+        }
+
+        local cType = UnitCreatureType("target")
+        if cType == "Mechanical" or cType == "Meccanico" then
+            cache.isMechanical = true
+        end
+
+        local pGUID = UnitGUID("player")
+        for i = 1, 40 do
+            local name, _, icon, count, debuffType, duration, expirationTime, unitCaster, _, _, spellId = UnitDebuff("target", i)
+            if not name then break end
+
+            -- 1. Demoralizing Shout & Raid Equivalents (Demoralizing Roar, Curse of Weakness)
+            if not cache.demoFound then
+                if spellId == 47437 or spellId == 25203 or spellId == 25202 or spellId == 11556 or spellId == 11555 or spellId == 11554 or spellId == 6190 or spellId == 1160 or
+                   spellId == 48560 or spellId == 26998 or spellId == 9898 or spellId == 9747 or spellId == 9490 or spellId == 1735 or spellId == 739 or spellId == 99 or
+                   spellId == 50511 or spellId == 47864 or spellId == 30908 or spellId == 27224 or spellId == 11708 or spellId == 11707 or spellId == 702 or spellId == 1108 or spellId == 704 or
+                   name == "Demoralizing Shout" or name == "Urlo Demoralizzante" or
+                   name == "Demoralizing Roar" or name == "Ruggito Demoralizzante" or
+                   name == "Curse of Weakness" or name == "Maledizione della Debolezza" then
+                    cache.demoFound = true
+                    cache.demoDur = (duration and duration > 0) and duration or 30
+                    cache.demoExp = (expirationTime and expirationTime > 0) and expirationTime or (now + cache.demoDur)
+                end
+            end
+
+            -- 2. Thunder Clap & Raid Equivalents (Frost Fever, Judgements of the Just, Infected Wounds)
+            if not cache.clapFound then
+                if spellId == 47502 or spellId == 25264 or spellId == 11581 or spellId == 11580 or spellId == 8205 or spellId == 8204 or spellId == 8198 or spellId == 6343 or
+                   spellId == 55095 or spellId == 53696 or spellId == 53695 or spellId == 48485 or spellId == 48484 or spellId == 48483 or
+                   name == "Thunder Clap" or name == "Tuono" or
+                   name == "Frost Fever" or name == "Febbre del Gelo" or
+                   name == "Judgements of the Just" or name == "Giudizi dei Giusti" or name == "Giudizio dei Giusti" or
+                   name == "Infected Wounds" or name == "Ferite Infette" then
+                    cache.clapFound = true
+                    cache.clapDur = (duration and duration > 0) and duration or 30
+                    cache.clapExp = (expirationTime and expirationTime > 0) and expirationTime or (now + cache.clapDur)
+                end
+            end
+
+            -- 3. Rend (Player Bleed)
+            if not cache.rendFound and not cache.isMechanical then
+                if spellId == 47465 or spellId == 25208 or spellId == 11574 or spellId == 11573 or spellId == 11572 or spellId == 6548 or spellId == 6547 or spellId == 6546 or spellId == 284 or spellId == 772 or
+                   name == "Rend" or name == "Lacerazione" then
+                    local isMine = (unitCaster == "player") or (unitCaster and pGUID and UnitGUID(unitCaster) == pGUID)
+                    if isMine or not unitCaster then
+                        cache.rendFound = true
+                        cache.rendDur = (duration and duration > 0) and duration or 15
+                        cache.rendExp = (expirationTime and expirationTime > 0) and expirationTime or (now + cache.rendDur)
+                    end
+                end
+            end
+        end
+        _G.PWHUD_TargetDebuffScanCache = cache
+    end
+
+    if kind == "DEMO" then
+        if not cache.demoFound then
+            return true, "MISS", 0, 30, now
+        end
+        local rem = cache.demoExp - now
+        if rem > 0 and rem <= 10.0 then
+            return true, "EXPIRING", rem, cache.demoDur, cache.demoExp
+        end
+        return false, "HEALTHY", rem, cache.demoDur, cache.demoExp
+
+    elseif kind == "CLAP" then
+        if not cache.clapFound then
+            return true, "MISS", 0, 30, now
+        end
+        local rem = cache.clapExp - now
+        if rem > 0 and rem <= 10.0 then
+            return true, "EXPIRING", rem, cache.clapDur, cache.clapExp
+        end
+        return false, "HEALTHY", rem, cache.clapDur, cache.clapExp
+
+    elseif kind == "REND" then
+        if cache.isMechanical then
+            return false, "IMMUNE", 0, 0, 0
+        end
+        if not cache.rendFound then
+            return true, "MISS", 0, 15, now
+        end
+        local rem = cache.rendExp - now
+        if rem > 0 and rem <= 5.0 then
+            return true, "EXPIRING", rem, cache.rendDur, cache.rendExp
+        end
+        return false, "HEALTHY", rem, cache.rendDur, cache.rendExp
+    end
+
+    return false, "UNKNOWN", 0, 0, 0
+end"""
+
+def make_target_debuff_trigger(kind: str) -> str:
+    return f"""function(event, ...)
+    _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
+    local show, status = _G.PWHUD_CheckTargetDebuff("{kind}")
+    return show
+end"""
+
+
+def make_target_debuff_custom_duration(kind: str, default_dur: int) -> str:
+    return f"""function()
+    _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
+    local show, status, rem, dur, expTime = _G.PWHUD_CheckTargetDebuff("{kind}")
+    if show then
+        if status == "MISS" then
+            return 0, GetTime()
+        else
+            return dur or {default_dur}, expTime or (GetTime() + rem)
+        end
+    end
+    return 0, 0
+end"""
+
+
+def make_target_debuff_custom_text(kind: str) -> str:
+    return f"""function()
+    _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
+    local show, status, rem = _G.PWHUD_CheckTargetDebuff("{kind}")
+    if show then
+        if status == "MISS" then
+            return "|cFFFF2020MISS|r"
+        else
+            if rem <= 3 then
+                return string.format("|cFFFF2020%.1fs|r", rem)
+            else
+                return string.format("|cFFFFFF00%.1fs|r", rem)
+            end
+        end
+    end
+    return ""
+end"""
+
 def build_procs_auras() -> list[dict]:
     """
     Costruisce e restituisce le 8 aure del gruppo dinamico Procs:
@@ -239,13 +403,152 @@ def build_procs_auras() -> list[dict]:
             "grow": "HORIZONTAL",
             "align": "CENTER",
             "space": 6,
+            "sort": "ascending",
             "xOffset": 0,
             "yOffset": 52,
             "controlledChildren": [
+                "Demoralizing Shout Tracker warTank",
+                "Thunder Clap Tracker warTank",
+                "Rend Tracker warTank",
                 "Sword and Board",
                 "Revenge Ready warTank",
                 "Emergency Low HP Alert",
                 "Tank Buster Alert",
+            ],
+        },
+        # Target Debuff 1: Demoralizing Shout
+        {
+            "id": "Demoralizing Shout Tracker warTank",
+            "uid": "PWHUD_PROC_DEMO",
+            "parent": "01 - Procs warTank",
+            "regionType": "icon",
+            "internalVersion": 90,
+            "width": 34,
+            "height": 34,
+            "displayIcon": "Interface\\Icons\\Ability_Warrior_WarCry",
+            "auto": False,
+            "color": [1, 1, 1, 1],
+            "cooldown": True,
+            "cooldownSwipe": True,
+            "cooldownEdge": False,
+            "cooldownTextDisabled": True,
+            "inverse": False,
+            "customTextUpdate": "update",
+            "customText": make_target_debuff_custom_text("DEMO"),
+            "triggers": {
+                1: {
+                    "trigger": {
+                        "type": "custom",
+                        "custom_type": "status",
+                        "check": "event",
+                        "events": "UNIT_AURA,PLAYER_TARGET_CHANGED,PLAYER_REGEN_DISABLED,PLAYER_REGEN_ENABLED,PLAYER_ENTERING_WORLD",
+                        "custom": make_target_debuff_trigger("DEMO"),
+                        "customDuration": make_target_debuff_custom_duration("DEMO", 30),
+                        "customIcon": """function()
+                            return "Interface\\Icons\\Ability_Warrior_WarCry"
+                        end""",
+                    },
+                    "untrigger": {
+                        "type": "custom",
+                        "custom": "function() return false end",
+                    },
+                },
+                "activeTriggerMode": -10,
+            },
+            "subRegions": [
+                {"type": "subbackground"},
+                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=0),
+                make_subtext("DEMO", justify="CENTER", anchor_point="CENTER", font_size=8, y_offset=0),
+            ],
+        },
+        # Target Debuff 2: Thunder Clap
+        {
+            "id": "Thunder Clap Tracker warTank",
+            "uid": "PWHUD_PROC_TC",
+            "parent": "01 - Procs warTank",
+            "regionType": "icon",
+            "internalVersion": 90,
+            "width": 34,
+            "height": 34,
+            "displayIcon": "Interface\\Icons\\Spell_Nature_ThunderClap",
+            "auto": False,
+            "color": [1, 1, 1, 1],
+            "cooldown": True,
+            "cooldownSwipe": True,
+            "cooldownEdge": False,
+            "cooldownTextDisabled": True,
+            "inverse": False,
+            "customTextUpdate": "update",
+            "customText": make_target_debuff_custom_text("CLAP"),
+            "triggers": {
+                1: {
+                    "trigger": {
+                        "type": "custom",
+                        "custom_type": "status",
+                        "check": "event",
+                        "events": "UNIT_AURA,PLAYER_TARGET_CHANGED,PLAYER_REGEN_DISABLED,PLAYER_REGEN_ENABLED,PLAYER_ENTERING_WORLD",
+                        "custom": make_target_debuff_trigger("CLAP"),
+                        "customDuration": make_target_debuff_custom_duration("CLAP", 30),
+                        "customIcon": """function()
+                            return "Interface\\Icons\\Spell_Nature_ThunderClap"
+                        end""",
+                    },
+                    "untrigger": {
+                        "type": "custom",
+                        "custom": "function() return false end",
+                    },
+                },
+                "activeTriggerMode": -10,
+            },
+            "subRegions": [
+                {"type": "subbackground"},
+                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=0),
+                make_subtext("CLAP", justify="CENTER", anchor_point="CENTER", font_size=8, y_offset=0),
+            ],
+        },
+        # Target Debuff 3: Rend
+        {
+            "id": "Rend Tracker warTank",
+            "uid": "PWHUD_PROC_REND",
+            "parent": "01 - Procs warTank",
+            "regionType": "icon",
+            "internalVersion": 90,
+            "width": 34,
+            "height": 34,
+            "displayIcon": "Interface\\Icons\\Ability_Gouge",
+            "auto": False,
+            "color": [1, 1, 1, 1],
+            "cooldown": True,
+            "cooldownSwipe": True,
+            "cooldownEdge": False,
+            "cooldownTextDisabled": True,
+            "inverse": False,
+            "customTextUpdate": "update",
+            "customText": make_target_debuff_custom_text("REND"),
+            "triggers": {
+                1: {
+                    "trigger": {
+                        "type": "custom",
+                        "custom_type": "status",
+                        "check": "event",
+                        "events": "UNIT_AURA,PLAYER_TARGET_CHANGED,PLAYER_REGEN_DISABLED,PLAYER_REGEN_ENABLED,PLAYER_ENTERING_WORLD",
+                        "custom": make_target_debuff_trigger("REND"),
+                        "customDuration": make_target_debuff_custom_duration("REND", 15),
+                        "customIcon": """function()
+                            return "Interface\\Icons\\Ability_Gouge"
+                        end""",
+                    },
+                    "untrigger": {
+                        "type": "custom",
+                        "custom": "function() return false end",
+                    },
+                },
+                "activeTriggerMode": -10,
+            },
+            "subRegions": [
+                {"type": "subbackground"},
+                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=0),
+                make_subtext("REND", justify="CENTER", anchor_point="CENTER", font_size=8, y_offset=0),
             ],
         },
         # 1. Sword and Board (Buff 50227)

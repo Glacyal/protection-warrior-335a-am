@@ -347,3 +347,25 @@
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
   - [x] Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 22: Target Debuff Trackers in '01 - Procs warTank' (Demoralizing Shout, Thunder Clap, Rend) con Ordinamento Ascending per Scadenza, Filtro Meccanici e Caching Unificato**:
+  - [x] Architettura e configurazione dinamica di `01 - Procs warTank`:
+    - Impostato `"sort": "ascending"` nel gruppo dinamico: le icone vengono posizionate automaticamente da sinistra verso destra in base al tempo di scadenza (`expirationTime`). I debuff mancanti (`MISS`) restituiscono il timestamp corrente `now` (il valore minimo possibile), garantendo il loro piazzamento prioritario all'estrema sinistra.
+  - [x] Implementazione dei 3 Target Debuff Tracker (34x34px):
+    1. **Demoralizing Shout Tracker warTank** (UID `PWHUD_PROC_DEMO`, icona `Ability_Warrior_WarCry`):
+       - **Raid-Aware (Opzione A)**: riconosce Warrior *Demoralizing Shout* (tutti i rank), Druid *Demoralizing Roar* (tutti i rank) e Warlock *Curse of Weakness* (tutti i rank).
+       - **Soglia Visibilità (Opzione B modificata)**: compare solo se mancante (`MISS`) o in scadenza entro <= 10s (`%.1f` secondi). Completamente nascosto se applicato con durata > 10s, fuori combattimento o target non valido.
+    2. **Thunder Clap Tracker warTank** (UID `PWHUD_PROC_TC`, icona `Spell_Nature_ThunderClap`):
+       - **Raid-Aware (Opzione A)**: riconosce Warrior *Thunder Clap* (tutti i rank), Death Knight *Frost Fever* (Spell 55095), Paladin *Judgements of the Just* (Spell 53695, 53696) e Druid *Infected Wounds* (Spell 48483, 48484, 48485).
+       - **Soglia Visibilità (Opzione B modificata)**: compare solo se mancante (`MISS`) o in scadenza entro <= 10s (`%.1f` secondi). Completamente nascosto se applicato con durata > 10s.
+    3. **Rend Tracker warTank** (UID `PWHUD_PROC_REND`, icona `Ability_Gouge`):
+       - **Player Filter**: traccia esclusivamente il debuff *Rend* applicato dal Warrior giocatore (`unitCaster == "player"`).
+       - **Filtro Immunità Meccanici**: soppressione totale dell'avviso (`return false, "IMMUNE"`) se `UnitCreatureType("target") == "Mechanical"` o `"Meccanico"`, evitando falsi allarmi su mob e boss immuni ai sanguinamenti.
+       - **Soglia Visibilità (Opzione B modificata)**: compare solo se mancante (`MISS`) o in scadenza entro <= 5s (`%.1f` secondi).
+  - [x] Ottimizzazione Lua e Caching Unificato per frame (`_G.PWHUD_TargetDebuffScanCache`):
+    - La scansione dei debuff sul target viene eseguita una sola volta per frame tick condividendo lo stato tra i 3 tracker, azzerando l'overhead computazionale e prevenendo spike di GC.
+  - [x] Suite di Test Dedicata `tests/test_target_debuffs.py` e aggiornamento runner parallelo `tests/run_parallel_tests.py` (9/9 test superati con successo in 0.37s).
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` (66880 caratteri) e sincronizzazione simulatore web `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+  - [x] Esecuzione CP (Commit & Push su `origin/master`).
+

@@ -33,11 +33,14 @@ Explore and interact with the HUD directly inside your browser without installin
 The suite is structured into 20 sequential nodes controlled by the master group `Class Warrior (Protection)` ($x = 0, y = -190$, scale $1.2$):
 
 ### 1. Dynamic Procs Group (`01 - Procs warTank`)
-Positioned at the upper region of the HUD ($y = 52$), managing up to 4 icons ($34 \times 34\text{px}$, spacing $6\text{px}$) with centered horizontal auto-alignment:
+Positioned at the upper region of the HUD ($y = 52$), configured with `sort: "ascending"` to order active icons from left to right by expiration time (missing or soonest-expiring icons automatically sort to the far left):
 1. **Sword and Board (Buff 50227)**: Zero-rage Shield Slam proc with instant CD reset, pulsing golden Pixel Glow, and a 5-second countdown.
-2. **Revenge Ready warTank**: Triggered by any Dodge, Parry, or Block (`blocked > 0`) with an internal 5.0-second window, dynamic real-time refresh upon subsequent avoids/blocks, circular swipe animation, `%p` seconds countdown, and amber Pixel Glow (`LibCustomGlow-1.0`) with guaranteed cleanup to prevent yellow line artifacts.
-4. **Emergency Low HP Alert**: Flashing red Pixel Glow icon when health drops below 35%, surfacing the icon of the optimal ready cooldown (*Shield Wall* or *Last Stand*).
-5. **Tank Buster Alert**: Dynamic high-priority alert covering all WotLK 3.3.5a raid bosses and dangerous trash mechanics (*Soul Reaper*, *Phase Punch*, *Rune of Blood*, *Impale*, *Gastric Bloat*, *Fusion Punch*, *Fiery Combustion*, etc.) with dynamic debuff icon commutation, circular swipe, action tags (`SWAP`, `x8`, `HEAL`, `RUN`, `PLASMA`), and intense red Pixel Glow.
+2. **Revenge Ready warTank**: Triggered by any Dodge, Parry, or Block (`blocked > 0`) with an internal 5.0-second window, dynamic real-time refresh upon subsequent avoids/blocks, circular swipe animation, `%p` seconds countdown, and amber Pixel Glow (`LibCustomGlow-1.0`).
+3. **Demoralizing Shout Tracker warTank**: Target debuff tracker for physical damage reduction. Raid-aware (satisfied by Warrior *Demoralizing Shout*, Feral Druid *Demoralizing Roar*, or Warlock *Curse of Weakness*). Displays `MISS` or countdown when expiring ($\le 10\text{s}$); hidden when $> 10\text{s}$.
+4. **Thunder Clap Tracker warTank**: Target debuff tracker for melee attack speed reduction. Raid-aware (satisfied by Warrior *Thunder Clap*, Death Knight *Frost Fever*, Paladin *Judgements of the Just*, or Feral Druid *Infected Wounds*). Displays `MISS` or countdown when expiring ($\le 10\text{s}$); hidden when $> 10\text{s}$.
+5. **Rend Tracker warTank**: Player bleed debuff tracker. Displays `MISS` or countdown when expiring ($\le 5\text{s}$); automatically suppressed and hidden on mechanical targets immune to bleed effects.
+6. **Emergency Low HP Alert**: Flashing red Pixel Glow icon when health drops below 35%, surfacing the icon of the optimal ready cooldown (*Shield Wall* or *Last Stand*).
+7. **Tank Buster Alert**: Dynamic high-priority alert covering all WotLK 3.3.5a raid bosses and dangerous trash mechanics (*Soul Reaper*, *Phase Punch*, *Rune of Blood*, *Impale*, *Gastric Bloat*, *Fusion Punch*, *Fiery Combustion*, etc.) with dynamic debuff icon commutation, circular swipe, action tags (`SWAP`, `x8`, `HEAL`, `RUN`, `PLASMA`), and intense red Pixel Glow.
 
 ### 2. Class Buffs & Defensive Stance (`02`, `03`, `04`)
 Positioned on the left side directly above the Stats Panel at $x = -264, -232, -200, -168$ and $y = 0$ ($30 \times 30\text{px}$, 4-icon grid perfectly spanning the 126px width of the stats panel with 2px spacing):

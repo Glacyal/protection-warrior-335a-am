@@ -45,7 +45,7 @@ protection-warrior-335a-am/
 │   │   ├── encoder.py               # Generatore stringa finale (!WA:1!...)
 │   │   └── helpers.py               # Generatori di subtext dual-key e helper grafici
 │   └── components/                  # Moduli dedicati ai singoli componenti dell'HUD (identici a Fury)
-│       ├── procs.py                 # 01 - Procs warTank (Dynamic Group orizzontale a 6 icone 34x34 a y = 52)
+│       ├── procs.py                 # 01 - Procs warTank (Gruppo dinamico 34x34 a y = 52 con ordinamento ascending: proc e debuff target raid-aware)
 │       ├── buffs.py                 # 02 - Battle Shout warTank, 03 - Commanding Shout warTank, 04 - Defensive Stance warTank (x = -271, -216, -161, y = 0, 34x34px)
 │       ├── utility.py               # 05-13 - Utility Row (Monili, Anello, Mantello, Tier, Incanti, Guanti, Shield Wall warTank, Last Stand warTank, Boots) a y = -45
 │       ├── bars.py                  # 14 - Rage Bar warTank (278x14px a y = -20) & 16 - Castbar warTank (278x20px a y = +8 con Kick Advisor)
