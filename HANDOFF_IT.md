@@ -134,6 +134,14 @@ protection-warrior-335a-am/
 - **Griglia Shouts e Stance Sovrastante (34x34px a X: -271, -216, -161, Y: 0)**: Icone standardizzate a 34x34px (identiche alla riga procs); bordo sinistro (-288) allineato a filo con il pannello, centro (-216) allineato a Commanding Shout, e bordo destro (-144) allineato a Defensive Stance.
 - **Separazione Verticale Pulita**: Spazio di 3px tra le label inferiori delle icone (`OFF`, `STANCE` a Y: -17) e il bordo superiore del pannello (Y: -19.6), azzerando ogni sovrapposizione visiva.
 
+### 4.8 Filtraggio Intelligente Tier Set con Proc & Pulizia Bordo Revenge
+- **Visibilità Esclusiva per Bonus Tier con Proc**: `08 - Tier Set warTank` compare esclusivamente se il bonus di set equipaggiato dispone di un vero proc / buff da tracciare:
+  - **T10 4P (*Blood Frenzy* / *Frenesia del Sangue*, Spell ID 70844)**: Assorbimento pari al 20% della vita massima per 10s scatenato da Bloodrage.
+  - **T8 4P (Riduzione Danno Magico 20%, Spell ID 64938 / 2565)**: 20% riduzione danno magico per 10s attivo durante Blocco con Scudo.
+- **Soppressione Totale Bonus Statici**: Tutti i bonus puramente passivi o statici (T10 2P, T9 2P/4P, T8 2P, T7 2P/4P) restituiscono rigidamente `cache.isEquipped = false`.
+- **Ricentratura Dinamica Senza Buchi**: In caso di soppressione, `08 - Tier Set warTank` viene escluso da `activeOrder` in `_G.PWHUD_UpdateUtilityRowPositions()`, ricentrando perfettamente le restanti icone utility.
+- **Pulizia Bordo Icona Revenge**: Impostato `cooldownEdge: False` su `Revenge Ready warTank`, eliminando la linea/ago verticale gialla a ore 12 sul bordo superiore mantenendo lo swipe circolare.
+
 ### 4.6 Filtraggio Incanti Arma Proccabili (Slot 16)
 - **Visibilità Esclusiva per Incanti con Proc**: `09 - Enchants warTank` compare solo se sull'arma principale (Slot 16) è presente un incantesimo con proc di combattimento attivo: *Blade Ward*, *Blood Draining* (stack 1-5 e cura d'emergenza), *Mongoose*, *Berserking*, *Executioner*, *Crusader*, *Lifeward*, *Black Magic*, *Icebreaker*, *Giant Slayer*, *Deathfrost*, *Unholy Weapon*, *Fiery Weapon*, *Lifestealing*.
 - **Soppressione Integrale Incanti Statici**: Tutti gli incanti puramente statistici (*Titanguard* +30 Stamina, *Accuracy* +25 Hit/+25 Crit, *Titanium Weapon Chain* +28 Hit/-50% Disarm, *Superior Potency* +65 AP, *Exceptional Agility* +26 Agi, *Major Defense* +12 Def, ecc.) o armi prive di incanto valutano rigorosamente `_G.PWHUD_CheckEnchantsEquipped() == false`.

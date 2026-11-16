@@ -55,7 +55,7 @@ def build_procs_auras() -> list[dict]:
             "color": [1, 1, 1, 1],
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "actions": {
                 "start": make_glow_action([1.0, 0.84, 0.0, 1.0]),
                 "finish": {"do_glow": True, "glow_action": "hide"},

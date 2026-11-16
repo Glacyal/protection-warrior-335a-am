@@ -268,3 +268,18 @@
   - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
   - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
   - [x] Commit Git con messaggio descrittivo.
+
+- [x] **Task 15: Filtraggio Rigoroso di 08 - Tier Set warTank (Visibile Solo con Bonus Set con Proc Attivo: T10 4P / T8 4P, Soppressione Totale Bonus Statici) & Pulizia Bordo Revenge**:
+  - [x] Riconfigurazione del motore di rilevamento Tier `_G.PWHUD_CheckTierSetEquipped` e `_G.PWHUD_CheckTierSet` in `builder/components/utility.py`:
+    - Censimento dettagliato delle meccaniche di set Protection Warrior in WotLK 3.3.5a:
+      - **T10 4P (*Blood Frenzy* / *Frenesia del Sangue*, Spell ID 70844)**: Proc attivo garantito dall'attivazione di Bloodrage (assorbimento danni pari al 20% della salute massima per 10s) -> **PROC ATTIVO / TRACKED**.
+      - **T8 4P (Riduzione Danno Magico 20%, Spell ID 64938 / 2565)**: Proc attivo scatenato durante Blocco con Scudo (20% riduzione danno magico per 10s) -> **PROC ATTIVO / TRACKED**.
+      - **T10 2P, T9 2P/4P, T8 2P, T7 2P/4P**: Bonus interamente passivi e statici (+20% danno Shield Slam/Devastate, -2s CD Taunt, -10s CD Shield Block, +10% crit Shield Slam, +3s durata Shield Wall). Nessun proc dinamico o buff da tracciare -> **SOPPRESSIONE TOTALE**.
+    - `_G.PWHUD_CheckTierSetEquipped()` restituisce `true` solo se il giocatore ha equipaggiato un set con proc attivo (`t10 >= 4 or t8 >= 4`) o ha il buff del proc attivo (`Spell 70844`). In tutti gli altri casi restituisce `false`.
+    - La riga utility dinamica `_G.PWHUD_UpdateUtilityRowPositions` esclude `08 - Tier Set warTank` da `activeOrder` quando `hasTier` è `false`, ricentrando armoniosamente le restanti icone senza spazi vuoti.
+  - [x] Pulizia dell'artefatto grafico su `Revenge Ready warTank` in `builder/components/procs.py`:
+    - Impostato `"cooldownEdge": False` (mantenendo `"cooldownSwipe": True`), eliminando la linea/ago verticale gialla a ore 12 sul bordo superiore dell'icona mostrata a riposo.
+  - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+  - [x] Aggiornamento sincronizzato della documentazione tecnica bilingue (`README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/TASKS.md`).
+  - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
+  - [x] Commit Git con messaggio descrittivo.

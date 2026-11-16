@@ -51,7 +51,7 @@ Adaptive horizontal centering below the rage bar featuring $28 \times 28\text{px
 - **05 - Trinket 1 warTank** & **06 - Trinket 2 warTank**: Slot 13 & 14 auto-detection for tank trinkets (*Sindragosa's Flawless Fang*, *Glyph of Indomitability*, *Corpse Tongue Coin*, *Satrina's Impeding Scarab*, *Corroded Skeleton Key*, etc.).
 - **06b - Ring warTank**: Tank ring tracker (*Ashen Band of Endless Courage*).
 - **07 - Cloak warTank**: Parachute / Flexweave and cloak enchants.
-- **08 - Tier Set warTank**: T9 & T10 Prot tier set bonus tracking (*Ymirjar Lord* 2P/4P).
+- **08 - Tier Set warTank**: Proccable tier set bonus tracking (T10 4P *Blood Frenzy* absorption and T8 4P *Magic DR*; static tier bonuses like T10 2P or T9 2P/4P are automatically suppressed to avoid clutter).
 - **09 - Enchants warTank**: Main-Hand weapon proc enchant tracker (*Blade Ward*, *Blood Draining*, *Mongoose*, *Berserking*, etc.). Exclusively visible when an enchant capable of proccing is equipped; automatically suppressed and hidden when static enchants (+30 Stamina Titanguard, +25 Hit/+25 Crit Accuracy, Titanium Weapon Chain, +26 Agility, +65 AP) or no enchants are present, with seamless dynamic re-centering of the utility row.
 - **10 - Gloves warTank**: *Reticulated Armor Webbing* (+885 Armor) or *Hyperspeed Accelerators*.
 - **11 - Shield Wall warTank**: Spell 871 (-60% DR for 12s, duration swipe and CD).

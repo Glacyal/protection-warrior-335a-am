@@ -47,7 +47,7 @@ builder/
 ├── components/                  # Moduli verticali dei 20 componenti HUD
 │   ├── procs.py                 # 01 - Procs warTank (Dynamic Group: Sword & Board, Revenge Ready warTank, Shield Block, Emergency HP, Tank Buster)
 │   ├── buffs.py                 # 02 - Battle Shout (x=-222), 03 - Commanding Shout (x=-190), 04 - Defensive Stance (x=-158)
-│   ├── utility.py               # 05-13 - Riga Utility Adattiva (Trinket 1/2, Ring, Cloak, Tier 10, Enchants, Gloves, Shield Wall warTank, Last Stand warTank, Boots)
+│   ├── utility.py               # 05-13 - Riga Utility Adattiva (Trinket 1/2, Ring, Cloak, Tier Set Proc-Only, Enchants Proc-Only, Gloves, Shield Wall warTank, Last Stand warTank, Boots)
 │   ├── bars.py                  # 14 - Rage Bar warTank & 16 - Castbar warTank (con Kick Advisor integrato)
 │   ├── rotational.py            # 15 - Rotational Bar warTank (Indicatore statico di accodamento 278x7px per HS/Cleave con Pixel Glow)
 │   ├── alerts.py                # 17 - Alerts warTank (Gruppo avvisi sonori e visivi per emergenze difensive e interrupt)

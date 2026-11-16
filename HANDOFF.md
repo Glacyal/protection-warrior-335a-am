@@ -134,6 +134,14 @@ protection-warrior-335a-am/
 - **Top Shouts & Stance Grid (34x34px at X: -271, -216, -161, Y: 0)**: Icon size standardized to 34x34px (matching procs row); left edge (-288) aligns with the left edge of the stats panel, center (-216) aligns with Commanding Shout, and right edge (-144) aligns with Defensive Stance.
 - **Clean Vertical Separation**: 3px gap between icon labels (`OFF`, `STANCE` at Y: -17) and panel top edge (Y: -19.6), completely eliminating visual collisions.
 
+### 4.7 Tier Set Proc-Only Filtering & Revenge Edge Polish
+- **Strict Tier Set Proc-Only Visibility**: `08 - Tier Set warTank` is exclusively displayed when the equipped Tier set bonus possesses a genuine triggerable proc / active combat buff:
+  - **T10 4P (*Blood Frenzy* / *Frenesia del Sangue*, Spell ID 70844)**: 20% max HP damage absorption for 10s triggered on Bloodrage.
+  - **T8 4P (Magic Damage Reduction 20%, Spell ID 64938 / 2565)**: 20% magical DR for 10s triggered during Shield Block.
+- **Suppression of Static Tier Bonuses**: Passive or static bonuses (T10 2P, T9 2P/4P, T8 2P, T7 2P/4P) or non-tier items strictly return `cache.isEquipped = false`.
+- **Dynamic Utility Centering**: When suppressed, `08 - Tier Set warTank` is omitted from `activeOrder` in `_G.PWHUD_UpdateUtilityRowPositions()`, automatically re-centering the remaining utility icons without an empty gap.
+- **Revenge Border Edge Polish**: Set `cooldownEdge: False` on `Revenge Ready warTank`, eliminating the yellow vertical line tick artifact at 12 o'clock while retaining the smooth circular cooldown swipe.
+
 ### 4.6 Weapon Proc Enchant Filtering (Slot 16)
 - **Strict Proc-Only Visibility**: `09 - Enchants warTank` is exclusively displayed when an enchantment with actual combat procs is present on the Main-Hand weapon (Slot 16): *Blade Ward*, *Blood Draining* (stacks 1-5 & emergency heal), *Mongoose*, *Berserking*, *Executioner*, *Crusader*, *Lifeward*, *Black Magic*, *Icebreaker*, *Giant Slayer*, *Deathfrost*, *Unholy Weapon*, *Fiery Weapon*, *Lifestealing*.
 - **Static Enchant Suppression**: Static enhancements (*Titanguard* +30 Stamina, *Accuracy* +25 Hit/+25 Crit, *Titanium Weapon Chain* +28 Hit/-50% Disarm, *Superior Potency* +65 AP, *Exceptional Agility* +26 Agi, *Major Defense* +12 Def, etc.) or weapons with no enchant strictly evaluate `_G.PWHUD_CheckEnchantsEquipped() == false`.

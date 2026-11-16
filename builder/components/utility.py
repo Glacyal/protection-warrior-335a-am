@@ -892,77 +892,64 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         cache.t9 = t9
         cache.t8 = t8
         cache.t7 = t7
-        cache.isEquipped = (t10 >= 2 or t9 >= 2 or t8 >= 2 or t7 >= 2)
+
+        -- In WotLK 3.3.5a, only Tier set bonuses with genuine triggerable procs / active tracking buffs are displayed:
+        -- 1. T10 4P (Blood Frenzy: Bloodrage grants 20% max HP damage absorption for 10s - Spell ID 70844)
+        -- 2. T8 4P (Magic DR: Shield Block grants 20% magical damage reduction for 10s - Spell ID 64938 / 2565)
+        -- Purely static/passive bonuses (T10 2P, T9 2P/4P, T8 2P, T7 2P/4P) do NOT have procs and are hidden.
+        local hasProcTier = (t10 >= 4 or t8 >= 4)
+
+        if not hasProcTier then
+            local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
+            if buffs then
+                local bList = buffs.list or {}
+                for _, b in ipairs(bList) do
+                    if b.spellId == 70844 or (b.name and (b.name == "Blood Frenzy" or b.name == "Frenesia del Sangue")) then
+                        hasProcTier = true
+                        break
+                    end
+                end
+            end
+        end
+
+        cache.isEquipped = hasProcTier
         return cache.isEquipped, t10, t9, t8, t7
     end
 
     _G.PWHUD_CheckTierSet = function()
         local isEquipped, t10, t9, t8, t7 = _G.PWHUD_CheckTierSetEquipped()
         if not isEquipped then
-            return "NONE", 0, 0, 0, "Interface\\Icons\\Ability_Warrior_DefensiveStance", "No Tier"
+            return "NONE", 0, 0, 0, "Interface\\Icons\\Ability_Warrior_DefensiveStance", "No Proc Tier"
         end
 
         local now_tk = GetTime()
         local buffs = _G.PWHUD_GetPlayerBuffs and _G.PWHUD_GetPlayerBuffs()
-        local bList = buffs and buffs.list or {}
 
-        -- T10 Prot 4P: Bloodrage damage reduction (Spell 70844)
-        local t10_4P_Buff = buffs and (buffs.bySpellId[70844] or buffs.byName["Bloodrage"])
-        if t10_4P_Buff and t10_4P_Buff.expirationTime and t10_4P_Buff.expirationTime > now_tk then
-            local rem = t10_4P_Buff.expirationTime - now_tk
-            local dur = (t10_4P_Buff.duration and t10_4P_Buff.duration > 0) and t10_4P_Buff.duration or 10
-            return "ACTIVE", rem, dur, 1, "Interface\\Icons\\Ability_Racial_BloodRage", "T10 (4P)"
+        -- T10 Prot 4P: Blood Frenzy from Bloodrage (Spell 70844 / "Blood Frenzy" / "Frenesia del Sangue")
+        if t10 >= 4 or (buffs and buffs.bySpellId and buffs.bySpellId[70844]) then
+            local t10_4P_Buff = buffs and (buffs.bySpellId[70844] or buffs.byName["Blood Frenzy"] or buffs.byName["Frenesia del Sangue"] or buffs.byName["Bloodrage"])
+            if t10_4P_Buff and t10_4P_Buff.expirationTime and t10_4P_Buff.expirationTime > now_tk then
+                local rem = t10_4P_Buff.expirationTime - now_tk
+                local dur = (t10_4P_Buff.duration and t10_4P_Buff.duration > 0) and t10_4P_Buff.duration or 10
+                return "ACTIVE", rem, dur, 1, "Interface\\Icons\\Ability_Racial_BloodRage", "T10 (4P)"
+            end
+            if t10 >= 4 then
+                return "READY", 0, 0, 0, "Interface\\Icons\\Ability_Racial_BloodRage", "T10 (4P)"
+            end
         end
 
-        -- T10 Prot 2P: Shield Slam armor to block value (Spell 70843)
-        local t10_2P_Buff = buffs and (buffs.bySpellId[70843] or buffs.byName["Shield Slam"])
-        if t10_2P_Buff and t10_2P_Buff.expirationTime and t10_2P_Buff.expirationTime > now_tk then
-            local rem = t10_2P_Buff.expirationTime - now_tk
-            local dur = (t10_2P_Buff.duration and t10_2P_Buff.duration > 0) and t10_2P_Buff.duration or 10
-            return "ACTIVE", rem, dur, 1, "Interface\\Icons\\INV_Shield_05", "T10 (2P)"
-        end
-
-        -- T8 Prot 4P: Shield Block magic reduction active (Spell 2565)
+        -- T8 Prot 4P: Shield Block magic reduction active (Spell 64938 / 2565)
         if t8 >= 4 then
-            local sbBuff = buffs and (buffs.bySpellId[2565] or buffs.byName["Shield Block"])
+            local sbBuff = buffs and (buffs.bySpellId[64938] or buffs.bySpellId[2565] or buffs.byName["Shield Block"] or buffs.byName["Blocco con Scudo"])
             if sbBuff and sbBuff.expirationTime and sbBuff.expirationTime > now_tk then
                 local rem = sbBuff.expirationTime - now_tk
                 local dur = (sbBuff.duration and sbBuff.duration > 0) and sbBuff.duration or 10
                 return "ACTIVE", rem, dur, 1, "Interface\\Icons\\Ability_Defensive", "T8 (4P)"
             end
-        end
-
-        if t10 >= 4 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\Ability_Racial_BloodRage", "T10 (4P)"
-        elseif t10 >= 2 and t9 >= 2 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Shield_05", "T10/T9"
-        elseif t10 >= 2 and t8 >= 2 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Shield_05", "T10/T8"
-        elseif t10 >= 2 and t7 >= 2 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Shield_05", "T10/T7"
-        elseif t10 >= 2 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Shield_05", "T10 (2P)"
-        elseif t9 >= 4 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Helmet_05", "T9 (4P)"
-        elseif t9 >= 2 and t8 >= 2 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Helmet_05", "T9/T8"
-        elseif t9 >= 2 and t7 >= 2 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Helmet_05", "T9/T7"
-        elseif t9 >= 2 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\INV_Helmet_05", "T9 (2P)"
-        elseif t8 >= 4 then
             return "READY", 0, 0, 0, "Interface\\Icons\\Spell_Nature_BloodLust", "T8 (4P)"
-        elseif t8 >= 2 and t7 >= 2 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\Spell_Nature_BloodLust", "T8/T7"
-        elseif t8 >= 2 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\Spell_Nature_BloodLust", "T8 (2P)"
-        elseif t7 >= 4 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\Ability_Warrior_ShieldWall", "T7 (4P)"
-        elseif t7 >= 2 then
-            return "READY", 0, 0, 0, "Interface\\Icons\\Ability_Warrior_ShieldWall", "T7 (2P)"
         end
 
-        return "READY", 0, 0, 0, "Interface\\Icons\\INV_Shield_05", "Tier"
+        return "NONE", 0, 0, 0, "Interface\\Icons\\INV_Shield_05", "No Proc Tier"
     end
 
     _G.PWHUD_CheckEnchantsEquipped = function()
