@@ -135,14 +135,15 @@ Questo documento registra le decisioni architetturali e progettuali adottate nel
 
 ---
 
-## ADR-012: Doppio Livello di Notifica Visiva & Prioritaria per Postura Errata in Combattimento
-- **Stato**: Approvato / Implementato
-- **Contesto**: Trovarsi fuori dalla Postura Difensiva durante il combattimento comporta la perdita di mitigazione e threat essenziali per il tank.
+## ADR-012: Notifica Visiva Compatta Out-of-Stance ed Eliminazione Banner Testuali Ridondanti
+- **Stato**: Aggiornato / Implementato (Banner testuale superato da filosofia Zero-Clutter)
+- **Contesto**: Trovarsi fuori dalla Postura Difensiva durante il combattimento comporta la perdita di mitigazione e threat essenziali per il tank. Tuttavia, l'uso di banner testuali centrali duplicati genera clutter visivo non allineato con le suite Fury Warrior e Fire Mage.
 - **Decisione**:
-  1. Configurare `Defensive Stance - Warning` (UID `PWHUD_STANCE_WARN`) nel gruppo `04 - Defensive Stance` con Pixel Glow rosso pulsante e label `STANCE` attivo su `UnitAffectingCombat("player") and (GetShapeshiftForm() ~= 2)`.
-  2. Creare una nuova aura testuale centrale ad alta priorità `Alert - Wrong Stance` (UID `PWHUD_ALERT_WRONG_STANCE`) in `17 - Alerts warTank` a $y = 64$ con testo lampeggiante `|cFFFF1010>> DEFENSIVE STANCE REQUIRED! <<|r` e allarme audio `RaidWarning.ogg`.
-  3. Gestire gli eventi tramite `PLAYER_REGEN_DISABLED`, `PLAYER_REGEN_ENABLED`, `UPDATE_SHAPESHIFT_FORM`, evitando carichi su `OnUpdate`.
-- **Conseguenze**: Rilevamento immediato a colpo d'occhio e reattività massima per il giocatore in qualunque situazione di raid.
+  1. Configurare `04 - Defensive Stance - OutOfStance warTank` (UID `PWHUD_STANCE_WARN`) nel gruppo `04 - Defensive Stance` con Pixel Glow rosso pulsante e label `STANCE` attivo istantaneamente su `UnitAffectingCombat("player") and (GetShapeshiftForm() ~= 2)`.
+  2. Mantenere l'icona completamente invisibile quando il guerriero è in Defensive Stance (zero ingombro).
+  3. **Eliminazione Banner Testuale**: Rimuovere definitivamente `Alert - Wrong Stance` dal gruppo `17 - Alerts warTank` per preservare il centro dello schermo libero e pulito, affidando l'allerta esclusivamente all'icona compatta reattiva.
+  4. Gestire gli eventi tramite `PLAYER_REGEN_DISABLED`, `PLAYER_REGEN_ENABLED`, `UPDATE_SHAPESHIFT_FORM`, azzerando il carico CPU.
+- **Conseguenze**: Allerta immediata a colpo d'occhio senza sacrificare la visibilità del terreno di gioco o creare allarmi duplicati.
 
 ---
 
@@ -156,3 +157,26 @@ Questo documento registra le decisioni architetturali e progettuali adottate nel
   4. **Aura di Gruppo Draenei**: Rilevamento di *Heroic Presence* (+1.0% Hit fisico) nel party e verifica Soft Cap 26 ed Hard Cap 56 di Competenza.
   5. **Throttling e Ottimizzazione**: Aggiornamento vincolato a 10 Hz (0.1s) con caching su `_G.PWHUD_LastStatsText` per minimizzare l'impatto sulla CPU in raid.
 - **Conseguenze**: Il tank dispone di un pannello completo, visivamente identico a Fury Warrior, con calcoli matematici rigorosi e affidabili contro qualunque boss.
+
+
+---
+
+## ADR-014: Architettura Riga Utility Auto-Adattiva a Centratura Dinamica con Filtri Selettivi Proc-Only (Parità 1:1 con Fire Mage e Fury Warrior)
+- **Stato**: Approvato / Implementato
+- **Contesto**: Nella suite Protection Warrior la riga inferiore (`05` - `13`, a $y = -45\text{ px}$) comprende monili, anello, mantello, bonus tier set, incanti arma, guanti d'ingegneria, i 3 cooldown difensivi maggiori del guerriero e stivali. Senza un algoritmo di centratura dinamica, slot non equipaggiati o soppressi genererebbero buchi visivi antiestetici o asimmetrie (icone spostate solo a destra). Inoltre, l'utente richiede una whitelist rigorosa che sopprima oggetti/incanti a statistiche statiche o non qualificati.
+- **Decisione**:
+  1. **Algoritmo di Centratura Dinamica**: Implementare la funzione globale `_G.PWHUD_UpdateUtilityRowPositions()` con formula matematica di calcolo $X$:
+     $$\text{targetX} = \left\lfloor \left( i - \frac{N + 1}{2} \right) \times \text{step} + 0.5 \right\rfloor$$
+     adattando il passo orizzontale $\text{step}$ ($25\text{ px}$ a $52\text{ px}$) e la dimensione icona ($24\text{ px}$ a $28\text{ px}$) in base alla cardinalità $N$ degli elementi attivi ($3 \le N \le 11$). Tutte le icone rimangono centrate sotto la barra rabbia da $278\text{ px}$.
+  2. **Parità 1:1 con Fire Mage e Fury Warrior**: L'esperienza visiva, la fluidità di riposizionamento all'equipaggiamento/cambio item e l'assenza totale di buchi replicano al 100% l'architettura collaudata delle altre suite HUD.
+  3. **Specifiche Tassative di Filtraggio Oggetti (Whitelist Rigorosa)**:
+     - **Trinket 1 & 2 (Slot 13/14)**: Sempre visibili quando equipaggiati (database ICC/RS/ToC/Ulduar con tracciamento On-Use, ICD e procs).
+     - **Anello (Slot 11/12)**: Solo *Ashen Band of Endless Courage* (Tank Armor proc) o *Endless Vengeance* (Melee AP proc con 60s ICD). Soppresso per anelli a statistiche statiche.
+     - **Mantello (Slot 15)**: Solo incanti con proc da combattimento attivo (*Swordguard Embroidery* / Ricamo della Spada). Paracadute d'Ingegneria (*Flexweave Underlay*) e incanti a statistiche statiche (+22 Agi, +16 Def, +225 Armor) sono tassativamente soppressi.
+     - **Tier Set (08)**: Solo con bonus 4 Pezzi Tier 10 attivo (*Ymirjar Lord's Battlegear* 4P: bonus Shield Block -20% danno subito). Soppresso in caso contrario.
+     - **Incanti Arma (Slot 16)**: Solo incanti proccabili difensivi/offensivi (*Blade Ward*, *Blood Draining*, *Mongoose*, *Berserking*). Soppresso per incanti statici.
+     - **Guanti (Slot 10)**: Solo se provvisti di tinker attivo d'Ingegneria (*Reticulated Armor Webbing* o *Hyperspeed Accelerators*).
+     - **Cooldown Difensivi (`10b`, `11`, `12`)**: `Shield Block`, `Shield Wall` e `Last Stand` sempre integrati ordinatamente in `activeOrder`.
+     - **Stivali (Slot 8)**: Solo se provvisti di tinker attivo d'Ingegneria (*Nitro Boosts*) o fallback su *Enraged Regeneration*.
+  4. **Punto Unico di Inizializzazione Core**: Poiché WeakAuras 3.3.5a non esegue `actions.init` sul gruppo radice container, il bootstrap di `_G.PWHUD_InitCore` e la registrazione di `_G.PWHUD_UpdateUtilityRowPositions` risiedono perentoriamente nel trigger di `05 - Trinket 1 warTank` (`slot == 13`).
+- **Conseguenze**: Riga perfettamente bilanciata, centrata e reattiva in ogni configurazione di gear, zero buchi visivi, zero spreco di CPU e conformità totale alle direttive dell'utente.

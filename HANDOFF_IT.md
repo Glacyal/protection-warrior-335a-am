@@ -218,6 +218,20 @@ protection-warrior-335a-am/
   - Pixel Glow verde smeraldo e tinta vertex ADD quando *Cleave* (`47520`) è accodato.
   - Ritorno all'aspetto copper/bronze neutro quando nessuna abilità è accodata.
 
+### 4.15 Riga Utility Auto-Adattiva a Centratura Dinamica (Parità 1:1 con Fire Mage e Fury Warrior)
+- **Parità Architetturale**: La riga utility inferiore (`05` - `13`, a $y = -45\text{px}$) adotta la medesima architettura a centratura dinamica collaudata in `fire-mage-335a-am` e `fury-warrior-335a-am`.
+- **Algoritmo di Centratura Dinamica**: Il motore calcola `activeOrder` contenente esclusivamente gli item equipaggiati e qualificati, ricentrando tutte le icone a $x = 0$ sotto la barra rabbia da $278\text{px}$ tramite $\text{targetX} = \lfloor (i - \frac{N+1}{2}) \times \text{step} + 0.5 \rfloor$, con scaling dinamico del passo ($25\text{px}-52\text{px}$) e della dimensione ($24\text{px}-28\text{px}$) per $N = 3 \dots 11$ icone attive.
+- **Whitelist Rigorosa degli Oggetti**:
+  1. **Trinket 1 & 2 (Slot 13/14)**: Sempre visibili quando equipaggiati (`itemID > 0`). Database completo ICC/RS/ToC/Ulduar con monitoraggio On-Use, ICD (45s–120s) e procs.
+  2. **Anello (Slot 11/12)**: Rigorosamente limitato ad *Ashen Band of Endless Courage* (Tank Armor proc, Spell ID 72414) o *Ashen Band of Endless Vengeance* (Melee AP proc, Spell ID 72412). Anelli a sole statistiche statiche sono totalmente soppressi.
+  3. **Mantello (Slot 15)**: Rigorosamente limitato a incanti da combattimento con proc attivo (Sartoria: *Swordguard Embroidery* / *Ricamo della Spada* +400 AP, Spell ID 55775). Il paracadute d'Ingegneria (*Flexweave Underlay*) e tutti gli incanti con statistiche statiche (+22 Agi, +16 Def, +225 Armor) sono tassativamente soppressi.
+  4. **Tier Set (08)**: Rigorosamente limitato alla presenza di almeno **4 Pezzi Tier 10** (*Ymirjar Lord's Battlegear* 4P: bonus 20% magic DR durante Shield Block). Soppresso in caso contrario.
+  5. **Incanti Arma (Slot 16)**: Rigorosamente limitati a incanti proccabili (*Blade Ward*, *Blood Draining*, *Mongoose*, *Berserking*). Incanti statici (+30 Stamina Titanguard, +20 Strength, ecc.) sono tassativamente soppressi.
+  6. **Guanti (Slot 10)**: Rigorosamente limitati a tinker attivi d'Ingegneria (*Reticulated Armor Webbing* +885 Armatura o *Acceleratori Ipersonici*).
+  7. **Cooldown Difensivi (`10b`, `11`, `12`)**: `Shield Block` (durata 10s, CD 30s/60s), `Shield Wall` (-60% DR per 12s, glow emergenza <35% HP) e `Last Stand` (+30% vita max per 20s, glow emergenza <35% HP) stabilmente integrati prima degli stivali.
+  8. **Stivali (Slot 8)**: Tinker d'Ingegneria *Acceleratori a Nitro* o fallback su *Enraged Regeneration*.
+- **Bootstrap Inizializzazione Core**: Poiché WeakAuras 3.3.5a non esegue `actions.init` sui nodi `group`, il bootstrap di `_G.PWHUD_InitCore` e `_G.PWHUD_UpdateUtilityRowPositions` risiede tassativamente nel trigger di `05 - Trinket 1 warTank` (`slot == 13`).
+
 ---
 
 ## 5. Glossario & Riferimento Sigle Tecniche Tanking (WotLK 3.3.5a)

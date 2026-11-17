@@ -52,18 +52,18 @@ Positioned on the left side directly above the Stats Panel at $x = -264, -232, -
 - **03 - Commanding Shout warTank**: Displays countdown timer only when expiring ($\le 30\text{s}$) or desaturated with red `OFF` label when neither Commanding Shout nor Warlock *Blood Pact* is present.
 - **04 - Defensive Stance warTank**: Aligned 1:1 with Fury Warrior (completely hidden during correct Defensive Stance; visible with red alert border and `STANCE` subtext only when out-of-stance during combat via `04 - Defensive Stance - OutOfStance warTank`).
 
-### 3. Bottom Utility Row (`05` - `13`, at $y = -45$)
-Adaptive horizontal centering below the rage bar featuring $28 \times 28\text{px}$ icons:
-- **05 - Trinket 1 warTank** & **06 - Trinket 2 warTank**: Slot 13 & 14 auto-detection for tank trinkets (*Sindragosa's Flawless Fang*, *Glyph of Indomitability*, *Corpse Tongue Coin*, *Satrina's Impeding Scarab*, *Corroded Skeleton Key*, etc.).
-- **06b - Ring warTank**: Tank ring tracker (*Ashen Band of Endless Courage*).
-- **07 - Cloak warTank**: Proccable cloak combat enchant tracking (*Swordguard Embroidery* +400 AP; parachute tinker and static enchants like +22 Agility or +16 Defense are automatically suppressed to avoid clutter).
-- **08 - Tier Set warTank**: T10 4P defensive cooldown tracker with *Bloodrage* icon (tracks 10s 20% max HP *Blood Frenzy* shield, Bloodrage recovery cooldown, and suppresses automatically when T10 4P is not equipped).
-- **09 - Enchants warTank**: Main-Hand weapon proc enchant tracker (*Blade Ward*, *Blood Draining*, *Mongoose*, *Berserking*, etc.). Exclusively visible when an enchant capable of proccing is equipped; automatically suppressed and hidden when static enchants (+30 Stamina Titanguard, +25 Hit/+25 Crit Accuracy, Titanium Weapon Chain, +26 Agility, +65 AP) or no enchants are present, with seamless dynamic re-centering of the utility row.
-- **10 - Gloves warTank**: *Reticulated Armor Webbing* (+885 Armor) or *Hyperspeed Accelerators*.
-- **10b - Shield Block warTank**: Shield Block tracking at Y: -45 alongside Shield Wall (10s active duration swipe/countdown, recovery cooldown tracking 30s/60s, and clean ready state).
-- **11 - Shield Wall warTank**: Spell 871 (-60% DR for 12s, duration swipe and CD).
-- **12 - Last Stand warTank**: Spell 12975 (+30% HP for 20s, duration swipe and CD).
-- **13 - Boots warTank**: Engineering *Nitro Boosts* or *Enraged Regeneration*.
+### 3. Bottom Utility Row (`05` - `13`, at $y = -45$) — Dynamic Auto-Centering (1:1 Parity with Fire Mage & Fury Warrior)
+The bottom row adopts the dynamic auto-adapting architecture from the `fire-mage-335a-am` and `fury-warrior-335a-am` suites. Rather than using a static grid (which creates unsightly empty gaps or drifts to the right), the system dynamically filters equipped items and centers all active elements at $x = 0$ directly under the $278\text{px}$ rage bar using $\text{targetX} = \lfloor (i - \frac{N+1}{2}) \times \text{step} + 0.5 \rfloor$, scaling step ($25\text{px}-52\text{px}$) and size ($24\text{px}-28\text{px}$) for $N = 3 \dots 11$ active icons:
+- **05 - Trinket 1 warTank** & **06 - Trinket 2 warTank**: Slot 13 & 14 auto-detection for all WotLK trinkets (*Sindragosa's Flawless Fang*, *Glyph of Indomitability*, *Corpse Tongue Coin*, *Satrina's Impeding Scarab*, *Corroded Skeleton Key*, *Deathbringer's Will*, *STS*, etc.) with On-Use, ICD (45s–120s), and proc duration tracking. Always visible when equipped.
+- **06b - Ring warTank**: Slot 11/12 tracker. **Strictly limited** to *Ashen Band of Endless Courage* (Tank Armor proc, Spell ID 72414) or *Ashen Band of Endless Vengeance* (Melee AP proc, Spell ID 72412). Static stat rings are strictly suppressed and hidden.
+- **07 - Cloak warTank**: Slot 15 tracker. **Strictly limited** to combat proc enchants (Tailoring *Swordguard Embroidery* / *Ricamo della Spada* +400 AP, Spell ID 55775). Parachute tinker (*Flexweave Underlay*) and static enchants (+22 Agility, +16 Defense, +225 Armor) are strictly suppressed to eliminate visual clutter.
+- **08 - Tier Set warTank**: Tier Set tracker. **Strictly limited** to when **4 Pieces of Tier 10** (*Ymirjar Lord's Battlegear* 4P: 20% magic DR during Shield Block) are equipped. Automatically suppressed and omitted from the active row otherwise.
+- **09 - Enchants warTank**: Slot 16 Main-Hand weapon proc enchant tracker (*Blade Ward* parry proc, *Blood Draining* 5-stack with emergency heal, *Mongoose*, *Berserking*). Automatically suppressed and hidden when static enchants (+30 Stamina Titanguard, +20 Strength, etc.) or no enchants are present.
+- **10 - Gloves warTank**: Slot 10 tracker. **Strictly limited** to active engineering tinkers (*Reticulated Armor Webbing* +885 Armor or *Hyperspeed Accelerators*).
+- **10b - Shield Block warTank**: Core defensive ability integrated into the utility row preceding Shield Wall (10s active duration swipe/countdown, recovery cooldown tracking 30s/60s, and clean ready state).
+- **11 - Shield Wall warTank**: Spell 871 (-60% DR for 12s, duration swipe, cooldown tracking, and emergency glow at <35% HP).
+- **12 - Last Stand warTank**: Spell 12975 (+30% HP for 20s, duration swipe, cooldown tracking, and emergency glow at <35% HP).
+- **13 - Boots warTank**: Engineering *Nitro Boosts* tinker or utility fallback on *Enraged Regeneration*.
 
 ### 4. Synchronized 278px Center Bars (`14`, `15`, `16`)
 - **14 - Rage Bar warTank ($278 \times 14\text{px}$ at $y = -20$)**: Precise numeric value centered with 3-tier dynamic color shifts: dark red under 25 points (starvation), deep crimson between 25 and 44 points, and bright amber/gold above 45 points (safe rage-dumping threshold for Heroic Strike / Cleave).

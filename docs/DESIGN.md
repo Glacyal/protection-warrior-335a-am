@@ -85,31 +85,65 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
 - **`Hit`**: Melee Hit Rating; cap speciale all'**8.0%** (263 rating), ridotto al 7.0% con *Heroic Presence* Draenei.
 - **`Exp` (Expertise)**: Competenza/Perizia; **Soft Cap 26** (elimina le schivate del boss dal fronte), **Hard Cap 56** (elimina le parate e scongiura il *Parry-Haste*).
 
-### 4.5 Riga Utility Adattiva (`05 - 13`)
-- **Dimensioni**: Icone standardizzate 28 x 28 px a Y = -45 px.
-- **Composizione**:
-  - `05 - Trinket 1` e `06 - Trinket 2`: Auto-rilevamento slot 13 e 14.
-  - `06b - Ring`: Ashen Band of Endless Courage (proc armor/def).
-  - `07 - Cloak`: Incanto Ingegneria / paracadute o proc ricamo.
-  - `08 - Tier Set`: Bonus Tier 10 Prot (Shield Block).
-  - `09 - Enchants`: Blade Ward, Blood Draining, Mongoose.
-  - `10 - Gloves`: Razzo o armatura Ingegneria.
-  - `11 - Shield Wall`: Cooldown difensivo maggiore (-60% danno, con timer e testo verde `-60%`).
-  - `12 - Last Stand`: Cooldown vitale (+30% salute massima, con timer e testo verde `+30%`).
-  - `13 - Boots`: Turbo Ingegneria o Enraged Regeneration.
+### 4.5 Riga Utility Adattiva (`05 - 13`) — Auto-Centratura Dinamica (Parità 1:1 con Fire Mage e Fury Warrior)
+- **Principio Architetturale**:
+  La riga inferiore (`05` - `13`, posizionata a $y = -45\text{ px}$ sotto la barra della rabbia da $278\text{ px}$) adotta la medesima architettura auto-adattiva implementata e collaudata nelle suite `fire-mage-335a-am` e `fury-warrior-335a-am`. Non si tratta di una riga statica o rigida, ma di una riga a **centratura dinamica naturale**: gli slot non equipaggiati o non qualificati vengono completamente soppressi, e le icone attive vengono ricentrate orizzontalmente attorno a $x = 0$ senza buchi, spazi vuoti o slittamenti asimmetrici a destra.
+- **Formula di Calcolo delle Coordinate Orizzontali**:
+  $$\text{targetX} = \left\lfloor \left( i - \frac{N + 1}{2} \right) \times \text{step} + 0.5 \right\rfloor$$
+  dove $i$ è l'indice dell'elemento qualificato all'interno della lista `activeOrder`, ed $N = \#\text{activeOrder}$ è il numero totale di icone attualmente attive (variabile dinamicamente tra $3$ e $11$).
+- **Tabella di Scaling Dinamico di Passo e Dimensione**:
+  | Numero Icone Attive ($N$) | Passo Orizzontale (`step`) | Dimensione Icona (`targetW`) | Larghezza Totale Riga |
+  | :--- | :--- | :--- | :--- |
+  | **$N \ge 11$** | $25\text{ px}$ | $24 \times 24\text{ px}$ | $\approx 250\text{ px}$ (sotto i $278\text{ px}$ della Rage Bar) |
+  | **$N = 10$** | $27\text{ px}$ | $26 \times 26\text{ px}$ | $\approx 243\text{ px}$ |
+  | **$N = 9$** | $29\text{ px}$ | $28 \times 28\text{ px}$ | $\approx 232\text{ px}$ |
+  | **$N = 8$** | $32\text{ px}$ | $28 \times 28\text{ px}$ | $\approx 224\text{ px}$ |
+  | **$N = 7$** | $38\text{ px}$ | $28 \times 28\text{ px}$ | $\approx 228\text{ px}$ |
+  | **$N = 6$** | $44\text{ px}$ | $28 \times 28\text{ px}$ | $\approx 220\text{ px}$ |
+  | **$N = 5$** | $48\text{ px}$ | $28 \times 28\text{ px}$ | $\approx 192\text{ px}$ |
+  | **$N \le 4$** | $52\text{ px}$ | $28 \times 28\text{ px}$ | $\le 156\text{ px}$ |
+
+- **Specifiche Tassative di Filtraggio degli Oggetti (Whitelist Rigorosa)**:
+  1. **Trinket 1 & 2 (`05 - Trinket 1 warTank` & `06 - Trinket 2 warTank`)**:
+     - *Slot 13 e 14*. Sempre visibili quando equipaggiati. Tracciano durata attiva, tempo di recupero on-use ed Internal Cooldown (ICD) da 45s a 120s (database completo ICC/RS/ToC/Ulduar/Naxxramas).
+  2. **Anello (`06b - Ring warTank`)**:
+     - *Slot 11/12*. **SOLO ed esclusivamente** se equipaggiato con:
+       - *Ashen Band of Endless Courage* (anello tank reputazione Ashen Verdict con proc +Armor / Defensivo, Spell ID `72414`/`72412`).
+       - *Ashen Band of Endless Vengeance* (anello melee DPS con proc +480 AP, 60s ICD).
+     - *Soppressione Totale*: qualsiasi anello a sole statistiche passive statiche viene ignorato ed escluso da `activeOrder`.
+  3. **Mantello (`07 - Cloak warTank`)**:
+     - *Slot 15*. **SOLO ed esclusivamente** se provvisto di incanto da combattimento con proc attivo (Sartoria: *Swordguard Embroidery* / *Ricamo della Spada*, Spell ID `55775`, ID Incanto `3730`).
+     - *Soppressione Tassativa*: il paracadute d'Ingegneria (*Flexweave Underlay*) e tutti gli incanti con statistiche statiche (+22 Agility, +16 Defense, +225 Armor) sono **rigorosamente soppressi e invisibili**.
+  4. **Tier Set (`08 - Tier Set warTank`)**:
+     - **SOLO ed esclusivamente** se il giocatore indossa almeno **4 Pezzi Tier 10** (*Ymirjar Lord's Battlegear* 4P: bonus *Shield Block* che riduce il danno magico subito del 20% per 10s, Spell ID `70844`).
+     - *Soppressione Totale*: con 0, 1, 2 o 3 pezzi T10 l'icona è completamente nascosta e rimossa da `activeOrder`.
+  5. **Incanti Arma (`09 - Enchants warTank`)**:
+     - *Slot 16*. **SOLO ed esclusivamente** se l'arma principale monta un incanto proccabile difensivo o offensivo (*Blade Ward* per parry proc, *Blood Draining* con 5 stack e cura automatica d'emergenza <35% HP, *Mongoose*, *Berserking*).
+     - *Soppressione Totale*: incanti statici (+30 Stamina Titanguard, +20 Strength Potency, ecc.) sono ignorati.
+  6. **Guanti (`10 - Gloves warTank`)**:
+     - *Slot 10*. **SOLO ed esclusivamente** se provvisti di tinker attivo d'Ingegneria (*Reticulated Armor Webbing* per +885 Armor attiva o *Hyperspeed Accelerators*).
+  7. **Cooldown Difensivi Guerriero (`10b - Shield Block`, `11 - Shield Wall`, `12 - Last Stand`)**:
+     - Fissi ed integrati armonicamente all'interno di `activeOrder` prima degli stivali:
+       - `10b - Shield Block warTank`: durata attiva 10s con bonus block rating/value e CD di 30s/60s.
+       - `11 - Shield Wall warTank`: cooldown maggiore di riduzione del danno subito (-60%), con durata attiva di 12s, ricarica e glow di emergenza a <35% HP.
+       - `12 - Last Stand warTank`: cooldown vitale di sopravvivenza (+30% salute massima per 20s), con ricarica e glow di emergenza a <35% HP.
+  8. **Stivali (`13 - Boots warTank`)**:
+     - *Slot 8*. **SOLO** se provvisti di tinker attivo d'Ingegneria (*Nitro Boosts* / Acceleratori a Nitro) oppure fallback di utilità su *Enraged Regeneration*.
 
 ### 4.6 Allerte Centrali & Rilevamento Postura Errata (`17 - Alerts warTank` & `04 - Defensive Stance`)
-- **Gruppo Allerte Centrali (`17 - Alerts warTank`)**:
-  - Posizione: X = 0, Y = +78 px (ancorato al centro HUD sopra la Castbar).
+- **Filosofia Zero-Clutter Centrale**:
+  Coerentemente con gli standard di massima pulizia visiva delle suite WotLK (modello Fury Warrior e Fire Mage), al centro dello schermo non compare alcun banner testuale per abilità ordinarie o proc rotazionali.
+  - **Banner Testuali Eliminati**: `Alert - Sword and Board`, `Alert - Boss Enraged` e `Alert - Wrong Stance` sono stati **definitivamente rimossi** dal gruppo `17 - Alerts warTank`.
+  - **Proc Rotazionali in Gruppo Dedicato (`01 - Procs warTank`)**: *Sword and Board*, *Revenge Ready*, *Shield Slam* e i debuff su target vivono esclusivamente come icone compatte con timer e bordi dedicati sopra la barra di cast.
+- **Allarmi Critici di Sopravvivenza Residui (`17 - Alerts warTank`)**:
+  - Posizione: X = 0, Y = +78 px (centro visivo, sopra la Castbar).
   - Componenti:
-    - `Alert - Sword and Board`: `|cFFFFFF00SHIELD SLAM READY!|r` (20pt, suono *Drums*).
-    - `Alert - Emergency CD`: `|cFFFF1010CRIT HP (%.0f%%): USE %s!|r` (18pt, prioritizzazione Shield Wall / Last Stand).
-    - `Alert - Kick Now`: `|cFF00FFFFINTERRUPT: %s!|r` (16pt, Ciano).
-    - `Alert - Boss Enraged`: `|cFFFF0000BOSS ENRAGED! POP CD!|r` (18pt, Rosso vivo).
-    - `Alert - Wrong Stance`: `|cFFFF1010>> DEFENSIVE STANCE REQUIRED! <<|r` (20pt, Rosso vivido lampeggiante con allarme audio *RaidWarning.ogg* a $y = 64$ px, attivo solo se `UnitAffectingCombat("player") and GetShapeshiftForm() ~= 2`).
-- **Indicatore Icona Postura Difensiva (`04 - Defensive Stance warTank`)**:
-  - Posizione: X = -158 px, Y = 0 px (28x28px).
-  - Nascosta in postura corretta (zero visual clutter); attiva esclusivamente in combattimento fuori da Stance 2 con Pixel Glow rosso e label `STANCE` (`04 - Defensive Stance - OutOfStance warTank`).
+    - `Alert - Emergency CD`: `|cFFFF1010CRIT HP (%.0f%%): USE %s!|r` (18pt, prioritizzazione salvavita Shield Wall / Last Stand / Shield Block / Pot quando il tank è sotto il 35% HP).
+    - `Alert - Kick Now`: `|cFF00FFFFINTERRUPT: %s!|r` (16pt, ciano brillante quando il target ostile sta canalizzando o lanciando un'abilità interrompibile).
+- **Indicatore Compatto Postura Difensiva Errata (`04 - Defensive Stance warTank`)**:
+  - Posizione: X = -158 px, Y = 0 px (icona 28x28px, allineata alle shout e al pannello statistiche).
+  - In postura corretta (*Defensive Stance*, Stance 2): **completamente invisibile** (zero distrazioni in combattimento).
+  - Fuori postura difensiva in combattimento: si attiva istantaneamente con icona `04 - Defensive Stance - OutOfStance warTank`, pixel glow rosso perentorio e label visiva `STANCE`. Event-driven su `PLAYER_REGEN_DISABLED`, `PLAYER_REGEN_ENABLED` e `UPDATE_SHAPESHIFT_FORM`.
 
 ### 4.7 Tracker Debuff Armatura (`19 - Sunder Armor Tracker warTank`)
 - **Dimensioni**: 32 x 32 px

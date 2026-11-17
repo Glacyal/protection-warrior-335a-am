@@ -218,6 +218,20 @@ protection-warrior-335a-am/
   - Emerald Green pixel glow and ADD vertex tint when *Cleave* (`47520`) is queued.
   - Returns to neutral warrior copper/bronze static appearance when no ability is queued.
 
+### 4.14 Dynamic Auto-Adapting Utility Row (1:1 Parity with Fire Mage & Fury Warrior)
+- **Architectural Parity**: The bottom utility row (`05` - `13`, at $y = -45\text{px}$) implements the identical dynamic centering engine used in `fire-mage-335a-am` and `fury-warrior-335a-am`.
+- **Dynamic Centering Algorithm**: The engine dynamically evaluates `activeOrder` containing exclusively equipped and qualified items, positioning all active frames centered at $x = 0$ under the $278\text{px}$ rage bar via $\text{targetX} = \lfloor (i - \frac{N+1}{2}) \times \text{step} + 0.5 \rfloor$, dynamically scaling step ($25\text{px}-52\text{px}$) and frame width ($24\text{px}-28\text{px}$) for $N = 3 \dots 11$ active icons.
+- **Strict Item Whitelist Enforcement**:
+  1. **Trinkets 1 & 2 (Slot 13/14)**: Always visible when equipped (`itemID > 0`). Full database of WotLK mitigation and DPS trinkets with On-Use, ICD (45s–120s), and proc duration tracking.
+  2. **Ring (Slot 11/12)**: Strictly limited to *Ashen Band of Endless Courage* (Tank Armor proc, Spell ID 72414) or *Ashen Band of Endless Vengeance* (Melee AP proc, Spell ID 72412). Static stat rings are completely suppressed.
+  3. **Cloak (Slot 15)**: Strictly limited to combat proc enchants (Tailoring *Swordguard Embroidery* / *Ricamo della Spada* +400 AP, Spell ID 55775). Parachute tinker (*Flexweave Underlay*) and static enchants (+22 Agi, +16 Def, +225 Armor) are strictly suppressed.
+  4. **Tier Set (08)**: Strictly limited to when **4 Pieces of Tier 10** (*Ymirjar Lord's Battlegear* 4P: bonus 20% magic DR during Shield Block) are equipped. Suppressed otherwise.
+  5. **Weapon Enchants (Slot 16)**: Strictly limited to proccable weapon enchants (*Blade Ward*, *Blood Draining*, *Mongoose*, *Berserking*). Static enchants (+30 Stamina Titanguard, +20 Strength, etc.) are strictly suppressed.
+  6. **Gloves (Slot 10)**: Strictly limited to active engineering tinkers (*Reticulated Armor Webbing* +885 Armor or *Hyperspeed Accelerators*).
+  7. **Defensive Cooldowns (`10b`, `11`, `12`)**: `Shield Block` (10s duration, 30s/60s CD), `Shield Wall` (-60% DR for 12s, emergency glow <35% HP), and `Last Stand` (+30% max HP for 20s, emergency glow <35% HP) are permanently integrated into the active row preceding boots.
+  8. **Boots (Slot 8)**: Active engineering *Nitro Boosts* tinker or utility fallback on *Enraged Regeneration*.
+- **Core Initialization Bootstrap**: Due to WeakAuras 3.3.5a omitting execution of `actions.init` on container groups, global bootstrap (`_G.PWHUD_InitCore` and `_G.PWHUD_UpdateUtilityRowPositions`) is strictly located within the trigger of `05 - Trinket 1 warTank` (`slot == 13`).
+
 ---
 
 ## 5. Technical Glossary & Tanking Acronyms (WotLK 3.3.5a)

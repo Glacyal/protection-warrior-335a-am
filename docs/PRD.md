@@ -52,17 +52,19 @@ La suite è articolata in 20 nodi controllati direttamente sotto la radice `Clas
 - `03 - Commanding Shout`: Grido raccomandato primario del tank (+salute). Soppresso da Blood Pact.
 - `04 - Defensive Stance`: Controllo postura. Se in combattimento il tank si trova fuori dalla Postura Difensiva (Stance 2), si attiva un allarme rosso con dicitura `STANCE` e glow perentorio.
 
-### Moduli 05 - 13 — Utility Row (Y = -45 px, 10 Icone)
-- `05 - Trinket 1 warTank` (Slot 13): Rileva monili attivi/procs con cooldown numerico.
-- `06 - Trinket 2 warTank` (Slot 14): Rileva monili attivi/procs con cooldown numerico.
-- `06b - Ring warTank`: Ashen Band of Endless Courage (Slot 11/12).
-- `07 - Cloak warTank`: Paracadute o incanto mantello (Slot 15).
-- `08 - Tier Set warTank`: Bonus Tier 10 Protection.
-- `09 - Enchants warTank`: Monitoraggio incantesimi arma difensivi (Blade Ward, Blood Draining, Mongoose).
-- `10 - Gloves warTank`: Abilità d'Ingegneria su guanti (Slot 10).
-- `11 - Shield Wall`: Cooldown difensivo principale (-60% danno, con timer e testo verde `-60%`).
-- `12 - Last Stand`: Cooldown vitale (+30% vita per 20s, con timer e testo verde `+30%`).
-- `13 - Boots warTank`: Nitro Boosts (Slot 8) o Enraged Regeneration.
+### Moduli 05 - 13 — Utility Row Auto-Adattiva a Centratura Dinamica (Y = -45 px, da 3 a 11 Icone)
+Parità architetturale 1:1 con `fire-mage-335a-am` e `fury-warrior-335a-am`: ricentratura automatica orizzontale a $x = 0$ sotto la barra rabbia da $278\text{ px}$ senza buchi visivi né sbilanciamenti a destra. Include una whitelist selettiva rigorosa per gli item equipaggiati:
+- `05 - Trinket 1 warTank` (Slot 13): Sempre visibile se equipaggiato (On-Use, ICD 45s–120s, Procs).
+- `06 - Trinket 2 warTank` (Slot 14): Sempre visibile se equipaggiato (On-Use, ICD 45s–120s, Procs).
+- `06b - Ring warTank` (Slot 11/12): **SOLO** se *Ashen Band of Endless Courage* (Tank Armor proc) o *Endless Vengeance* (Melee AP proc, 60s ICD). Soppresso per anelli statici.
+- `07 - Cloak warTank` (Slot 15): **SOLO** se provvisto di incanto da combattimento proccabile (*Swordguard Embroidery* / Ricamo della Spada). Paracadute e incanti a statistiche statiche (+22 Agi, +16 Def, +225 Armor) sono **tassativamente soppressi**.
+- `08 - Tier Set warTank`: **SOLO** se attivo il bonus 4 Pezzi Tier 10 (*Ymirjar Lord's Battlegear* 4P: bonus Shield Block -20% danno subito). Soppresso con 0, 1, 2 o 3 pezzi.
+- `09 - Enchants warTank` (Slot 16): **SOLO** se incanti arma proccabili (*Blade Ward*, *Blood Draining* 5 cariche + heal d'emergenza, *Mongoose*, *Berserking*). Soppresso per incanti statici.
+- `10 - Gloves warTank` (Slot 10): **SOLO** se provvisti di tinker attivo d'Ingegneria (*Reticulated Armor Webbing* o *Hyperspeed Accelerators*).
+- `10b - Shield Block warTank`: Cooldown difensivo attivo e ricarica (durata 10s, CD 30s/60s). Fissato in riga prima di Shield Wall.
+- `11 - Shield Wall warTank`: Cooldown difensivo principale (-60% danno subito per 12s, ricarica e glow emergenza <35% HP).
+- `12 - Last Stand warTank`: Cooldown vitale di sopravvivenza (+30% vita massima per 20s, ricarica e glow emergenza <35% HP).
+- `13 - Boots warTank` (Slot 8): Tinker attivo d'Ingegneria (*Nitro Boosts*) o fallback di utilità su *Enraged Regeneration*.
 
 ### Moduli 14, 15, 16 — Barre Centrali Sincronizzate (278 px)
 - `14 - Rage Bar` (278x14 px, Y = -20 px): Rosso scuro a < 45 Rage, Ambra dorato a >= 45 Rage.
@@ -70,8 +72,8 @@ La suite è articolata in 20 nodi controllati direttamente sotto la radice `Clas
 - `16 - Castbar warTank` (278x20 px, Y = +8 px): Barra di lancio target con Kick Advisor integrato (Ciano interrompibile vs Grigio non interrompibile, e raccomandazione Shield Bash / Pummel / Stun).
 
 ### Moduli 17, 18, 19 — Alerts, Stats & Sunder Tracker
-- `17 - Alerts warTank` (Y = +78 px): Testo 20pt ad alto impatto per avvisi critici di interrupt, emergenza difensiva e notifica `>> DEFENSIVE STANCE REQUIRED! <<` in combattimento.
-- `18 - Stats Panel warTank` (88x60 px a X = -190, Y = -45): Pannello difensivo a 5 righe stile Fury Warrior (Def 540 Cap, Armor DR%, CTC 102.4%, Block % & SBV, Hit & Exp).
+- `17 - Alerts warTank` (Y = +78 px): Testo 18-20pt ad alto impatto riservato unicamente ad avvisi critici di interrupt (`Alert - Kick Now`) ed emergenza difensiva estrema sotto il 35% HP (`Alert - Emergency CD`). Zero Clutter: banner testuali invasivi eliminati.
+- `18 - Stats Panel warTank` (126x60 px a X = -216, Y = -49): Pannello difensivo a 5 righe stile Fury Warrior (Def 540 Cap, Armor DR%, CTC 102.4%, Block % & SBV, Hit & Exp).
 - `19 - Sunder Armor Tracker` (32x32 px a X = +160, Y = -7): Monitoraggio cariche (1-5) e durata Sunder Armor o Expose Armor.
 
 ---
@@ -82,11 +84,11 @@ La suite è articolata in 20 nodi controllati direttamente sotto la radice `Clas
 - La suite di WeakAuras deve attivarsi **soltanto** se il giocatore appartiene alla classe `WARRIOR` e possiede il talento **[Devastate]** (Indice WeakAuras `103`, Tab 3 Protezione, Posizione 23).
 - Deve disattivarsi automaticamente in presenza di spec Arms o Fury o personaggi non guerrieri.
 
-### FR-STANCE-01: Doppio Sistema di Rilevamento Postura Errata in Combat
+### FR-STANCE-01: Rilevamento Postura Errata in Combat (Zero-Clutter)
 - Se il guerriero entra in combattimento (`UnitAffectingCombat("player") == true`) con postura diversa da Difensiva (`GetShapeshiftForm() ~= 2`):
-  1. L'icona `04 - Defensive Stance - Warning` attiva un Pixel Glow rosso ad alto contrasto con scritta `STANCE`.
-  2. L'aura centrale `Alert - Wrong Stance` proietta un avviso testuale centrale `>> DEFENSIVE STANCE REQUIRED! <<` a $y = +64$ px accompagnato dal suono `RaidWarning.ogg`.
-  3. L'avviso scompare immediatamente al passaggio in Postura Difensiva o all'uscita dal combattimento.
+  1. L'icona compatta `04 - Defensive Stance - OutOfStance warTank` (a $x = -158, y = 0$) attiva un Pixel Glow rosso perentorio con scritta `STANCE`.
+  2. L'icona scompare istantaneamente al passaggio in Postura Difensiva o all'uscita dal combattimento.
+  3. Per preservare la visibilità di gioco (stile Fury Warrior e Fire Mage), nessun banner testuale invasivo centrale viene proiettato a schermo.
 
 ### FR-STATS-01: Motore Statistiche Tank Stile Fury Warrior & Buff/Debuff Non-Stacking
 - Il pannello statistiche `18 - Stats Panel warTank` deve visualizzare 5 righe con etichette bianche `|cFFFFFFFFLabel:|r <ValoreColorato>`:

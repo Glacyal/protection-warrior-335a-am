@@ -116,6 +116,28 @@ Questo documento raccoglie la memoria tecnica, le particolarità delle API WotLK
      - Tutte le funzioni di scansione slot (`_G.PWHUD_CheckSlotEquipped`, `_G.PWHUD_CheckSlot`, `_G.PWHUD_UpdateUtilityRowPositions`, `_G.PWHUD_CheckTargetDebuff`, `_G.PWHUD_CheckTankBusters`) vengono registrate istantaneamente in `_G`.
      - Tutti i trinket ricompaiono e la riga si auto-adatta fluidamente centrandosi sotto la barra rabbia.
 
+### 2.5 Specifica Tassativa della Riga Utility Auto-Adattiva e Filtri Item Proc-Only (Parità 1:1 con Fire Mage e Fury Warrior)
+- **Direttiva Utente Tassativa**:
+  "I file interessati dentro DOCS devono ricordarsi che quello che sta sotto come i due trinket, l'eventuale anello, mantello, solo se ha le specifiche da me indicate, e i cd difensivi devono adattarsi dinamicamente così come fatto con il mage e il war dps."
+- **Contratto Architetturale della Riga Utility (`05` - `13`, a $y = -45\text{ px}$)**:
+  1. **Auto-Adattamento Dinamico Naturale (Parità 1:1 con Fire Mage e Fury Warrior)**:
+     - La riga non è una griglia statica: non deve MAI presentare buchi vuoti tra le icone o slittare a destra quando un elemento è assente o soppresso.
+     - Tutte le icone qualificate vengono raccolte in `activeOrder` e centrate orizzontalmente a $x = 0$ sotto la barra rabbia ($278\text{ px}$) tramite la formula:
+       $$\text{targetX} = \left\lfloor \left( i - \frac{N + 1}{2} \right) \times \text{step} + 0.5 \right\rfloor$$
+     - Il passo (`step`) e la larghezza icona (`targetW`) scalano dinamicamente in base alla cardinalità $N$ ($3 \le N \le 11$):
+       $N \ge 11 \implies 25\text{px} / 24\text{px}$, $N = 10 \implies 27\text{px} / 26\text{px}$, $N = 9 \dots 5 \implies 29\text{px} \dots 48\text{px} / 28\text{px}$, $N \le 4 \implies 52\text{px} / 28\text{px}$.
+  2. **Whitelist Rigorosa di Filtraggio degli Oggetti**:
+     - **Trinket 1 & 2 (Slot 13 e 14)**: Sempre visibili quando equipaggiati (`itemID > 0`). Tracciamento durata, CD on-use e ICD (45s–120s) da database ICC/RS/ToC/Ulduar.
+     - **Anello (Slot 11/12)**: **SOLO ed esclusivamente** in presenza di *Ashen Band of Endless Courage* (Tank Armor proc, Spell ID 72414) o *Ashen Band of Endless Vengeance* (Melee AP proc, Spell ID 72412). Qualsiasi anello con sole statistiche statiche deve essere tassativamente soppresso.
+     - **Mantello (Slot 15)**: **SOLO ed esclusivamente** se provvisto di incanto da combattimento con proc attivo (Sartoria: *Swordguard Embroidery* / *Ricamo della Spada*, Spell ID 55775, ID Incanto 3730). Il paracadute d'Ingegneria (*Flexweave Underlay*) e tutti gli incanti con statistiche passive statiche (+22 Agi, +16 Def, +225 Armor) sono **tassativamente soppressi e invisibili**.
+     - **Tier Set (08)**: **SOLO ed esclusivamente** se il giocatore equipaggia almeno 4 Pezzi Tier 10 (*Ymirjar Lord's Battlegear* 4P: bonus *Shield Block* magico -20% danno subito). Soppresso con 0, 1, 2 o 3 pezzi.
+     - **Incanti Arma (Slot 16)**: **SOLO ed esclusivamente** se l'arma monta incanti proccabili difensivi o offensivi (*Blade Ward*, *Blood Draining* 5 cariche + heal d'emergenza <35% HP, *Mongoose*, *Berserking*). Soppresso per incanti statici (+30 Stamina Titanguard, +20 Strength Potency, ecc.).
+     - **Guanti (Slot 10)**: **SOLO ed esclusivamente** se provvisti di tinker attivo d'Ingegneria (*Reticulated Armor Webbing* o *Hyperspeed Accelerators*).
+     - **Cooldown Difensivi Guerriero (`10b`, `11`, `12`)**: `Shield Block` (durata 10s e CD 30s/60s), `Shield Wall` (-60% danno, durata 12s, CD e glow emergenza <35% HP) e `Last Stand` (+30% vita max, durata 20s, CD e glow emergenza <35% HP) sono permanentemente integrati nella sequenza attiva prima degli stivali e partecipano alla centratura dinamica.
+     - **Stivali (Slot 8)**: Provvisti di tinker attivo d'Ingegneria (*Nitro Boosts*) o fallback su *Enraged Regeneration*.
+  3. **Punto Unico di Inizializzazione Core**:
+     - `_G.PWHUD_InitCore` e la definizione di `_G.PWHUD_UpdateUtilityRowPositions` devono vivere nel trigger di `05 - Trinket 1 warTank` (`slot == 13`), perché `actions.init` sul gruppo radice non viene mai eseguito da WeakAuras 3.3.5a.
+
 ---
 
 ## 3. Catalogo Debuff Letali dei Boss Monitorati

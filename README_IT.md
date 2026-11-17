@@ -52,18 +52,18 @@ Posizionati a sinistra direttamente sopra il pannello statistiche a $x = -264, -
 - **03 - Commanding Shout warTank**: Compare con timer solo se in scadenza ($\le 30\text{s}$) o desaturato con scritta `OFF` se manca sia Commanding Shout che *Blood Pact* dell'Imp.
 - **04 - Defensive Stance warTank**: Allineato al modello Fury Warrior (invisibile durante la corretta Defensive Stance; compare con allerta rossa e label `STANCE` solo fuori postura in combattimento tramite `04 - Defensive Stance - OutOfStance warTank`).
 
-### 3. Riga Utility Inferiore (`05` - `13`, a $y = -45$)
-Centratura automatica orizzontale adattiva sotto la barra della rabbia con icone $28 \times 28\text{px}$:
-- **05 - Trinket 1 warTank** & **06 - Trinket 2 warTank**: Slot 13 e 14 con rilevamento automatico monili tank (*Sindragosa's Flawless Fang*, *Glyph of Indomitability*, *Corpse Tongue Coin*, *Satrina's Impeding Scarab*, *Corroded Skeleton Key*, ecc.).
-- **06b - Ring warTank**: Rilevamento anello tanking (*Ashen Band of Endless Courage*).
-- **07 - Cloak warTank**: Tracciamento incanti mantello con proc da combattimento (*Ricamo della Spada* +400 AP; il paracadute di Ingegneria e gli incanti statici come +22 Agilità o +16 Difesa vengono automaticamente soppressi per pulizia visiva).
-- **08 - Tier Set warTank**: Cooldown difensivo T10 4P con icona *Bloodrage* (traccia lo scudo da 10s pari al 20% di HP di *Blood Frenzy*, il tempo di ricarica di Bloodrage, e si nasconde automaticamente se non si indossa il 4P).
-- **09 - Enchants warTank**: Monitoraggio incanti arma proccabili (*Blade Ward*, *Blood Draining*, *Mongoose*, *Berserking*, ecc.). Visibile esclusivamente quando l'arma equipaggia un incanto che può realmente proccare; soppresso e nascosto automaticamente in presenza di incanti statici (+30 Stamina Titanguard, +25 Hit/+25 Crit Accuracy, Titanium Weapon Chain, +26 Agility, +65 AP) o nessun incanto, con ricalcolo e ricentratura automatica della barra utility.
-- **10 - Gloves warTank**: *Reticulated Armor Webbing* (+885 Armatura) o *Acceleratori Ipersonici*.
-- **10b - Shield Block warTank**: Tracciamento Shield Block a Y: -45 a fianco di Shield Wall (durata attiva 10s con swipe/timer, ricarica cooldown 30s/60s e stato pronto pulito).
-- **11 - Shield Wall warTank**: Spell 871 (-60% DR per 12s, swipe durata e CD).
-- **12 - Last Stand warTank**: Spell 12975 (+30% HP per 20s, swipe durata e CD).
-- **13 - Boots warTank**: *Acceleratori a Nitro* (Ingegneria) o *Enraged Regeneration*.
+### 3. Riga Utility Inferiore (`05` - `13`, a $y = -45$) — Auto-Centratura Dinamica (Parità 1:1 con Fire Mage e Fury Warrior)
+La riga inferiore adotta la medesima architettura auto-adattiva implementata nelle suite `fire-mage-335a-am` e `fury-warrior-335a-am`. Invece di una griglia statica (che produrrebbe buchi vuoti o derive verso destra), il sistema filtra gli oggetti equipaggiati e ricentra tutte le icone attive a $x = 0$ sotto la barra rabbia da $278\text{px}$ tramite la formula $\text{targetX} = \lfloor (i - \frac{N+1}{2}) \times \text{step} + 0.5 \rfloor$, scalando passo ($25\text{px}-52\text{px}$) e dimensioni ($24\text{px}-28\text{px}$) per $N = 3 \dots 11$ elementi attivi:
+- **05 - Trinket 1 warTank** & **06 - Trinket 2 warTank**: Slot 13 e 14 con rilevamento automatico di tutti i monili WotLK (*Sindragosa's Flawless Fang*, *Glyph of Indomitability*, *Corpse Tongue Coin*, *Satrina's Impeding Scarab*, *Corroded Skeleton Key*, *Deathbringer's Will*, *STS*, ecc.) con tracciamento di On-Use, ICD (45s–120s) e durata proc. Sempre visibili se equipaggiati.
+- **06b - Ring warTank**: Slot 11/12. **SOLO ed esclusivamente** per *Ashen Band of Endless Courage* (Tank Armor proc, Spell ID 72414) o *Ashen Band of Endless Vengeance* (Melee AP proc, Spell ID 72412). Anelli con sole statistiche statiche sono rigorosamente soppressi e nascosti.
+- **07 - Cloak warTank**: Slot 15. **SOLO ed esclusivamente** per incanti da combattimento con proc attivo (Sartoria: *Swordguard Embroidery* / *Ricamo della Spada* +400 AP, Spell ID 55775). Il paracadute d'Ingegneria (*Flexweave Underlay*) e tutti gli incanti con statistiche passive statiche (+22 Agilità, +16 Difesa, +225 Armatura) sono tassativamente soppressi per preservare la pulizia visiva.
+- **08 - Tier Set warTank**: **SOLO ed esclusivamente** se il giocatore indossa almeno **4 Pezzi Tier 10** (*Ymirjar Lord's Battlegear* 4P: bonus *Shield Block* magico -20% danno subito). Soppresso ed escluso dalla riga in caso contrario.
+- **09 - Enchants warTank**: Slot 16. Monitoraggio incanti arma proccabili difensivi/offensivi (*Blade Ward*, *Blood Draining* a 5 cariche con cura d'emergenza, *Mongoose*, *Berserking*). Soppresso e nascosto automaticamente in presenza di incanti statici (+30 Stamina Titanguard, +20 Strength, ecc.) o nessun incanto.
+- **10 - Gloves warTank**: Slot 10. **SOLO ed esclusivamente** se provvisti di tinker attivo d'Ingegneria (*Reticulated Armor Webbing* +885 Armatura o *Acceleratori Ipersonici*).
+- **10b - Shield Block warTank**: Abilità difensiva fondamentale stabilmente integrata nella riga utility prima di Shield Wall (durata attiva 10s con swipe/timer, ricarica cooldown 30s/60s e stato pronto pulito).
+- **11 - Shield Wall warTank**: Spell 871 (-60% DR per 12s, swipe durata, tempo di ricarica e glow di emergenza a <35% HP).
+- **12 - Last Stand warTank**: Spell 12975 (+30% HP per 20s, swipe durata, tempo di ricarica e glow di emergenza a <35% HP).
+- **13 - Boots warTank**: Tinker d'Ingegneria *Acceleratori a Nitro* (Slot 8) o fallback di utilità su *Enraged Regeneration*.
 
 ### 4. Barre Centrali Sincronizzate a 278px (`14`, `15`, `16`)
 - **14 - Rage Bar warTank ($278 \times 14\text{px}$ a $y = -20$)**: Valore numerico esatto al centro (%p) con colorazione a 3 stadi: rosso scuro sotto 25 punti (starvation), crimson pieno tra 25 e 44 punti e ambra/oro sopra i 45 punti (soglia scarico sicuro Heroic Strike/Cleave).

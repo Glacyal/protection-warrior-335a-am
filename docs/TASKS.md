@@ -542,3 +542,32 @@
     - Suite parallela: 10/10 test superati in 0.49s.
     - Aggiornata memoria tecnica in `docs/MEMORY.md` (Sezione 2.4).
     - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 33: Allineamento Globale Documentazione DOCS su Riga Utility Auto-Adattiva e Specifiche Filtri Item (Parità 1:1 con Fire Mage e Fury Warrior)**:
+  - [x] **Direttiva Utente**:
+    - "I file interessati dentro DOCS devono ricordarsi che quello che sta sotto come i due trinket, l'eventuale anello, mantello, solo se ha le specifiche da me indicate, e i cd difensivi devono adattarsi dinamicamente così come fatto con il mage e il war dps."
+  - [x] **Allineamento File di Documentazione Eseguito**:
+    - **`docs/ARCHITECTURE.md`**:
+      - Aggiornata la tabella riassuntiva dei componenti per la riga utility (`05` - `13`).
+      - Aggiunta la Sezione 4.1 dedicata con descrizione dell'architettura auto-adattiva a centratura dinamica naturale, formula matematica $X$ ($\lfloor (i - rac{N+1}{2}) 	imes 	ext{step} + 0.5 floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$, larghezza $24	ext{px} \dots 28	ext{px}$) e specifiche di filtraggio whitelist per ogni slot.
+      - Bonificata la Sezione 7: rimosso il riferimento al banner `Alert - Wrong Stance` a favore della sola icona compatta `04 - Defensive Stance - OutOfStance warTank`.
+    - **`docs/DESIGN.md`**:
+      - Aggiornata la Sezione 4.5 con la formula di centratura orizzontale, la tabella di passo/dimensione e le regole tassative per trinket, anello (solo Ashen Band), mantello (solo ricamo Swordguard, soppressione totale del paracadute e statici), tier set (solo T10 4P), incanti arma (solo proc, statici soppressi), guanti (solo tinker), cooldown difensivi (fissi e integrati) e stivali.
+      - Aggiornata la Sezione 4.6 con la filosofia Zero-Clutter ed eliminazione definitiva dei banner centrali `Alert - Sword and Board`, `Alert - Boss Enraged` e `Alert - Wrong Stance`.
+    - **`docs/DECISIONS.md`**:
+      - Aggiornato ADR-012 (filosofia Zero-Clutter su allarme postura con eliminazione del banner testuale).
+      - Redatto e integrato **ADR-014**: "Architettura Riga Utility Auto-Adattiva a Centratura Dinamica con Filtri Selettivi Proc-Only (Parità 1:1 con Fire Mage e Fury Warrior)".
+    - **`docs/PRD.md`**:
+      - Aggiornata la specifica dei Moduli 05 - 13 per la riga utility dinamica e la whitelist selettiva rigorosa.
+      - Aggiornati i requisiti `FR-STANCE-01` e `17 - Alerts warTank` (zero banner invasivi per abilità rotazionali o postura).
+    - **`docs/MEMORY.md`**:
+      - Aggiunta la **Sezione 2.5**: "Specifica Tassativa della Riga Utility Auto-Adattiva e Filtri Item Proc-Only (Parità 1:1 con Fire Mage e Fury Warrior)".
+    - **`README.md` & `README_IT.md`**:
+      - Formalizzata la riga utility dinamica ad auto-centratura e dettagliate le regole di whitelist (parità 1:1 bilingue).
+    - **`HANDOFF.md` & `HANDOFF_IT.md`**:
+      - Aggiornato lo stato dell'architettura della riga utility e registrata la conformità alle direttive utente.
+  - [x] **Verifica e Compilazione**:
+    - `python generate.py`: compilazione eseguita con successo.
+    - `python scripts/sync_docs.py`: documentazione web sincronizzata.
+    - `python tests/run_parallel_tests.py`: 10/10 test superati.
+    - Esecuzione CP (Commit & Push su `origin/master`).
