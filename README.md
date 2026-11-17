@@ -85,7 +85,7 @@ Minimalist alert group positioned at $y = 78$ directly above the procs, strictly
 *(Note: All rotational and intrusive text banners—including Shield Slam Ready, Boss Enraged, and Wrong Stance—have been completely removed to preserve zero center-screen clutter; rotational procs live exclusively as compact icons in `01 - Procs warTank`)*.
 
 ### 6. Protection Warrior Tanking Stats Panel (`18 - Stats Panel warTank`)
-Compact $88 \times 60\text{px}$ frame at $x = -190, y = -45$ (left of the utility row) featuring clean white labels `Label:` and color-coded values with dynamic thresholds:
+Compact $96 \times 60\text{px}$ frame at $x = -192, y = -45$ (left of the utility row) featuring clean white labels `Label:` and color-coded values with dynamic thresholds:
 ```text
 Def:   541 (CAP)
 Armor: 25.3k

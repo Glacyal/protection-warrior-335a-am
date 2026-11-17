@@ -88,8 +88,8 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
   - **Non Interrompibile**: Colore Grigio scuro con testo rosso `[IMMUNE]`, evitando al tank di sprecare il cooldown di Shield Bash o Pummel su spell non kiccabili.
 
 ### 4.4 Pannello Statistiche Difensive (`18 - Stats Panel warTank`)
-- **Dimensioni**: 88 x 60 px
-- **Posizione**: X = -190 px, Y = -45 px
+- **Dimensioni**: 96 x 60 px
+- **Posizione**: X = -192 px, Y = -45 px
 - **Stile Tipografico**: Visualizzazione ad alta leggibilità con etichette bianche (`|cFFFFFFFFLabel:|r <ValoreColorato>`) e valori colorati dinamicamente in base alle soglie di cap difensive del War Tank.
 - **Layout a 5 Righe (Throttle a 10 Hz)**:
   1. `|cFFFFFFFFDef:|r |cFF22C55E540 (CAP)|r` (o `|cFFFFD700535 (HC)|r` / `|cFFFF2020%d/540|r`)

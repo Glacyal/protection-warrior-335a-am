@@ -51,7 +51,7 @@ protection-warrior-335a-am/
 │       ├── bars.py                  # 14 - Rage Bar & 16 - Castbar warTank (Dual specular Target dx->sx & Player sx->dx with Bash/Reflect advisor)
 │       ├── rotational.py            # 15 - Rotational Bar warTank (Main-Hand swing timer 274x5px aurabar at y = -7 with synchronized HS/Cleave queue Pixel Glow)
 │       ├── alerts.py                # 17 - Alerts warTank (Minimalist emergency text alerts: Emergency CD, Kick Now)
-│       ├── stats.py                 # 18 - Stats Panel warTank (88x60px panel at x = -190, y = -45, perfectly adapted to 5-row text without % Armor or SBV)
+│       ├── stats.py                 # 18 - Stats Panel warTank (96x60px panel at x = -192, y = -45, perfectly adapted to 5-row text without % Armor or SBV)
 │       └── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px at x = 160, y = -7)
 │
 ├── docs/                            # Documentation and interactive preview for GitHub Pages
@@ -250,6 +250,20 @@ protection-warrior-335a-am/
     3. `04b - Vigilance warTank`: $X = -179\text{px}, Y = 0$, size $20 \times 20\text{px}$ (Active: font 9pt; OFF: font 8pt).
     4. `04 - Defensive Stance warTank`: $X = -157\text{px}, Y = 0$, size $20 \times 20\text{px}$ (OutOfStance: font 7pt).
   - Uniform $22\text{px}$ pitch ($20\text{px}$ width + $2\text{px}$ gap) spanning exactly $86\text{px}$ from $X = -233$ to $X = -147$, centered symmetrically over the $88\text{px}$ Stats Panel at $X = -190$ with $1\text{px}$ border margin.
+
+---
+
+### 4.16 Top 4-Buff Cluster Optimization to 24x24px & 96x60px Stats Panel Alignment
+- **Top 4 Buff Icons Enlarged to 24x24px**:
+  - Increased icon dimensions from 20x20px to 24x24px (+20% linear, +44% surface area), dramatically enhancing visual recognition of spell textures and readability of countdown / OFF text:
+    1. `02 - Battle Shout warTank`: $X = -231\text{px}, Y = 0$, size $24 \times 24\text{px}$ (Active: font 10pt; OFF: font 9pt).
+    2. `03 - Commanding Shout warTank`: $X = -205\text{px}, Y = 0$, size $24 \times 24\text{px}$ (Active: font 10pt; OFF: font 9pt).
+    3. `04b - Vigilance warTank`: $X = -179\text{px}, Y = 0$, size $24 \times 24\text{px}$ (Active: font 10pt; OFF: font 9pt).
+    4. `04 - Defensive Stance warTank`: $X = -153\text{px}, Y = 0$, size $24 \times 24\text{px}$ (OutOfStance: font 8pt).
+  - Uniform $26\text{px}$ step ($24\text{px}$ width + $2\text{px}$ gap) spanning $102\text{px}$ from $X = -243$ to $X = -141$.
+- **96x60px Stats Panel Geometric Alignment**:
+  - Reconfigured `18 - Stats Panel warTank` to $X = -192, Y = -45$ with background $96 \times 60\text{px}$.
+  - Perfectly balanced vertical column with 3px symmetrical margin relative to top icons, 5px clearance from Rage Bar, and 10px from Utility Row.
 
 ---
 

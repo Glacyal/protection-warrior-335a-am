@@ -653,3 +653,23 @@ floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$
     - Suite parallela: 10/10 test superati con successo in 0.38s.
     - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (75.077 caratteri).
     - Esecuzione CP (Commit & Push su `origin/master`).
+- [x] **Task 37: Armonizzazione delle 4 Icone Sovrastanti a 24x24px e Riconfigurazione Geometrica dello Stats Panel a 96x60px**:
+  - [x] **Direttiva Utente**:
+    - *"leggermenti piu grandi è meglio le 4 icone di sopra"* (con allegato screenshot in-game del pannello compatto).
+  - [x] **Ingrandimento Visivo delle 4 Icone Sovrastanti ($24 \times 24\text{ px}$ con gap $2\text{ px}$)**:
+    - Incrementata la dimensione delle 4 icone da $20 \times 20\text{ px}$ a $24 \times 24\text{ px}$ (+20% in scala lineare, +44% in superficie visibile), rendendo i volti e le illustrazioni dei buff nitidi e perfettamente leggibili:
+      1. `02 - Battle Shout warTank`: $X = -231\text{ px}, Y = 0$, dimensione $24 \times 24\text{ px}$ (Active: font 10pt; OFF: font 9pt).
+      2. `03 - Commanding Shout warTank`: $X = -205\text{ px}, Y = 0$, dimensione $24 \times 24\text{ px}$ (Active: font 10pt; OFF: font 9pt).
+      3. `04b - Vigilance warTank`: $X = -179\text{ px}, Y = 0$, dimensione $24 \times 24\text{ px}$ (Active: font 10pt; OFF: font 9pt).
+      4. `04 - Defensive Stance warTank`: $X = -153\text{ px}, Y = 0$, dimensione $24 \times 24\text{ px}$ (OutOfStance: font 8pt).
+    - Passo regolare a $26\text{ px}$ ($24\text{ px}$ + $2\text{ px}$ spaziatura) con ampiezza totale di $102\text{ px}$ (da $X = -243$ a $X = -141$).
+  - [x] **Allineamento Geometrico dello Stats Panel ($96 \times 60\text{ px}$ a $X = -192, Y = -45$)**:
+    - Riconfigurato `18 - Stats Panel warTank` a $X = -192, Y = -45$ con sfondo $96 \times 60\text{ px}$ (da $X = -240$ a $X = -144$).
+    - Garantisce una perfetta simmetria visiva con le icone sovrastanti (3px di margine per lato), 5px di respiro rispetto alla barra della rabbia e 10px rispetto alla riga utility.
+    - Offre eccellente respiro alla riga più lunga `Hit: 9.1% | 25 Exp` senza alcuna compressione visiva sui bordi.
+  - [x] **Aggiornamento Simulatore Web & Test Suite**:
+    - Aggiornato `docs/index.html` con classi `.size-24` e colonna a $96\text{ px}$.
+    - Aggiornati i test `tests/test_tree_layout.py` e `tests/test_danger_alerts.py`.
+    - Suite parallela: 10/10 test superati con successo in 0.44s.
+    - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (75.080 caratteri).
+    - Esecuzione CP (Commit & Push su `origin/master`).

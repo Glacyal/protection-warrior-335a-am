@@ -1,7 +1,7 @@
 """
 Modulo Componente: 18 - Stats Panel warTank (Warrior Protection)
 ================================================================
-Gestisce il pannello delle statistiche in tempo reale (88x60px a x = -190, y = -45):
+Gestisce il pannello delle statistiche in tempo reale (96x60px a x = -192, y = -45):
 - Mostra 5 righe di statistiche dinamiche di mitigazione e threat per WotLK 3.3.5a:
   1. Skill Difesa & Immunità Critici (DEF 540 Cap per raid boss Lv.83)
   2. Combat Table Coverage (CTC: Schivata + Parata + Blocco + Miss)
@@ -135,7 +135,7 @@ def build_stats_auras() -> list[dict]:
             "internalVersion": 90,
             "anchorPoint": "CENTER",
             "selfPoint": "CENTER",
-            "xOffset": -190,
+            "xOffset": -192,
             "yOffset": -45,
             "controlledChildren": [
                 "Stats Panel - Background warTank",
@@ -148,7 +148,7 @@ def build_stats_auras() -> list[dict]:
             "parent": "18 - Stats Panel warTank",
             "regionType": "texture",
             "internalVersion": 90,
-            "width": 88,
+            "width": 96,
             "height": 60,
             "xOffset": 0,
             "yOffset": 0,

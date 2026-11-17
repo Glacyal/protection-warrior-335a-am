@@ -85,7 +85,7 @@ Gruppo allarmi minimalista posizionato a $y = 78$ sopra i procs, limitato rigoro
 *(Nota: Tutti i banner testuali rotazionali ed invasivi—inclusi Shield Slam Ready, Boss Enraged e Wrong Stance—sono stati eliminati definitivamente per garantire zero clutter visivo centrale; i proc rotazionali vivono esclusivamente come icone compatte in `01 - Procs warTank`)*.
 
 ### 6. Pannello Statistiche Tanking del War Tank (`18 - Stats Panel warTank`)
-Box compatto $88 \times 60\text{px}$ a $x = -190, y = -45$ (sul lato sinistro della riga utility) con etichette bianche `Label:` e valori colorati con soglie dinamiche:
+Box compatto $96 \times 60\text{px}$ a $x = -192, y = -45$ (sul lato sinistro della riga utility) con etichette bianche `Label:` e valori colorati con soglie dinamiche:
 ```text
 Def:   541 (CAP)
 Armor: 25.3k
