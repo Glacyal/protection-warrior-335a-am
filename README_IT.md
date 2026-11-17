@@ -66,11 +66,11 @@ La riga inferiore adotta un'architettura auto-adattiva a centratura dinamica nat
 
 ### 4. Barre Centrali Sincronizzate a 278px (`14`, `15`, `16`)
 - **14 - Rage Bar warTank ($278 \times 14\text{px}$ a $y = -20$)**: Valore numerico esatto al centro (%p) con colorazione a 3 stadi: rosso scuro sotto 25 punti (starvation), crimson pieno tra 25 e 44 punti e ambra/oro sopra i 45 punti (soglia scarico sicuro Heroic Strike/Cleave).
-- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ a $y = -7$)**: Indicatore statico di accodamento rotazionale a piena larghezza (278px) senza animazione di scorrimento/swipe e senza numeri di tempo rimanente. Gestito con polling frame-accurate `OnUpdate` e risoluzione universale `GetSpellInfo()`:
-  - Barra solida copper/bronze (`[0.65, 0.35, 0.12, 0.90]`) a riposo.
-  - Barra Oro brillante (`[1.0, 0.84, 0.0, 1.0]`) con Pixel Glow dorato `LibCustomGlow-1.0` all'accodamento di *Heroic Strike*.
-  - Barra Verde Smeraldo brillante (`[0.1, 0.95, 0.2, 1.0]`) con Pixel Glow verde `LibCustomGlow-1.0` all'accodamento di *Cleave*.
-  - Ritorno immediato all'aspetto neutro al rilascio del colpo o alla cancellazione.
+- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ a $y = -7$)**: Aurabar fluida dello swing timer per la mano primaria ($274 \times 5\text{px}$) che mostra in tempo reale lo scorrimento tra un attacco in mischia e il successivo, con timer decimale residuo (%c, es. 1.8s) centrato e sincronizzazione d'accodamento:
+  - Barra base in rame/bronzo Warrior (`[0.65, 0.35, 0.12, 0.90]`) a scorrimento calibrato sulla velocità dell'arma.
+  - Barra Oro brillante (`[1.0, 0.84, 0.0, 1.0]`) con Pixel Glow dorato `LibCustomGlow-1.0` all'accodamento di *Heroic Strike*, che prosegue lo scorrimento in perfetta continuità.
+  - Barra Verde Smeraldo (`[0.1, 0.95, 0.2, 1.0]`) con Pixel Glow verde `LibCustomGlow-1.0` all'accodamento di *Cleave*, che prosegue lo scorrimento in perfetta continuità.
+  - Reset istantaneo allo 0% e ritorno a rame neutro all'impatto dell'attacco o alla cancellazione dell'accodamento.
 - **16 - Castbar warTank ($278 \times 20\text{px}$ a $y = +8$)**: Barra di lancio speculare sincronizzata con intelligenza direzionale e priorità assoluta del target:
   - **Castbar Bersaglio (Destra &rarr; Sinistra, `inverse: true`)**: Scorrimento inverso di pericolo da destra verso sinistra per incantesimi di mob e boss. Icona a sinistra, tempo residuo a destra e advisor contestuale Opzione A:
     * `Spell [SHIELD BASH]` (Ciano `[0.0, 0.85, 1.0]`) per lanci interrompibili a raggio di mischia.

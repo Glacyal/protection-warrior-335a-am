@@ -606,3 +606,24 @@ floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$
     - Suite parallela: 10/10 test superati con successo in 0.46s.
     - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (73.198 caratteri).
     - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 35: Swing Timer Mano Primaria ad Animazione Progressiva e Accodamento Sincronizzato per 15 - Rotational Bar warTank**:
+  - [x] **Direttiva Utente**:
+    - *"15 - Rotational Bar warTank" non funziona come la barra che mostra lo scorrimento tra un attacco ed il successivo, deve funzionare in modo identico, solo che nel War Tank l'arma è una sola invece di due, facciamo il task e il fix.*
+  - [x] **Architettura Aurabar con Swing Timer a Piena Larghezza ($274 \times 5\text{ px}$)**:
+    - Trasformata `Rotational Bar - Base Bar warTank` da semplice texture statica ad `aurabar` reattiva ad aggiornamento `OnUpdate`.
+    - Tracciamento della singola arma da mischia del tank (Main Hand) tramite `_G.PWHUD_GetSwing()`, con aggancio agli eventi CLEU (`SWING_DAMAGE`, `SWING_MISSED`, `SPELL_DAMAGE`, `SPELL_MISSED`, `SPELL_EXTRA_ATTACKS`) e `UNIT_ATTACK_SPEED`.
+    - Mostra lo scorrimento continuo e fluido della barra (da 0% al 100%) tra ciascun attacco bianco e il successivo, con timer decimale residuo centrato (`%c`, es. `1.8s`).
+    - Texture standard Warrior copper/bronze (`[0.65, 0.35, 0.12, 0.90]`).
+  - [x] **Sincronizzazione Dinamica di Accodamento Heroic Strike & Cleave**:
+    - `Rotational Bar - HS Queued warTank` e `Rotational Bar - Cleave Queued warTank` convertite in `aurabar` sincronizzate:
+      - Condividono la medesima funzione di durata (`customDuration`) calcolata su `_G.PWHUD_Swing.mhStart + dur`.
+      - Quando Heroic Strike o Cleave viene accodato a metà oscillazione, la barra non si blocca né riparte da zero: commuta istantaneamente colore (Oro per HS, Verde Smeraldo per Cleave) continuando lo scorrimento in perfetta continuità.
+      - Attivazione istantanea del rispettivo Pixel Glow perimetrale (`PWHUD_HS_GLOW` o `PWHUD_CLEAVE_GLOW`).
+      - All'esecuzione dell'attacco (`SPELL_DAMAGE` di HS o Cleave), lo swing timer si riavvia dallo 0% e l'effetto di accodamento svanisce istantaneamente.
+  - [x] **Simulatore Web & Test Suite**:
+    - Aggiornato `docs/index.html` con animazione continua del Main-Hand swing timer a 60fps (`requestAnimationFrame`) e timer numerico `%c` centrato.
+    - Aggiornato `tests/test_rotational.py` con verifiche vincolanti sulla tipologia `aurabar`, tracciamento `UnitAttackSpeed` e timer `%c` centrato.
+    - Suite parallela: 10/10 test superati con successo in 0.46s.
+    - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (75.114 caratteri).
+    - Esecuzione CP (Commit & Push su `origin/master`).

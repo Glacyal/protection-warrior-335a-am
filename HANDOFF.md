@@ -49,7 +49,7 @@ protection-warrior-335a-am/
 │       ├── buffs.py                 # 02 - Battle Shout warTank, 03 - Commanding Shout warTank, 04 - Defensive Stance warTank (x = -271, -216, -161, y = 0, 34x34px)
 │       ├── utility.py               # 05-13 - Utility Row (Trinkets, Ring, Cloak, Tier, Enchants, Gloves, Shield Wall warTank, Last Stand warTank, Boots) at y = -45
 │       ├── bars.py                  # 14 - Rage Bar & 16 - Castbar warTank (Dual specular Target dx->sx & Player sx->dx with Bash/Reflect advisor)
-│       ├── rotational.py            # 15 - Rotational Bar warTank (Static queue indicator 278x7px at y = -7 with OnUpdate HS/Cleave Pixel Glow)
+│       ├── rotational.py            # 15 - Rotational Bar warTank (Main-Hand swing timer 274x5px aurabar at y = -7 with synchronized HS/Cleave queue Pixel Glow)
 │       ├── alerts.py                # 17 - Alerts warTank (Minimalist emergency text alerts: Emergency CD, Kick Now)
 │       ├── stats.py                 # 18 - Stats Panel warTank (144x68px panel at x = -216, y = -53, perfectly adapted to 5-row text)
 │       └── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px at x = 160, y = -7)

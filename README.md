@@ -66,11 +66,11 @@ The bottom row features a dynamic auto-adapting architecture engineered specific
 
 ### 4. Synchronized 278px Center Bars (`14`, `15`, `16`)
 - **14 - Rage Bar warTank ($278 \times 14\text{px}$ at $y = -20$)**: Precise numeric value centered with 3-tier dynamic color shifts: dark red under 25 points (starvation), deep crimson between 25 and 44 points, and bright amber/gold above 45 points (safe rage-dumping threshold for Heroic Strike / Cleave).
-- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ at $y = -7$)**: Real-time static rotational queue indicator occupying the full 278px width without swipe/scroll animation and without countdown numbers. Driven by frame-accurate `OnUpdate` polling and universal `GetSpellInfo()` name resolution:
-  - Base solid bar in Warrior copper/bronze (`[0.65, 0.35, 0.12, 0.90]`) at resting state.
-  - Radiant Gold bar (`[1.0, 0.84, 0.0, 1.0]`) with golden `LibCustomGlow-1.0` Pixel Glow instantly upon queueing *Heroic Strike*.
-  - Radiant Emerald Green bar (`[0.1, 0.95, 0.2, 1.0]`) with green `LibCustomGlow-1.0` Pixel Glow instantly upon queueing *Cleave*.
-  - Instantaneous recovery to neutral copper when attacks land or are cancelled.
+- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ at $y = -7$)**: Fluid Main-Hand swing timer aurabar ($274 \times 5\text{px}$) showing the real-time progress between melee attacks with centered decimal countdown (%c, e.g. 1.8s) and dynamic queuing synchronization:
+  - Base solid bar in Warrior copper/bronze (`[0.65, 0.35, 0.12, 0.90]`) scrolling across weapon swing speed.
+  - Radiant Gold bar (`[1.0, 0.84, 0.0, 1.0]`) with golden `LibCustomGlow-1.0` Pixel Glow instantly upon queueing *Heroic Strike*, continuing swing progress seamlessly.
+  - Radiant Emerald Green bar (`[0.1, 0.95, 0.2, 1.0]`) with green `LibCustomGlow-1.0` Pixel Glow instantly upon queueing *Cleave*, continuing swing progress seamlessly.
+  - Instantaneous reset to 0% and recovery to copper upon landing attacks or cancelling queued abilities.
 - **16 - Castbar warTank ($278 \times 20\text{px}$ at $y = +8$)**: Dual-engine synchronized castbar with directional intelligence and absolute target priority:
   - **Target Castbar (Right-to-Left, `inverse: true`)**: Incoming mob/boss spell tracking scrolling right to left. Features left spell icon, remaining time, and contextual intelligence (Option A):
     * `Spell [SHIELD BASH]` (Cyan `[0.0, 0.85, 1.0]`) when interruptible in melee range.

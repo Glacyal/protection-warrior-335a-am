@@ -36,11 +36,17 @@ def run_tests():
     assert bg["width"] == 278 and bg["height"] == 7
     assert bg["uid"] == "PWHUD_ROTCENTER_BG"
 
-    # 3. Base Bar
+    # 3. Base Bar (Aurabar Swing Timer Mano Primaria)
     base = children_by_id["Rotational Bar - Base Bar warTank"]
     assert base["width"] == 274 and base["height"] == 5
     assert base["uid"] == "PWHUD_ROTCENTER_BASE"
+    assert base["regionType"] == "aurabar", "Base Bar deve essere aurabar per mostrare lo scorrimento dello swing timer"
     assert base["color"] == [0.65, 0.35, 0.12, 0.90]
+    assert base["barColor"] == [0.65, 0.35, 0.12, 0.90]
+    assert "UnitAttackSpeed" in base["triggers"][1]["trigger"]["customDuration"], "customDuration deve tracciare la velocità d'attacco"
+    assert "PWHUD_Swing" in base["triggers"][1]["trigger"]["customDuration"], "customDuration deve agganciarsi a PWHUD_Swing"
+    base_subtexts = [sr for sr in base.get("subRegions", []) if sr.get("type") == "subtext"]
+    assert any(sr.get("text_text") == "%c" and sr.get("anchorPoint") == "CENTER" for sr in base_subtexts), "Base bar deve avere timer %c centrato"
 
     # 4. HS Queued Indicator
     hsq = children_by_id["Rotational Bar - HS Queued warTank"]

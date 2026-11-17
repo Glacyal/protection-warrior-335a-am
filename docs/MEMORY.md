@@ -177,6 +177,23 @@ Questo documento raccoglie la memoria tecnica, le particolarità delle API WotLK
 
 ---
 
+### 2.7 Swing Timer Mano Primaria & Accodamento Heroic Strike/Cleave (`15 - Rotational Bar warTank`)
+- **Direttiva Utente Tassativa**:
+  *"15 - Rotational Bar warTank" non funziona come la barra che mostra lo scorrimento tra un attacco ed il successivo, deve funzionare in modo identico, solo che nel War Tank l'arma è una sola invece di due, facciamo il task e il fix.*
+- **Architettura Tecnica Adottata**:
+  1. **Tipologia Region**: `Rotational Bar - Base Bar warTank`, `Rotational Bar - HS Queued warTank` e `Rotational Bar - Cleave Queued warTank` sono configurate come `regionType: "aurabar"` a piena larghezza ($274 \times 5\text{ px}$) anziché semplici texture statiche.
+  2. **Tracciamento Singola Arma (Mano Primaria)**:
+     - In quanto War Tank (arma 1H + scudo), il motore traccia unicamente la velocità della mano principale via `UnitAttackSpeed("player")`.
+     - `_G.PWHUD_GetSwing()` intercetta via CLEU:
+       - `SWING_DAMAGE` e `SWING_MISSED`: azzera e fa ripartire lo swing timer dall'istante corrente (`sw.mhStart = now`).
+       - `SPELL_DAMAGE` e `SPELL_MISSED` per *Heroic Strike* (47450) o *Cleave* (47520): poiché sostituiscono l'attacco bianco successivo, all'impatto fanno ripartire lo swing timer da capo (`sw.mhStart = now`) e disattivano lo stato accodato.
+       - `SPELL_EXTRA_ATTACKS` (es. proc Sword Specialization): riavvia il timer della mano primaria.
+  3. **Visualizzazione Timer Centrato**: Mostra costantemente il tempo mancante in formato decimale (`%c`, es. `1.8s`) al centro esatto della barra.
+  4. **Continuità Visiva dell'Accodamento**:
+     - Quando il giocatore attiva *Heroic Strike* o *Cleave* durante un'oscillazione dell'arma (es. al 50% di caricamento), la barra non subisce glitch o reset a vuoto: la corrispondente aurabar accodata (`HS Queued` in Oro con Pixel Glow, o `Cleave Queued` in Verde Smeraldo con Pixel Glow) si sovrappone condividendo la medesima funzione di progresso (`customDuration`), proseguendo l'animazione di scorrimento senza soluzione di continuità fino all'impatto.
+
+---
+
 ## 3. Catalogo Debuff Letali dei Boss Monitorati
 
 | Nome Debuff | Spell ID | Incontro Raid | Soglia Allarme / Azione Richiesta |

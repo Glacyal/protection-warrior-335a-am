@@ -64,14 +64,17 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
   - `0 - 44 Rage`: Rosso scuro/sangue (Rabbia riservata a Shield Slam, Revenge, Shockwave e Shield Block).
   - `>= 45 Rage`: Transizione istantanea ad ambra dorato (Rabbia in eccedenza: via libera per accodare Heroic Strike o Cleave senza rischiare di prosciugare la risorsa per le abilità di mitigazione e minaccia primaria).
 
-### 4.2 Barra Rotazionale Indicatore di Accodamento (`15 - Rotational Bar warTank`)
-- **Dimensioni**: 278 x 7 px
+### 4.2 Barra Rotazionale Swing Timer & Indicatore di Accodamento (`15 - Rotational Bar warTank`)
+- **Dimensioni**: 278 x 7 px (cornice esterna), 274 x 5 px (area utile barra)
 - **Posizione**: X = 0, Y = -7 px
-- **Design Statico a Piena Larghezza**: Occupa interamente lo spazio assegnato (278px) con barra base Warrior copper/bronze, **senza animazione di scorrimento/swipe** e **senza testo o numeri del tempo residuo** (timer invisibile, zero clutter).
-- **Sistema di Accodamento Dinamico per il War Tank**:
-  - **Heroic Strike accodato (`47450`)**: Retroilluminazione additiva con blend mode `ADD` e Pixel Glow `LibCustomGlow-1.0` Oro (`1.0, 0.84, 0.0`), confermando istantaneamente che il prossimo attacco consumerà rabbia per generare massimo threat single-target.
-  - **Cleave accodato (`47520`)**: Retroilluminazione additiva e Pixel Glow Verde Smeraldo (`0.1, 0.95, 0.2`) per la gestione multi-target/aoe.
-  - **Nessuna abilità accodata**: Glow disattivato, barra statica pulita a perfetta integrazione con il layout centrale a 278px.
+- **Swing Timer Mano Primaria ad Animazione Progressiva**:
+  - `Base Bar` ($274 \times 5\text{ px}$, `regionType: "aurabar"`): Barra progressiva fluida a piena larghezza che mostra in tempo reale lo scorrimento del tempo tra un attacco in mischia e il successivo (Swing Timer). Calibrata sulla velocità effettiva dell'arma principale (`UnitAttackSpeed("player")`).
+  - **Timer Decimale Centrato**: Mostra il tempo residuo in secondi (`%c`, es. `1.8s`) centrato sulla barra.
+  - **Colore Base**: Rame/bronzo Warrior (`[0.65, 0.35, 0.12, 0.90]`).
+- **Sistema di Accodamento Dinamico Sincronizzato per il War Tank**:
+  - **Heroic Strike accodato (`47450`)**: Barra aurabar sincronizzata in Oro brillante (`[1.0, 0.84, 0.0, 1.0]`) che prosegue lo scorrimento progressivo dello swing timer, corredata da Gold Pixel Glow `LibCustomGlow-1.0` (`PWHUD_HS_GLOW`).
+  - **Cleave accodato (`47520`)**: Barra aurabar sincronizzata in Verde Smeraldo (`[0.1, 0.95, 0.2, 1.0]`) che prosegue lo scorrimento progressivo dello swing timer, corredata da Emerald Green Pixel Glow `LibCustomGlow-1.0` (`PWHUD_CLEAVE_GLOW`).
+  - Al reset del colpo (lancio di HS/Cleave o auto-attacco normale tramite `SWING_DAMAGE`/`SWING_MISSED`), lo swing timer riparte istantaneamente dallo 0% e l'effetto di accodamento svanisce.
 
 ### 4.3 Castbar con Kick Advisor Integrato (`16 - Castbar warTank`)
 - **Dimensioni**: 278 x 20 px
