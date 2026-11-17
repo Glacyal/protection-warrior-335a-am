@@ -37,6 +37,25 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
 
 ## 4. Componenti UI Dettagliati
 
+### 4.0 Gruppo Dinamico Proc & Debuff (`01 - Procs warTank`)
+- **Dimensioni & Layout**: Icone $34 \times 34\text{ px}$, posizionate a $Y = +52\text{ px}$ sopra la Castbar, crescita orizzontale centrata con spaziatura di $6\text{ px}$.
+- **Parità Visiva Rigorosa tra Sword and Board e Revenge Ready**:
+  - Entrambe le icone adottano la medesima struttura visiva:
+    - `width: 34`, `height: 34`, `auto: False` con texture fisse Blizzard.
+    - `cooldown: True`, `cooldownSwipe: True`, `cooldownEdge: False` (nessun bordo o lancetta gialla orologio).
+    - Subregions a 3 livelli simmetriche:
+      1. Sotto-sfondo semitrasparente: `{"type": "subbackground"}` per contrasto visivo elevato.
+      2. Timer decimale `%p`: ancorato a `INNER_BOTTOM` (`font_size=11`, `y_offset=1`), formattazione `%.1f` (es. `4.8`, `3.2`).
+      3. Etichetta abilità centrata in alto: `SLAM` (per Sword and Board) e `REV` (per Revenge Ready) ancorate a `INNER_TOP` (`font_size=9`, `y_offset=-2`).
+    - Effetto Glow: Identico Gold Pixel Glow LibCustomGlow-1.0 `[1.0, 0.84, 0.0, 1.0]` (8 linee, frequenza 0.25, lunghezza 10, spessore 2) su `actions.start`, nascosto su `actions.finish`.
+- **Comportamento Multi-Proc Dinamico**:
+  - Se un'abilità procca più volte consecutive senza essere utilizzata, la durata non si interrompe né scade prematuramente: il timer e l'animazione di swipe si reimpostano istantaneamente a $5.0\text{ s}$ pieni (ad ogni schivata/parata/blocco per Revenge e ad ogni proc da Devastate/Revenge per Sword and Board).
+- **Consumo Istantaneo a 0 Latenza**:
+  - Al momento esatto del lancio (`SPELL_CAST_SUCCESS`) di *Shield Slam* o *Revenge*, la rispettiva icona scompare immediatamente dallo schermo, evitando visualizzazioni fantasma.
+- **Debuff su Bersaglio (Demoralizing Shout, Thunder Clap, Rend)**:
+  - **Filtro Vita Bersaglio**: Compaiono esclusivamente se `UnitHealthMax("target") >= 500.000` HP (boss ed élite maggiori). Su trash mob e bersagli secondari rimangono completamente invisibili.
+  - **Zero-Clutter**: Etichette interne `DEMO`, `CLAP` e `REND` rimosse; all'interno dell'icona compare solo il timer decimale `%c` in fase `EXPIRING` o `MISS` in caso di debuff assente.
+
 ### 4.1 Barra della Rabbia (`14 - Rage Bar warTank`)
 - **Dimensioni**: 278 x 14 px
 - **Posizione**: X = 0, Y = -20 px

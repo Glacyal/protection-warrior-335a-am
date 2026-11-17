@@ -140,6 +140,43 @@ Questo documento raccoglie la memoria tecnica, le particolarità delle API WotLK
 
 ---
 
+### 2.6 Parità Visiva Rigorosa e Multi-Proc Refresh SAB/REV con Offset CLEU 3.3.5a Tassativi
+- **Direttiva Utente Tassativa**:
+  *"Revenge Ready warTank" e "Sword and Board" devono essere simili nel modo in cui si mostrano, generare un task che crei questo fix, e inoltre, sia il primo che il secondo, oltre al fatto che giustamente spariscono se vengono usati, c'e da considerare che potrebbero proccare piu volte senza che io lo utilizzi, questo dovrebbe refresciare il tempo necessario per il lancio di una o del altra.*
+- **Parità Visiva 1:1 Eseguita**:
+  1. **Dimensioni & Forma**: Entrambe le icone sono $34 \times 34\text{ px}$ posizionate nel gruppo dinamico `01 - Procs warTank` ($y = +52\text{ px}$).
+  2. **Texture Esplicita**: `auto: False` su entrambe con icone native `Ability_Warrior_SwordandBoard` e `Ability_Warrior_Revenge` (nessun flickering da texture dinamica).
+  3. **Zero Lancetta Gialla Cooldown**: `cooldownEdge: False` su entrambe. Il valore `cooldownEdge: True` su Revenge creava una sgradevole lancetta verticale gialla che tagliava a metà l'icona; impostandolo a `False` la grafica rimane pulita.
+  4. **Subregions a 3 Livelli Simmetriche**:
+     - Indice 0: `{"type": "subbackground"}` (fondale opaco per contrasto).
+     - Indice 1: Timer countdown decimale `%p` ancorato a `INNER_BOTTOM` (`font_size=11`, `y_offset=1`, formattazione `%.1f`).
+     - Indice 2: Etichetta dell'abilità centrata in alto: `SLAM` su Sword and Board e `REV` su Revenge Ready, ancorata a `INNER_TOP` (`font_size=9`, `y_offset=-2`).
+  5. **Effetto Glow Identico**: Gold Pixel Glow `LibCustomGlow-1.0` `[1.0, 0.84, 0.0, 1.0]` con 8 linee su `actions.start`, nascosto su `actions.finish`.
+- **Offset Parametri CLEU in WotLK 3.3.5a (Build 12340)**:
+  - In 3.3.5a gli 8 parametri base di `COMBAT_LOG_EVENT_UNFILTERED` sono:
+    `timestamp, subEvent, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags`.
+  - Gli offset successivi a `destFlags` (indice 8) sono rigorosamente:
+    - `SWING_MISSED`: `select(9, ...)` = `missType` (`"DODGE"`, `"PARRY"`, `"BLOCK"`).
+    - `RANGE_MISSED` / `SPELL_MISSED`: `select(9, ...)` = `spellId`, `select(12, ...)` = `missType`.
+    - `SWING_DAMAGE`: `select(9, ...)` = `amount`, `select(13, ...)` = `blocked`.
+    - `RANGE_DAMAGE` / `SPELL_DAMAGE`: `select(9, ...)` = `spellId`, `select(16, ...)` = `blocked`.
+    - `SPELL_CAST_SUCCESS`: `select(9, ...)` = `spellId`, `select(10, ...)` = `spellName`.
+    - `SPELL_AURA_APPLIED` / `SPELL_AURA_REFRESH` / `SPELL_AURA_REMOVED`: `select(9, ...)` = `spellId`, `select(10, ...)` = `spellName`.
+- **Logica Multi-Proc con Refresh Dinamico**:
+  - Quando si verifica un nuovo evento valido (schivata, parata, blocco per Revenge; nuovo proc buff 50227 da Devastate/Revenge per Sword and Board) mentre l'icona è già visibile a schermo, la durata viene reimpostata a $5.0\text{ s}$ completi:
+    ```lua
+    _G.PWHUD_Revenge.start = GetTime()
+    _G.PWHUD_Revenge.duration = 5.0
+    ```
+    ```lua
+    _G.PWHUD_Sab.start = GetTime()
+    _G.PWHUD_Sab.duration = 5.0
+    ```
+- **Consumo Istantaneo a 0 Latenza (Instant Cast Consumption)**:
+  - Al lancio di *Shield Slam* o *Revenge*, il listener CLEU su `SPELL_CAST_SUCCESS` azzera immediatamente `start = 0`, facendo sparire l'icona istantaneamente senza attendere la latenza di rete del server o il successivo ciclo `UNIT_AURA`.
+
+---
+
 ## 3. Catalogo Debuff Letali dei Boss Monitorati
 
 | Nome Debuff | Spell ID | Incontro Raid | Soglia Allarme / Azione Richiesta |

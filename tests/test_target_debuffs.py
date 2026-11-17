@@ -140,7 +140,31 @@ def run_tests():
     assert any(sr.get("text_text") == "REV" and sr.get("anchorPoint") == "INNER_TOP" for sr in rev_st), "REV deve avere anchorPoint INNER_TOP"
     assert any(sr.get("text_text") == "%p" and sr.get("anchorPoint") == "INNER_BOTTOM" for sr in rev_st), "%p su REV deve avere anchorPoint INNER_BOTTOM"
 
-    print("[OK] test_target_debuffs completato con successo (filtro >=500k HP, etichette rimosse, SLAM/REV centrati in alto).")
+    # 7. Parità Visiva Rigorosa tra Sword and Board e Revenge Ready warTank
+    for proc_item, name in [(sab, "Sword and Board"), (rev, "Revenge Ready warTank")]:
+        assert proc_item.get("width") == 34 and proc_item.get("height") == 34, f"{name} deve avere dimensioni 34x34px"
+        assert proc_item.get("auto") is False, f"{name} deve avere auto=False per texture fissa"
+        assert proc_item.get("cooldown") is True, f"{name} deve avere cooldown=True"
+        assert proc_item.get("cooldownSwipe") is True, f"{name} deve avere cooldownSwipe=True"
+        assert proc_item.get("cooldownEdge") is False, f"{name} deve avere cooldownEdge=False (no lancetta gialla)"
+        srs = proc_item.get("subRegions", [])
+        assert len(srs) == 3, f"{name} deve avere esattamente 3 subregions (subbackground, %p, etichetta)"
+        assert srs[0].get("type") == "subbackground", f"{name} subregion 0 deve essere subbackground"
+        act = proc_item.get("actions", {})
+        assert act.get("start", {}).get("do_glow") is True, f"{name} deve avere start.do_glow=True"
+        assert act.get("start", {}).get("glow_color") == [1.0, 0.84, 0.0, 1.0], f"{name} deve usare Gold Pixel Glow identico"
+        assert act.get("finish", {}).get("glow_action") == "hide", f"{name} deve nascondere il glow in finish"
+
+    # 8. Verifica logica CLEU 3.3.5a e refresh multi-proc / consumo istantaneo
+    sab_init = sab.get("actions", {}).get("init", {}).get("custom", "")
+    assert "SPELL_AURA_APPLIED" in sab_init and "SPELL_AURA_REFRESH" in sab_init, "SAB CLEU deve gestire refresh"
+    assert "47486" in sab_init and "Shield Slam" in sab_init, "SAB CLEU deve gestire consumo istantaneo Shield Slam"
+
+    rev_init = rev.get("actions", {}).get("init", {}).get("custom", "")
+    assert "select(9, ...)" in rev_init, "REV CLEU deve usare offset 3.3.5a select(9, ...) per missType e spellId"
+    assert "57823" in rev_init and "Revenge" in rev_init, "REV CLEU deve gestire consumo istantaneo Revenge"
+
+    print("[OK] test_target_debuffs completato con successo (filtro >=500k HP, etichette rimosse, parita visiva e multi-proc SAB/REV).")
     return True
 
 if __name__ == "__main__":

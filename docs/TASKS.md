@@ -572,3 +572,37 @@ floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$
     - `python scripts/sync_docs.py`: documentazione web sincronizzata.
     - `python tests/run_parallel_tests.py`: 10/10 test superati.
     - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 34: Parità Visiva Rigorosa e Multi-Proc Refresh Dinamico con Consumo Istantaneo per "Revenge Ready warTank" e "Sword and Board"**:
+  - [x] **Direttiva Utente**:
+    - *"Revenge Ready warTank" e "Sword and Board" devono essere simili nel modo in cui si mostrano, generare un task che crei questo fix, e inoltre, sia il primo che il secondo, oltre al fatto che giustamente spariscono se vengono usati, c'e da considerare che potrebbero proccare piu volte senza che io lo utilizzi, questo dovrebbe refresciare il tempo necessario per il lancio di una o del altra.*
+  - [x] **Parità Visiva 1:1 tra Sword and Board e Revenge Ready**:
+    - **Dimensioni & Layout**: Entrambe le icone dimensionate rigorosamente a $34 \times 34\text{ px}$ nel gruppo `01 - Procs warTank` (a $y = +52\text{ px}$, `space = 6`).
+    - **Texture Fisse**: `auto: False` su entrambe con texture esplicite (`Interface\Icons\Ability_Warrior_SwordandBoard` e `Interface\Icons\Ability_Warrior_Revenge`).
+    - **Opzioni Cooldown Uniformi**: `cooldown: True`, `cooldownSwipe: True`, `cooldownEdge: False` su entrambe (eliminata la lancetta gialla / bordo orologio da Revenge).
+    - **Architettura Subregions a 3 Livelli Identica**:
+      1. Sotto-sfondo: `{"type": "subbackground"}` su entrambe.
+      2. Timer countdown decimale `%p`: ancorato a `INNER_BOTTOM`, dimensione font 11, `y_offset = 1`.
+      3. Etichetta dell'abilità: `SLAM` (per Sword and Board) e `REV` (per Revenge Ready) ancorate a `INNER_TOP`, dimensione font 9, `y_offset = -2`.
+    - **Effetto Glow Identico**: Gold Pixel Glow `[1.0, 0.84, 0.0, 1.0]` (8 linee, frequenza 0.25, lunghezza 10, spessore 2) configurato via `make_glow_action` su `actions.start`, nascosto su `actions.finish`.
+  - [x] **Risoluzione Bug Offset Parametri CLEU in WotLK 3.3.5a**:
+    - Risolto grave disallineamento nei parametri CLEU: in 3.3.5a il prefisso base contiene 8 argomenti (`timestamp, subEvent, sourceGUID, sourceName, sourceFlags, destGUID, destName, destFlags`).
+    - Il codice precedente usava offset errati da Cataclysm (`select(12, ...)` per `missType`, `select(16, ...)` per `blocked`, `select(12, ...)` per `spellId`), rendendo inefficace il listener CLEU.
+    - Corretti gli indici ufficiali 3.3.5a:
+      - `SWING_MISSED`: `select(9, ...)` per `missType` (`"DODGE"`, `"PARRY"`, `"BLOCK"`).
+      - `RANGE_MISSED` / `SPELL_MISSED`: `select(12, ...)` per `missType`.
+      - `SWING_DAMAGE`: `select(13, ...)` per `blocked`.
+      - `RANGE_DAMAGE` / `SPELL_DAMAGE`: `select(16, ...)` per `blocked`.
+      - `SPELL_CAST_SUCCESS`: `select(9, ...)` per `spellId`.
+  - [x] **Gestione Multi-Proc con Refresh Dinamico**:
+    - **Revenge Ready**: Ad ogni successiva schivata, parata o blocco mentre Revenge è già attivo a schermo, il listener CLEU reimposta `_G.PWHUD_Revenge.start = GetTime()` e `duration = 5.0`, riavviando lo swipe da 5.0s completi.
+    - **Sword and Board**: Ad ogni successivo proc di Devastate o Revenge (`SPELL_AURA_APPLIED` o `SPELL_AURA_REFRESH` su buff `50227`), il listener CLEU e il trigger reimpostano `_G.PWHUD_Sab.start = GetTime()` e `duration = 5.0`, riavviando lo swipe da 5.0s completi.
+  - [x] **Consumo Istantaneo a 0 Latenza (Instant Cast Consumption)**:
+    - Al lancio di *Shield Slam* (`SPELL_CAST_SUCCESS` su spell IDs `47486`, `47485`, `30356`, `25258`, `23925`, `23924`, `23923`, `23922`), `_G.PWHUD_Sab.start = 0` viene impostato istantaneamente, facendo sparire l'icona prima ancora della propagazione di `UNIT_AURA`.
+    - Al lancio di *Revenge* (`SPELL_CAST_SUCCESS` su spell IDs `57823`, `6572`, `6574`, `7379`, `11601`, `25288`, `25269`, `30357`), `_G.PWHUD_Revenge.start = 0` viene impostato istantaneamente, facendo sparire l'icona con zero ritardo.
+  - [x] **Simulatore Web & Test Suite**:
+    - Aggiornato `docs/index.html`: `#procRev` uniformato con `pixel-glow-gold` e tooltip dettagliato sul multi-proc refresh.
+    - Aggiornato `tests/test_target_debuffs.py` con test rigorosi di parità visiva (34x34px, auto=False, cooldownEdge=False, subbackground, timer %p, etichette SLAM/REV, gold pixel glow, CLEU 3.3.5a offsets).
+    - Suite parallela: 10/10 test superati con successo in 0.46s.
+    - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (73.198 caratteri).
+    - Esecuzione CP (Commit & Push su `origin/master`).

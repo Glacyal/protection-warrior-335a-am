@@ -45,7 +45,7 @@ protection-warrior-335a-am/
 │   │   ├── encoder.py               # Generatore stringa finale (!WA:1!...)
 │   │   └── helpers.py               # Generatori di subtext dual-key e helper grafici
 │   └── components/                  # Moduli dedicati ai singoli componenti dell'HUD
-│       ├── procs.py                 # 01 - Procs warTank (Gruppo dinamico 34x34 a y = 52 con ordinamento fisso prioritario sort: none -> Emergenze, Proc, Debuff target)
+│       ├── procs.py                 # 01 - Procs warTank (Gruppo dinamico 34x34 a y = 52: parità visiva 1:1 SAB/REV, refresh multi-proc dinamico, consumo istantaneo, filtro >=500k HP)
 │       ├── buffs.py                 # 02 - Battle Shout warTank, 03 - Commanding Shout warTank, 04 - Defensive Stance warTank (x = -271, -216, -161, y = 0, 34x34px)
 │       ├── utility.py               # 05-13 - Utility Row (Monili, Anello, Mantello, Tier, Incanti, Guanti, Shield Wall warTank, Last Stand warTank, Boots) a y = -45
 │       ├── bars.py                  # 14 - Rage Bar & 16 - Castbar warTank (Barra speculare Target dx->sx e Player sx->dx con advisor Bash/Reflect)
