@@ -498,3 +498,19 @@
     - Esecuzione Test Suite Parallela: 10/10 superati con successo in 0.37s.
     - Stringa di importazione WeakAuras rigenerata a **48.237 caratteri** e sincronizzata in `docs/index.html`.
     - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 30: Ottimizzazione Visiva Procs Bar — Rimozione Label Debuff, Timer Decimale Stile Slam, SLAM/REV Centrati in Alto e Filtro Bersaglio >= 500k HP**:
+  - [x] **Filtro Salute Bersaglio (>= 500.000 HP)**:
+    - Inserito in `_G.PWHUD_CheckTargetDebuff` il controllo `UnitHealthMax("target") < 500000`: se il bersaglio attivo ha salute totale inferiore a 500k HP (trash mob, add secondari, mob generici), il tracciamento dei debuff non si attiva mai (`return false, "LOW_HP"`), garantendo zero ingombro visivo.
+    - Su boss ed élite maggiori ($\ge 500	ext{k}$ HP), i debuff (Demoralizing Shout, Thunder Clap, Rend) continuano a funzionare regolarmente con tutte le logiche di controllo (allarme MISS, scomparsa se sani $>10	ext{s}$/$>5	ext{s}$, timer se in scadenza).
+  - [x] **Rimozione Label Statiche da Rend, Demo e Clap**:
+    - Rimosse le etichette di testo interne `DEMO`, `CLAP` e `REND` per non coprire le illustrazioni delle icone.
+    - All'interno di ciascuna icona rimane esclusivamente il subtext dinamico `%c`: in stato `EXPIRING` proietta il timer decimale (`%.1f`, es. `3.7`, `5.2`) identico a Slam; in stato `MISS` proietta `MISS`.
+  - [x] **Riallineamento SLAM e REV Centrati in Alto (`INNER_TOP`)**:
+    - Aggiornati i subtext `SLAM` (Sword and Board) e `REV` (Revenge Ready) con ancoraggio `anchor_point="INNER_TOP"` e `y_offset=-2`, posizionando le scritte dentro l'icona centrate in alto.
+    - I rispettivi timer `%p` rimangono ancorati in basso a `INNER_BOTTOM` (`font_size=11`, `y_offset=1`), garantendo una separazione visiva perfetta (etichetta in alto, timer in basso).
+  - [x] **Test Suite & Documentazione**:
+    - Aggiornato [`tests/test_target_debuffs.py`](file:///d:/0Progetti/protection-warrior-335a-am/tests/test_target_debuffs.py) a verifica del filtro $\ge 500	ext{k}$ HP, dell'assenza di etichette statiche nei debuff e del posizionamento `INNER_TOP` di `SLAM` e `REV`.
+    - Suite parallela: 10/10 test superati con successo in 0.43s.
+    - Stringa WeakAuras rigenerata a 48.248 caratteri e sincronizzata in `docs/index.html`.
+    - Esecuzione CP (Commit & Push su `origin/master`).

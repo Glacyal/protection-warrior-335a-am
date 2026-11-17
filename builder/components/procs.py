@@ -236,6 +236,12 @@ SHARED_TARGET_DEBUFFS_LUA = r"""function(kind)
         return false, "INVALID", 0, 0, 0
     end
 
+    local maxHp = UnitHealthMax("target") or 0
+    if maxHp < 500000 then
+        _G.PWHUD_TargetDebuffScanCache = nil
+        return false, "LOW_HP", 0, 0, 0
+    end
+
     local now = GetTime()
     local tGUID = UnitGUID("target")
     local cache = _G.PWHUD_TargetDebuffScanCache
@@ -427,9 +433,9 @@ def make_target_debuff_custom_text(kind: str) -> str:
             return "|cFFFF2020MISS|r"
         elseif status == "EXPIRING" and rem and rem > 0 then
             if rem <= 3.0 then
-                return string.format("|cFFFF2020%.1fs|r", rem)
+                return string.format("|cFFFF2020%.1f|r", rem)
             else
-                return string.format("|cFFFFFF00%.1fs|r", rem)
+                return string.format("|cFFFFFF00%.1f|r", rem)
             end
         end
     end
@@ -508,8 +514,7 @@ def build_procs_auras() -> list[dict]:
             },
             "subRegions": [
                 {"type": "subbackground"},
-                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=0),
-                make_subtext("DEMO", justify="CENTER", anchor_point="CENTER", font_size=8, y_offset=0),
+                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=11, y_offset=1),
             ],
         },
         # Target Debuff 2: Thunder Clap
@@ -554,8 +559,7 @@ def build_procs_auras() -> list[dict]:
             },
             "subRegions": [
                 {"type": "subbackground"},
-                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=0),
-                make_subtext("CLAP", justify="CENTER", anchor_point="CENTER", font_size=8, y_offset=0),
+                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=11, y_offset=1),
             ],
         },
         # Target Debuff 3: Rend
@@ -600,8 +604,7 @@ def build_procs_auras() -> list[dict]:
             },
             "subRegions": [
                 {"type": "subbackground"},
-                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=0),
-                make_subtext("REND", justify="CENTER", anchor_point="CENTER", font_size=8, y_offset=0),
+                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=11, y_offset=1),
             ],
         },
         # 1. Sword and Board (Buff 50227)
@@ -638,8 +641,8 @@ def build_procs_auras() -> list[dict]:
                 "activeTriggerMode": -10,
             },
             "subRegions": [
-                make_subtext("%p", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=12, y_offset=0),
-                make_subtext("SLAM", justify="CENTER", anchor_point="CENTER", font_size=9, y_offset=0),
+                make_subtext("%p", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=11, y_offset=1),
+                make_subtext("SLAM", justify="CENTER", anchor_point="INNER_TOP", font_size=9, y_offset=-2),
             ],
         },
         # 2. Revenge Ready (5.0s window, dynamic refresh on avoid/block, LibCustomGlow-1.0)
@@ -795,8 +798,8 @@ end""",
             },
             "subRegions": [
                 {"type": "subbackground"},
-                make_subtext("%p", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=0),
-                make_subtext("REV", justify="CENTER", anchor_point="CENTER", font_size=9, y_offset=0),
+                make_subtext("%p", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=11, y_offset=1),
+                make_subtext("REV", justify="CENTER", anchor_point="INNER_TOP", font_size=9, y_offset=-2),
             ],
         },
         # 5. Emergency Low HP Alert (< 35% HP)
