@@ -71,12 +71,12 @@ The bottom row features a dynamic auto-adapting architecture engineered specific
   - Radiant Gold bar (`[1.0, 0.84, 0.0, 1.0]`) with golden `LibCustomGlow-1.0` Pixel Glow instantly upon queueing *Heroic Strike*, continuing swing progress seamlessly.
   - Radiant Emerald Green bar (`[0.1, 0.95, 0.2, 1.0]`) with green `LibCustomGlow-1.0` Pixel Glow instantly upon queueing *Cleave*, continuing swing progress seamlessly.
   - Instantaneous reset to 0% and recovery to copper upon landing attacks or cancelling queued abilities.
-- **16 - Castbar warTank ($278 \times 20\text{px}$ at $y = +8$)**: Dual-engine synchronized castbar with directional intelligence and absolute target priority:
-  - **Target Castbar (Right-to-Left, `inverse: true`)**: Incoming mob/boss spell tracking scrolling right to left. Features left spell icon, remaining time, and contextual intelligence (Option A):
+- **16 - Castbar warTank ($278 \times 20\text{px}$ at $y = +8$)**: Dual-engine synchronized castbar with unified right-to-left direction, dynamic spell icons, and absolute target priority:
+  - **Target Castbar (Right-to-Left, `inverse: true`)**: Incoming mob/boss spell tracking scrolling right to left. Cancels instantly upon kick or stop (`ki == nil`), features dynamic left spell icon, remaining time, and contextual intelligence (Option A):
     * `Spell [SHIELD BASH]` (Cyan `[0.0, 0.85, 1.0]`) when interruptible in melee range.
     * `Spell [SPELL REFLECTION]` (Magenta/Purple `[0.78, 0.25, 0.95]`) when direct magic targets the tank (`UnitIsUnit("targettarget", "player")`) with shield equipped, also prioritized at range ($> 5\text{yd}$) or when Shield Bash is on CD.
     * `Spell [IMMUNE]` (Lead gray `[0.50, 0.50, 0.50]`) for protected boss abilities.
-  - **Player Castbar (Left-to-Right, `inverse: false`)**: Standard left-to-right player cast/channel tracking (Shoot, Throw, professions) designed for non-intrusive casting; automatically yields and suppresses whenever the target starts casting.
+  - **Player Castbar (Right-to-Left, `inverse: true`)**: Player cast/channel tracking with smooth right-to-left fill and dynamic spell icon. Automatically yields and suppresses whenever the target starts casting; cancels and hides instantly upon movement, jump, interrupt, or stopcast.
 
 ### 5. Central Text Alerts (`17 - Alerts warTank`)
 Minimalist alert group positioned at $y = 78$ directly above the procs, strictly limited to critical survival prompts:

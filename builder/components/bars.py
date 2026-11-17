@@ -14,7 +14,7 @@ Gestisce le barre centrali sincronizzate a 278px di larghezza:
      * Advisor intelligente: Shield Bash vs Spell Reflection vs Immune.
      * Colori dinamici: Magenta/Viola [0.78, 0.25, 0.95] per Reflect, Ciano [0.0, 0.85, 1.0] per Kick, Grigio [0.55, 0.55, 0.55] per Immune.
      * Dicitura Opzione A: NomeSpell [SHIELD BASH] / NomeSpell [SPELL REFLECTION] / NomeSpell [IMMUNE].
-   - Castbar - Player warTank (Aurabar 278x20px, y = 0, inverse = False, scorrimento da sinistra a destra).
+   - Castbar - Player warTank (Aurabar 278x20px, y = 0, inverse = True, scorrimento da destra a sinistra).
      * Mostra lanci/canalizzazioni del giocatore (stile Fire Mage) quando il bersaglio non sta castando.
 """
 from builder.core.helpers import make_subtext
@@ -149,7 +149,7 @@ def build_bars_auras() -> list[dict]:
     - 14 - Rage Bar warTank (Aurabar 278x14px a y = -20)
     - 16 - Castbar warTank (Gruppo 278x20px a y = +8)
     - Castbar - Target warTank (Aurabar 278x20px, inverse = True, scorrimento dx -> sx)
-    - Castbar - Player warTank (Aurabar 278x20px, inverse = False, scorrimento sx -> dx)
+    - Castbar - Player warTank (Aurabar 278x20px, inverse = True, scorrimento dx -> sx)
     """
     return [
         # =====================================================================
@@ -267,7 +267,9 @@ def build_bars_auras() -> list[dict]:
             "inverse": True,
             "icon": True,
             "icon_side": "LEFT",
-            "iconSource": -1,
+            "iconSource": 0,
+            "auto": False,
+            "displayIcon": "Interface\\Icons\\INV_Misc_QuestionMark",
             "customTextUpdate": "update",
             "customText": r"""function()
                 if not _G.PWHUD_GetTargetCastInfo then
@@ -328,11 +330,23 @@ def build_bars_auras() -> list[dict]:
                             end
                             local ki = _G.PWHUD_GetTargetCastInfo()
                             if ki and ki.icon then return ki.icon end
-                            local spell, rank, disp, icon = UnitCastingInfo("target") or UnitChannelInfo("target")
-                            return icon or "Interface\\Icons\\Temp"
+                            local spell, rank, disp, icon = UnitCastingInfo("target")
+                            if not spell then
+                                spell, rank, disp, icon = UnitChannelInfo("target")
+                            end
+                            return icon or "Interface\\Icons\\INV_Misc_QuestionMark"
                         end""",
                     },
-                    "untrigger": {"type": "custom", "custom": "function() return false end"}
+                    "untrigger": {
+                        "type": "custom",
+                        "custom": r"""function()
+                            if not _G.PWHUD_GetTargetCastInfo then
+                                """ + SHARED_CASTBAR_LOGIC_LUA + r"""
+                            end
+                            local ki = _G.PWHUD_GetTargetCastInfo()
+                            return (ki == nil)
+                        end"""
+                    }
                 },
                 "activeTriggerMode": -10,
             },
@@ -358,13 +372,18 @@ def build_bars_auras() -> list[dict]:
             "barColor": [0.0, 0.77, 1.0, 1.0],
             "backgroundColor": COLOR_CASTBAR_BG,
             "texture": TEXTURE_STATUSBAR,
-            "inverse": False,
+            "inverse": True,
             "icon": True,
             "icon_side": "LEFT",
-            "iconSource": -1,
+            "iconSource": 0,
+            "auto": False,
+            "displayIcon": "Interface\\Icons\\INV_Misc_QuestionMark",
             "customTextUpdate": "update",
             "customText": r"""function()
-                local spell = UnitCastingInfo("player") or UnitChannelInfo("player")
+                local spell = UnitCastingInfo("player")
+                if not spell then
+                    spell = UnitChannelInfo("player")
+                end
                 return spell or ""
             end""",
             "triggers": {
@@ -374,16 +393,25 @@ def build_bars_auras() -> list[dict]:
                         "custom_type": "status",
                         "check": "update",
                         "custom": r"""function()
-                            -- Priorita 1: Se il target sta castando, sopprime il cast del player
-                            local targetSpell = UnitCastingInfo("target") or UnitChannelInfo("target")
+                            -- Priorita 1: Se il target sta castando, sopprime completamente il cast del player
+                            local targetSpell = UnitCastingInfo("target")
+                            if not targetSpell then
+                                targetSpell = UnitChannelInfo("target")
+                            end
                             if targetSpell then return false end
 
-                            -- Priorita 2: Cast del giocatore
-                            local spell = UnitCastingInfo("player") or UnitChannelInfo("player")
+                            -- Priorita 2: Cast del giocatore (lancio standard o incanalato)
+                            local spell = UnitCastingInfo("player")
+                            if not spell then
+                                spell = UnitChannelInfo("player")
+                            end
                             return (spell ~= nil)
                         end""",
                         "customDuration": r"""function()
-                            local targetSpell = UnitCastingInfo("target") or UnitChannelInfo("target")
+                            local targetSpell = UnitCastingInfo("target")
+                            if not targetSpell then
+                                targetSpell = UnitChannelInfo("target")
+                            end
                             if targetSpell then return 0, 0 end
 
                             local spell, rank, disp, icon, sTime, eTime = UnitCastingInfo("player")
@@ -397,11 +425,27 @@ def build_bars_auras() -> list[dict]:
                             return 0, 0
                         end""",
                         "customIcon": r"""function()
-                            local spell, rank, disp, icon = UnitCastingInfo("player") or UnitChannelInfo("player")
-                            return icon or "Interface\\Icons\\Temp"
+                            local spell, rank, disp, icon = UnitCastingInfo("player")
+                            if not spell then
+                                spell, rank, disp, icon = UnitChannelInfo("player")
+                            end
+                            return icon or "Interface\\Icons\\INV_Misc_QuestionMark"
                         end""",
                     },
-                    "untrigger": {"type": "custom", "custom": "function() return false end"}
+                    "untrigger": {
+                        "type": "custom",
+                        "custom": r"""function()
+                            -- Se il target sta castando, nasconde il player cast
+                            local targetSpell = UnitCastingInfo("target")
+                            if not targetSpell then targetSpell = UnitChannelInfo("target") end
+                            if targetSpell then return true end
+
+                            -- Se il player ha interrotto o terminato il cast, untrigger immediato
+                            local spell = UnitCastingInfo("player")
+                            if not spell then spell = UnitChannelInfo("player") end
+                            return (spell == nil)
+                        end"""
+                    }
                 },
                 "activeTriggerMode": -10,
             },

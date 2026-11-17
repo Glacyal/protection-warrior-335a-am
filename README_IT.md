@@ -71,12 +71,12 @@ La riga inferiore adotta un'architettura auto-adattiva a centratura dinamica nat
   - Barra Oro brillante (`[1.0, 0.84, 0.0, 1.0]`) con Pixel Glow dorato `LibCustomGlow-1.0` all'accodamento di *Heroic Strike*, che prosegue lo scorrimento in perfetta continuità.
   - Barra Verde Smeraldo (`[0.1, 0.95, 0.2, 1.0]`) con Pixel Glow verde `LibCustomGlow-1.0` all'accodamento di *Cleave*, che prosegue lo scorrimento in perfetta continuità.
   - Reset istantaneo allo 0% e ritorno a rame neutro all'impatto dell'attacco o alla cancellazione dell'accodamento.
-- **16 - Castbar warTank ($278 \times 20\text{px}$ a $y = +8$)**: Barra di lancio speculare sincronizzata con intelligenza direzionale e priorità assoluta del target:
-  - **Castbar Bersaglio (Destra &rarr; Sinistra, `inverse: true`)**: Scorrimento inverso di pericolo da destra verso sinistra per incantesimi di mob e boss. Icona a sinistra, tempo residuo a destra e advisor contestuale Opzione A:
+- **16 - Castbar warTank ($278 \times 20\text{px}$ a $y = +8$)**: Gruppo castbar sincronizzato con direzione uniforme da destra a sinistra, icona dinamica e priorità assoluta del target:
+  - **Castbar Bersaglio (Destra &rarr; Sinistra, `inverse: true`)**: Scorrimento da destra a sinistra per lanci di mob e boss. Cancellazione istantanea su kick o stop (`ki == nil`), icona dinamica a sinistra, tempo residuo e advisor contestuale Opzione A:
     * `Spell [SHIELD BASH]` (Ciano `[0.0, 0.85, 1.0]`) per lanci interrompibili a raggio di mischia.
     * `Spell [SPELL REFLECTION]` (Magenta/Viola `[0.78, 0.25, 0.95]`) per magie dirette puntate sul tank con scudo equipaggiato, suggerito con priorità anche a distanza ($> 5\text{yd}$) o con Shield Bash in ricarica.
     * `Spell [IMMUNE]` (Grigio piombo `[0.50, 0.50, 0.50]`) per abilità protette non interrompibili.
-  - **Castbar Giocatore (Sinistra &rarr; Destra, `inverse: false`)**: Scorrimento classico in avanti da sinistra a destra per lanci del player (Tiro, Lancio, professioni) per lanci e canalizzazioni del tank; si nasconde istantaneamente per cedere il passo ogni volta che il bersaglio inizia a castare.
+  - **Castbar Giocatore (Destra &rarr; Sinistra, `inverse: true`)**: Scorrimento uniforme da destra verso sinistra per lanci e canalizzazioni del tank, con icona dinamica dell'abilità. Si sopprime all'istante quando il bersaglio nemico inizia un lancio prioritario; si annulla e scompare immediatamente in caso di movimento, salto, interruzione o stopcast.
 
 ### 5. Avvisi Testuali Centrali (`17 - Alerts warTank`)
 Gruppo allarmi minimalista posizionato a $y = 78$ sopra i procs, limitato rigorosamente alle sole emergenze critiche:

@@ -267,6 +267,17 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.17 Castbar Optimization: Right-to-Left Player Fill, Dynamic Spell Icon, Target Priority & Instant Interrupt/Kick Untrigger
+- **Unified Right-to-Left Direction (`inverse = True`)**:
+  - `Castbar - Player warTank` inverted to flow smoothly from right to left (`inverse: True`), matching the visual convention of the HUD.
+- **Dynamic Spell Icon Resolution**:
+  - Fixed `iconSource: 0` (Trigger Icon) and eliminated the Lua multi-return truncation bug in `customIcon`. The bar displays the exact texture of the active player spell or channel.
+- **Strict Target Priority & Immediate Kick Cancellation**:
+  - `Castbar - Player warTank` automatically yields to `Castbar - Target warTank` whenever the target begins casting.
+  - Replaced faulty `untrigger: function() return false end` with semantic `ki == nil` and `spell == nil` checks, ensuring both bars vanish instantaneously upon being kicked or interrupted.
+
+---
+
 ## 5. Technical Glossary & Tanking Acronyms (WotLK 3.3.5a)
 
 | Acronym | Full Name | Mechanics & Formulas |

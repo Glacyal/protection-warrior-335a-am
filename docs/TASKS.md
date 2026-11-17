@@ -673,3 +673,24 @@ floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$
     - Suite parallela: 10/10 test superati con successo in 0.44s.
     - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (75.080 caratteri).
     - Esecuzione CP (Commit & Push su `origin/master`).
+- [x] **Task 38: Revisione Castbar warTank (Scorrimento Player dx->sx, Icona Dinamica della Spell, Priorità Assoluta del Target e Untrigger Immediato su Kick/Interruzione)**:
+  - [x] **Direttiva Utente**:
+    - *"dobbiamo generare un task che vada a fixxare '16 - Castbar warTank': questa barra deve riportare la spell che io sto lanciando, mostrando il caricamento da destra verso sinistra, e se io la interrompo questa deve fermarsi pure, anche l'icona che viene mostrata deve essere la spell di riferimento, se invece il target sta per castarmi qualcosa questa è prioritaria e deve nascondere quella secondaria, se avviene il kick da parte mia o di qualcunaltro allora anche la primaria che scorre da destra verso sinistra deve annullarsi, riusciamo a fare questa modifica?"*
+  - [x] **Scorrimento Unificato da Destra verso Sinistra (`inverse = True`)**:
+    - `Castbar - Player warTank`: convertita da `inverse: False` a `inverse: True`, garantendo la medesima direzione di riempimento naturale da destra a sinistra richiesta per l'HUD.
+  - [x] **Risoluzione Bug Icona Dinamica della Spell del Player (`iconSource = 0` & Multi-Return Lua Fix)**:
+    - Risolto il blocco statico dell'icona: `iconSource` impostato a `0` (Trigger Icon) anziché `-1` (Manual Icon).
+    - Risolto il troncamento dei valori multipli in Lua (`local a, b, c, d = func1() or func2()` che scartava i ritorni successivi al primo): ora `UnitCastingInfo("player")` estrae correttamente il 4° parametro `icon`, con fallback condizionale pulito su `UnitChannelInfo("player")`.
+    - L'icona visualizzata corrisponde all'istante e fedelmente all'incantesimo o canalizzazione in esecuzione dal tank.
+  - [x] **Priorità Assoluta del Target & Soppressione Istantanea**:
+    - Quando il target nemico inizia un lancio (`UnitCastingInfo("target")` o `UnitChannelInfo("target")`), la castbar secondaria del giocatore si auto-sopprime immediatamente, cedendo il 100% dell'area alla barra primaria del bersaglio con l'advisor di kick/reflect.
+  - [x] **Risoluzione Bug Untrigger su Kick e Interruzioni**:
+    - Risolto il blocco del mancato untrigger (`untrigger: function() return false end`): in precedenza la barra rimaneva visibile a schermo anche dopo un kick o l'interruzione del movimento perché l'untrigger restituiva `false`.
+    - In `Castbar - Target warTank`: `untrigger` verifica `ki == nil`, cancellando e nascondendo istantaneamente la barra nel momento esatto in cui il bersaglio viene interrotto (da un kick del giocatore o di qualsiasi alleato nel gruppo/raid).
+    - In `Castbar - Player warTank`: `untrigger` verifica `spell == nil` o `targetSpell ~= nil`, interrompendo all'istante la barra se il giocatore si muove, salta o annulla il lancio, oppure se il bersaglio nemico inizia un cast prioritario.
+  - [x] **Aggiornamento Simulatore Web & Test Suite**:
+    - Aggiornato `docs/index.html` con gradiente e riempimento `player` da destra verso sinistra (`float: right`).
+    - Aggiornato `tests/test_interrupts.py` con verifiche vincolanti su `inverse = True` per entrambe le barre, `iconSource = 0` e presenza del controllo `ki == nil` e `spell == nil` negli untrigger.
+    - Suite parallela: 10/10 test superati con successo in 0.46s.
+    - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (75.792 caratteri).
+    - Esecuzione CP (Commit & Push su `origin/master`).

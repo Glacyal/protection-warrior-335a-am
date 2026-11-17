@@ -265,6 +265,17 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.17 Ottimizzazione Castbar: Scorrimento Player dx->sx, Icona Dinamica della Spell, Priorità Target & Untrigger Istantaneo su Kick/Interruzione
+- **Direzione Unificata da Destra a Sinistra (`inverse = True`)**:
+  - `Castbar - Player warTank` convertita a riempimento da destra a sinistra (`inverse: True`), perfettamente allineata all'ergonomia dell'HUD.
+- **Risoluzione Icona Dinamica della Spell**:
+  - Configurato `iconSource: 0` (Trigger Icon) e risolto il troncamento dei ritorni multipli in Lua: l'icona mostra fedelmente la texture esatta dell'abilità o canalizzazione lanciata dal giocatore.
+- **Priorità Assoluta del Bersaglio e Cancellazione Istantanea su Kick**:
+  - La barra del giocatore si sopprime istantaneamente non appena il bersaglio nemico inizia un lancio.
+  - Sostituito l'errato `untrigger: function() return false end` con controlli semantici immediati (`ki == nil` e `spell == nil`), garantendo la sparizione istantanea a schermo in caso di interruzione (kick da parte del player o di alleati, o movimento/stopcast del player).
+
+---
+
 ## 5. Glossario & Riferimento Sigle Tecniche Tanking (WotLK 3.3.5a)
 
 | Sigla | Termine Completo | Descrizione Meccanica e Formule WotLK |

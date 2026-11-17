@@ -8,7 +8,7 @@ Verifica:
    - logica intelligente: Shield Bash vs Spell Reflection vs Immune.
    - customText Opzione A: NomeSpell [SHIELD BASH] / [SPELL REFLECTION] / [IMMUNE].
 3. Castbar - Player warTank:
-   - aurabar 278x20px, inverse = False (scorrimento da sinistra verso destra).
+   - aurabar 278x20px, inverse = True (scorrimento da destra verso sinistra).
    - priorità assoluta del target: il cast del player viene soppresso se il target casta.
 4. Alert - Kick Now in 17 - Alerts warTank.
 """
@@ -56,7 +56,7 @@ def run_tests():
     assert player_cast["regionType"] == "aurabar"
     assert player_cast["width"] == 278
     assert player_cast["height"] == 20
-    assert player_cast["inverse"] is False, "Player castbar must have inverse=False (scorrimento sx -> dx)"
+    assert player_cast["inverse"] is True, "Player castbar must have inverse=True (scorrimento dx -> sx)"
     assert player_cast["icon"] is True
     assert player_cast["icon_side"] == "LEFT"
 
@@ -66,12 +66,18 @@ def run_tests():
     assert 'UnitChannelInfo("target")' in player_trigger
     assert 'if targetSpell then return false end' in player_trigger
 
+    # Verifiche Untrigger immediato su Kick / Interruzione e Trigger Icon
+    assert target_cast["iconSource"] == 0
+    assert player_cast["iconSource"] == 0
+    assert "ki == nil" in target_cast["triggers"][1]["untrigger"]["custom"]
+    assert "spell == nil" in player_cast["triggers"][1]["untrigger"]["custom"]
+
     # 4. Alert - Kick Now in 17 - Alerts warTank
     alert_kick = children_by_id["Alert - Kick Now"]
     assert alert_kick["regionType"] == "text"
     assert "INTERRUPT" in alert_kick["customText"]
 
-    print("[OK] test_interrupts completato con successo (Castbar Target dx->sx con Kick/Reflect e Castbar Player sx->dx validati).")
+    print("[OK] test_interrupts completato con successo (Castbar Target e Player entrambe dx->sx con Kick/Reflect, icone dinamiche e untrigger immediato validati).")
     return True
 
 if __name__ == "__main__":
