@@ -1,12 +1,3 @@
-"""
-Test Allarmi Pericolo & Boss Mechanics — Class Warrior (Protection)
-===================================================================
-Verifica:
-1. Emergency Low HP Alert (< 35% HP con suggerimento dinamico CD)
-2. Rimozione di Alert - Boss Enraged e Alert - Wrong Stance da 17 - Alerts warTank (Task 29)
-3. Tank Buster Alert (Database completo WotLK 3.3.5a: Soul Reaper, Phase Punch, Rune of Blood, Thorim, Halion)
-4. Vigilance Missing Alert (Focus Magic architecture)
-"""
 import os
 import sys
 
@@ -32,6 +23,11 @@ def run_tests():
     assert "Alert - Boss Enraged" not in children_by_id["17 - Alerts warTank"]["controlledChildren"]
     assert "Alert - Wrong Stance" not in children_by_id
     assert "Alert - Wrong Stance" not in children_by_id["17 - Alerts warTank"]["controlledChildren"]
+
+    # Rimozione Alert - Sword and Board da 17 - Alerts warTank (Task 31 - Regression Fix)
+    assert "Alert - Sword and Board" not in children_by_id, "Alert - Sword and Board (banner testuale) non deve essere presente"
+    assert "Alert - Sword and Board" not in children_by_id["17 - Alerts warTank"]["controlledChildren"]
+    assert children_by_id["17 - Alerts warTank"]["controlledChildren"] == ["Alert - Emergency CD", "Alert - Kick Now"]
 
     # Tank Buster Alert in 01 - Procs (Task 20 - WotLK 3.3.5a Database)
     buster = children_by_id["Tank Buster Alert"]
@@ -66,7 +62,7 @@ def run_tests():
     assert stance_warn["width"] == 30 and stance_warn["height"] == 30
     assert "Defensive Stance - Active" not in children_by_id, "Defensive Stance - Active deve essere rimossa per non mostrare l'icona in postura corretta"
 
-    print("[OK] test_danger_alerts completato: allarmi emergenza, tank buster e rimozione wrong stance/enraged conformi.")
+    print("[OK] test_danger_alerts completato: allarmi emergenza, tank buster e rimozione banner testuali conformi.")
     return True
 
 if __name__ == "__main__":

@@ -50,7 +50,7 @@ protection-warrior-335a-am/
 │       ├── utility.py               # 05-13 - Utility Row (Monili, Anello, Mantello, Tier, Incanti, Guanti, Shield Wall warTank, Last Stand warTank, Boots) a y = -45
 │       ├── bars.py                  # 14 - Rage Bar & 16 - Castbar warTank (Barra speculare Target dx->sx e Player sx->dx con advisor Bash/Reflect)
 │       ├── rotational.py            # 15 - Rotational Bar warTank (Indicatore statico di accodamento 278x7px a y = -7 con OnUpdate Pixel Glow HS/Cleave)
-│       ├── alerts.py                # 17 - Alerts warTank (Avvisi testuali centrali a y = 78)
+│       ├── alerts.py                # 17 - Alerts warTank (Avvisi testuali di emergenza minimalisti: Emergency CD, Kick Now)
 │       ├── stats.py                 # 18 - Stats Panel warTank (Pannello 88x60px a x = -190, y = -45)
 │       └── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px a x = 160, y = -7)
 │

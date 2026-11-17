@@ -2,9 +2,9 @@
 Modulo Componente: 17 - Alerts warTank
 ======================================
 Gestisce gli avvisi testuali contestuali centrali (a y = 78, sopra Procs):
-1. Alert - Sword and Board: Scritta singola centrata (|cFFFFFF00SHIELD SLAM READY!|r) con suono Drums.
-2. Alert - Emergency CD: Allarme critico salute (< 35% HP) con raccomandazione cooldown difensivo e suono.
-3. Alert - Kick Now: Avviso di interruzione cast prioritario.
+1. Alert - Emergency CD: Allarme critico salute (< 35% HP) con raccomandazione cooldown difensivo e suono.
+2. Alert - Kick Now: Avviso di interruzione cast prioritario.
+(Nota: Banner testuali invasivi per Boss Enraged, Wrong Stance e Sword and Board rimossi per garantire zero clutter).
 """
 from builder.core.constants import FONT_EXPRESSWAY
 
@@ -13,7 +13,6 @@ def build_alerts_auras() -> list[dict]:
     """
     Costruisce e restituisce l'aura del gruppo Alerts:
     - 17 - Alerts warTank (Group a y = 78)
-    - Alert - Sword and Board (Text con suono Drums)
     - Alert - Emergency CD (Text con suono d'allarme)
     - Alert - Kick Now
     """
@@ -29,55 +28,11 @@ def build_alerts_auras() -> list[dict]:
             "xOffset": 0,
             "yOffset": 78,
             "controlledChildren": [
-                "Alert - Sword and Board",
                 "Alert - Emergency CD",
                 "Alert - Kick Now",
             ],
         },
-        # 1. Alert - Sword and Board (SHIELD SLAM READY!)
-        {
-            "id": "Alert - Sword and Board",
-            "uid": "PWHUD_ALERT_SAB",
-            "parent": "17 - Alerts warTank",
-            "regionType": "text",
-            "internalVersion": 90,
-            "displayText": "|cFFFFFF00SHIELD SLAM READY!|r",
-            "fontSize": 20,
-            "font": FONT_EXPRESSWAY,
-            "outline": "OUTLINE",
-            "justify": "CENTER",
-            "color": [1, 1, 0, 1],
-            "selfPoint": "CENTER",
-            "anchorPoint": "CENTER",
-            "xOffset": 0,
-            "yOffset": 0,
-            "actions": {
-                "init": {"do_custom": False},
-                "start": {
-                    "do_sound": True,
-                    "sound": "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Drums.ogg",
-                    "sound_path": "Interface\\AddOns\\WeakAuras\\Media\\Sounds\\Drums.ogg",
-                    "sound_channel": "Master",
-                },
-                "finish": {"do_sound": False},
-            },
-            "triggers": {
-                1: {
-                    "trigger": {
-                        "type": "aura2",
-                        "unit": "player",
-                        "debuffType": "HELPFUL",
-                        "matchesShowOn": "showOnActive",
-                        "names": ["Sword and Board"],
-                        "spellIds": [46953, 50227],
-                        "useExactSpellId": False,
-                    },
-                    "untrigger": {},
-                },
-                "activeTriggerMode": -10,
-            },
-        },
-        # 2. Alert - Emergency CD (CRIT HP: POP CD!)
+        # 1. Alert - Emergency CD (CRIT HP: POP CD!)
         {
             "id": "Alert - Emergency CD",
             "uid": "PWHUD_ALERT_EMERGENCY",
@@ -136,7 +91,7 @@ def build_alerts_auras() -> list[dict]:
                 "activeTriggerMode": -10,
             },
         },
-        # 3. Alert - Kick Now (INTERRUPT TARGET!)
+        # 2. Alert - Kick Now (INTERRUPT TARGET!)
         {
             "id": "Alert - Kick Now",
             "uid": "PWHUD_ALERT_KICK",

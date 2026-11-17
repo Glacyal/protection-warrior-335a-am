@@ -514,3 +514,18 @@
     - Suite parallela: 10/10 test superati con successo in 0.43s.
     - Stringa WeakAuras rigenerata a 48.248 caratteri e sincronizzata in `docs/index.html`.
     - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 31: Risoluzione Definitiva Regressione Banner "SHIELD SLAM READY!" e Rimozione Completa di Alert - Sword and Board**:
+  - [x] **Root Cause Analysis della Regressione**:
+    - L'utente ha riscontrato a schermo la comparsa fissa della scritta gialla a 20pt `SHIELD SLAM READY!` al centro della visuale anche da fermi in città con 0 rabbia.
+    - Causa 1: Esistenza di `Alert - Sword and Board` dentro `17 - Alerts warTank`, ridondante rispetto all'icona del proc in `01 - Procs warTank`.
+    - Causa 2: Lo Spell ID `46953` inserito nel trigger era l'ID del talento passivo (Rango 1) nel ramo Protezione. Avendo il talento appreso, l'aura risultava perennemente attiva e non scompariva mai.
+  - [x] **Risoluzione & Pulizia**:
+    - Rimossa completamente l'aura `Alert - Sword and Board` da `builder/components/alerts.py` e da `controlledChildren` di `17 - Alerts warTank`.
+    - `17 - Alerts warTank` controlla ora solo `Alert - Emergency CD` e `Alert - Kick Now`.
+    - Rimossi `#alertSab` e `.alert-text-sab` da `docs/index.html`.
+    - Aggiornato `tests/test_danger_alerts.py` con asserzioni negative che certificano l'assenza totale di `Alert - Sword and Board`.
+    - Salvata la regola tassativa in `docs/MEMORY.md` (Sezione 2.3).
+    - Test Suite Parallela: 10/10 superati con successo in 0.47s.
+    - Stringa WeakAuras rigenerata a 48.017 caratteri e sincronizzata in `docs/index.html`.
+    - Esecuzione CP (Commit & Push su `origin/master`).

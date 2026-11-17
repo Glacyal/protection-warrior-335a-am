@@ -80,11 +80,10 @@ Centratura automatica orizzontale adattiva sotto la barra della rabbia con icone
   - **Castbar Giocatore (Sinistra &rarr; Destra, `inverse: false`)**: Scorrimento classico in avanti da sinistra a destra per lanci del player (Tiro, Lancio, professioni) in perfetto stile Fire Mage; si nasconde istantaneamente per cedere il passo ogni volta che il bersaglio inizia a castare.
 
 ### 5. Avvisi Testuali Centrali (`17 - Alerts warTank`)
-Gruppo posizionato a $y = 78$ appena sopra i procs:
-- **Alert - Sword and Board**: Scritta `SHIELD SLAM READY!` in giallo dorato con suono Tamburi di Guerra (*Drums*).
+Gruppo allarmi minimalista posizionato a $y = 78$ sopra i procs, limitato rigorosamente alle sole emergenze critiche:
 - **Alert - Emergency CD**: Notifica critica `CRIT HP: USE SHIELD WALL!` con allarme sonoro.
-- **Alert - Kick Now**: Indicazione `INTERRUPT: SHIELD BASH!`.
-*(Nota: I banner testuali invasivi per Boss Enraged e Wrong Stance sono stati rimossi per preservare la massima pulizia visiva centrale; gli errori di postura sono segnalati dall'icona compatta dedicata in `04 - Defensive Stance warTank`)*.
+- **Alert - Kick Now**: Chiamata di interruzione immediata `INTERRUPT: SHIELD BASH!`.
+*(Nota: Tutti i banner testuali rotazionali ed invasivi—inclusi Shield Slam Ready, Boss Enraged e Wrong Stance—sono stati eliminati definitivamente per garantire zero clutter visivo centrale; i proc rotazionali vivono esclusivamente come icone compatte in `01 - Procs warTank`)*.
 
 ### 6. Pannello Statistiche Tanking Stile Fury Warrior (`18 - Stats Panel warTank`)
 Box compatto $88 \times 60\text{px}$ a $x = -190, y = -45$ (sul lato sinistro della riga utility) con etichette bianche `Label:` e valori colorati con soglie dinamiche:

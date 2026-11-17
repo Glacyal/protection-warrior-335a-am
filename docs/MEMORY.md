@@ -85,6 +85,20 @@ Questo documento raccoglie la memoria tecnica, le particolarità delle API WotLK
 
 ---
 
+
+### 2.3 Divieto Assoluto di Banner Testuali Centrali per Proc e Divieto di Spell ID Talenti Passivi
+- **Regressione Analizzata (Sintomo)**:
+  Nella schermata di gioco compariva una gigantesca scritta testuale gialla **`SHIELD SLAM READY!`** fissa al centro dello schermo anche da fermi in città, fuori combattimento e con 0 rabbia.
+- **Root Cause Tecniche**:
+  1. **Duplicazione Invasiva**: Esisteva un'aura testuale centrale ridondante `Alert - Sword and Board` dentro `17 - Alerts warTank` che stampava testo a 20pt al centro dello schermo. Il proc di Sword and Board è già tracciato in modo pulito e completo dall'icona compatta con timer in `01 - Procs warTank`.
+  2. **Spell ID di Talento Passivo (`46953`)**: Il trigger `aura2` conteneva `spellIds: [46953, 50227]`. In WotLK 3.3.5a, `46953` è lo Spell ID del **talento passivo** (Rango 1) nel ramo Protezione. Avendo il talento appreso nell'albero, il motore di WeakAuras rilevava il talento permanentemente attivo sul giocatore, mantenendo la scritta `SHIELD SLAM READY!` sempre visibile a schermo.
+- **Regole Architetturali Tassative (DA NON RIPETERE MAI)**:
+  1. **Nessun Banner Testuale per Proc Rotazionali**: Tutti i proc del giocatore (`Sword and Board`, `Revenge Ready`, `Shield Block`, ecc.) devono vivere **esclusivamente come icone compatte** all'interno del gruppo dinamico `01 - Procs warTank`. È severamente vietato creare o mantenere banner testuali invasivi centrali per abilità rotazionali.
+  2. **Divieto di Spell ID di Talenti Passivi nei Trigger Buff**: Nei trigger `aura2` o nei controlli `UnitBuff` / `UnitDebuff`, verificare sempre che gli ID corrispondano esclusivamente al **buff temporaneo** applicato dal proc (es. `50227` per il proc Sword and Board) e MAI agli ID del talento passivo (es. `46953`).
+  3. **Zero Clutter Centrale**: Il gruppo `17 - Alerts warTank` è riservato unicamente ad allarmi critici di raid/sopravvivenza estrema (`Alert - Emergency CD`, `Alert - Kick Now`); tutti i banner testuali non essenziali (`Alert - Boss Enraged`, `Alert - Wrong Stance`, `Alert - Sword and Board`) sono stati eliminati definitivamente.
+
+---
+
 ## 3. Catalogo Debuff Letali dei Boss Monitorati
 
 | Nome Debuff | Spell ID | Incontro Raid | Soglia Allarme / Azione Richiesta |

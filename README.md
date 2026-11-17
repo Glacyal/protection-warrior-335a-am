@@ -80,11 +80,10 @@ Adaptive horizontal centering below the rage bar featuring $28 \times 28\text{px
   - **Player Castbar (Left-to-Right, `inverse: false`)**: Standard left-to-right player cast/channel tracking (Shoot, Throw, professions) aligned with Fire Mage; automatically yields and suppresses whenever the target starts casting.
 
 ### 5. Central Text Alerts (`17 - Alerts warTank`)
-Alert group positioned at $y = 78$ directly above the procs:
-- **Alert - Sword and Board**: Golden `SHIELD SLAM READY!` notification with War Drums sound.
+Minimalist alert group positioned at $y = 78$ directly above the procs, strictly limited to critical survival prompts:
 - **Alert - Emergency CD**: Critical notification `CRIT HP: USE SHIELD WALL!` with audio cue.
 - **Alert - Kick Now**: Clear interrupt prompt `INTERRUPT: SHIELD BASH!`.
-*(Note: Intrusive center text banners for Boss Enraged and Wrong Stance have been removed to preserve uncluttered screen space; stance errors are cleanly signaled by the compact icon in `04 - Defensive Stance warTank`)*.
+*(Note: All rotational and intrusive text banners—including Shield Slam Ready, Boss Enraged, and Wrong Stance—have been completely removed to preserve zero center-screen clutter; rotational procs live exclusively as compact icons in `01 - Procs warTank`)*.
 
 ### 6. Fury Warrior-Style Tanking Stats Panel (`18 - Stats Panel warTank`)
 Compact $88 \times 60\text{px}$ frame at $x = -190, y = -45$ (left of the utility row) featuring clean white labels `Label:` and color-coded values with dynamic thresholds:
