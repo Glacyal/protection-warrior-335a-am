@@ -1,3 +1,4 @@
+from builder.components.procs import SHARED_TARGET_DEBUFFS_LUA, TANK_BUSTER_CHECK_LUA
 """
 Modulo Componente: 05-13 - Utility Row (Warrior Protection)
 ===========================================================
@@ -1177,6 +1178,12 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         end
 
         local group = getRegion("Class Warrior (Protection)")
+        if not group then
+            local rage = getRegion("14 - Rage Bar warTank")
+            if rage and rage.GetParent then
+                group = rage:GetParent()
+            end
+        end
         if not group then return end
 
         local hasT1 = _G.PWHUD_CheckSlotEquipped and _G.PWHUD_CheckSlotEquipped(13)
@@ -1399,7 +1406,12 @@ end"""
 
 def make_slot_trigger_custom(slot: int) -> str:
     """Trigger custom per verificare se lo slot è equipaggiato."""
+    bootstrap = f"""    _G.PWHUD_InitCore = {SHARED_WARRIOR_CORE_BOOTSTRAP_LUA}
+    _G.PWHUD_CheckTargetDebuff = {SHARED_TARGET_DEBUFFS_LUA}
+    _G.PWHUD_CheckTankBusters = {TANK_BUSTER_CHECK_LUA}
+    if not _G.PWHUD_CoreInitDone or _G.PWHUD_BUILD_VER ~= 48 then _G.PWHUD_InitCore() end""" if slot == 13 else ""
     return f"""function(event, ...)
+{bootstrap}
     if (not _G.PWHUD_CoreInitDone or _G.PWHUD_BUILD_VER ~= 48) and _G.PWHUD_InitCore then _G.PWHUD_InitCore() end
     if not _G.PWHUD_CheckSlotEquipped then return false end
     return _G.PWHUD_CheckSlotEquipped({slot})

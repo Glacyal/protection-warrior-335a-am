@@ -99,6 +99,25 @@ Questo documento raccoglie la memoria tecnica, le particolarità delle API WotLK
 
 ---
 
+
+### 2.4 Il Gruppo Radice WeakAuras NON Esegue `actions.init`: Inizializzazione Core Tassativa nel Trigger di Trinket 1
+- **Regressione Analizzata (Sintomo)**:
+  Tutti i trinket (Slot 13 e 14), l'anello, il mantello, i bonus tier e i guanti della riga utility erano **completamente spariti** a schermo, e la riga non si auto-adattava più: rimanevano solo le 3 icone dei difensivi guerriero (`Shield Block`, `Shield Wall`, `Last Stand`) sbilanciate e bloccate a destra ($x = 28, 56, 84$).
+- **Root Cause Tecnica**:
+  In WeakAuras per WotLK 3.3.5a, i nodi di tipo `group` (come il master group `Class Warrior (Protection)`) **NON sono regioni visive attive** e il motore di WeakAuras **NON esegue mai il loro blocco `actions.init`**.
+  Tentando di deduplicare il codice inserendo `_G.PWHUD_InitCore` dentro `tree["d"]["actions"]["init"]`:
+  - `_G.PWHUD_InitCore` non veniva mai definito in memoria WoW.
+  - Di conseguenza `_G.PWHUD_CheckSlotEquipped` era `nil`, facendo restituire `false` a tutti gli slot equipaggiati (facendo sparire trinket, anello, mantello, ecc.).
+  - Di conseguenza `_G.PWHUD_UpdateUtilityRowPositions` era `nil`, impedendo alla barra di calcolare `activeOrder` e di auto-centrarsi.
+- **Regola Architetturale Tassativa (DA NON RIPETERE MAI)**:
+  1. **MAI affidare l'inizializzazione del core globale ad `actions.init` di un gruppo container**: in WeakAuras 3.3.5a l'inizializzazione deve essere compilata ed eseguita all'interno della prima aura reattiva garantita, nello specifico il trigger di **`05 - Trinket 1 warTank` (`slot == 13`)**.
+  2. In questo modo, appena WeakAuras compila il trigger di Trinket 1 all'avvio:
+     - `_G.PWHUD_InitCore` viene compilato ed eseguito immediatamente.
+     - Tutte le funzioni di scansione slot (`_G.PWHUD_CheckSlotEquipped`, `_G.PWHUD_CheckSlot`, `_G.PWHUD_UpdateUtilityRowPositions`, `_G.PWHUD_CheckTargetDebuff`, `_G.PWHUD_CheckTankBusters`) vengono registrate istantaneamente in `_G`.
+     - Tutti i trinket ricompaiono e la riga si auto-adatta fluidamente centrandosi sotto la barra rabbia.
+
+---
+
 ## 3. Catalogo Debuff Letali dei Boss Monitorati
 
 | Nome Debuff | Spell ID | Incontro Raid | Soglia Allarme / Azione Richiesta |

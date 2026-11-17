@@ -529,3 +529,16 @@
     - Test Suite Parallela: 10/10 superati con successo in 0.47s.
     - Stringa WeakAuras rigenerata a 48.017 caratteri e sincronizzata in `docs/index.html`.
     - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 32: Risoluzione Regressione Sparizione Trinket & Auto-Adattamento Barra Utility**:
+  - [x] **Root Cause**:
+    - In WeakAuras 3.3.5a, `actions.init` sul gruppo radice `Class Warrior (Protection)` (`regionType: "group"`) non viene mai eseguito dal motore dell'addon.
+    - Nel Task 28, credendo che `actions.init` del gruppo eseguisse il bootstrap, era stato rimosso `bootstrap` dal trigger di `05 - Trinket 1 warTank`.
+    - Non venendo mai definito `_G.PWHUD_InitCore`: `_G.PWHUD_CheckSlotEquipped` risultava `nil`, facendo restituire `false` a tutti gli slot (trinket, anello, mantello, guanti) e impedendo a `_G.PWHUD_UpdateUtilityRowPositions` di auto-adattare e centrare le icone.
+  - [x] **Risoluzione Definitiva**:
+    - Ripristinata l'inizializzazione tassativa `_G.PWHUD_InitCore` all'interno del trigger di `05 - Trinket 1 warTank` (`slot == 13`), includendo anche la definizione centralizzata di `_G.PWHUD_CheckTargetDebuff` e `_G.PWHUD_CheckTankBusters`.
+    - Inserito fallback difensivo in `_G.PWHUD_UpdateUtilityRowPositions` (`group = getRegion(...) or rage:GetParent()`).
+    - Rigenerata `IMPORT_STRING_v5.21.8.txt` (72.749 caratteri) e sincronizzato `docs/index.html`.
+    - Suite parallela: 10/10 test superati in 0.49s.
+    - Aggiornata memoria tecnica in `docs/MEMORY.md` (Sezione 2.4).
+    - Esecuzione CP (Commit & Push su `origin/master`).
