@@ -84,8 +84,7 @@ Alert group positioned at $y = 78$ directly above the procs:
 - **Alert - Sword and Board**: Golden `SHIELD SLAM READY!` notification with War Drums sound.
 - **Alert - Emergency CD**: Critical notification `CRIT HP: USE SHIELD WALL!` with audio cue.
 - **Alert - Kick Now**: Clear interrupt prompt `INTERRUPT: SHIELD BASH!`.
-- **Alert - Boss Enraged**: High-visibility notice `BOSS ENRAGED! POP CD!`.
-- **Alert - Wrong Stance**: Priority warning banner at $y = 64$ `>> DEFENSIVE STANCE REQUIRED! <<` with `RaidWarning.ogg` audio trigger when out of Stance 2 during combat.
+*(Note: Intrusive center text banners for Boss Enraged and Wrong Stance have been removed to preserve uncluttered screen space; stance errors are cleanly signaled by the compact icon in `04 - Defensive Stance warTank`)*.
 
 ### 6. Fury Warrior-Style Tanking Stats Panel (`18 - Stats Panel warTank`)
 Compact $88 \times 60\text{px}$ frame at $x = -190, y = -45$ (left of the utility row) featuring clean white labels `Label:` and color-coded values with dynamic thresholds:

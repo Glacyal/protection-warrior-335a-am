@@ -3,7 +3,7 @@ Test Allarmi Pericolo & Boss Mechanics — Class Warrior (Protection)
 ===================================================================
 Verifica:
 1. Emergency Low HP Alert (< 35% HP con suggerimento dinamico CD)
-2. Boss Enrage Alert
+2. Rimozione di Alert - Boss Enraged e Alert - Wrong Stance da 17 - Alerts warTank (Task 29)
 3. Tank Buster Alert (Database completo WotLK 3.3.5a: Soul Reaper, Phase Punch, Rune of Blood, Thorim, Halion)
 4. Vigilance Missing Alert (Focus Magic architecture)
 """
@@ -26,6 +26,12 @@ def run_tests():
     # Rimozione Boss Enrage Alert da 01 - Procs warTank (Task 13)
     assert "Boss Enrage Alert" not in children_by_id
     assert "Boss Enrage Alert" not in children_by_id["01 - Procs warTank"]["controlledChildren"]
+
+    # Rimozione Alert - Boss Enraged e Alert - Wrong Stance da 17 - Alerts warTank (Task 29)
+    assert "Alert - Boss Enraged" not in children_by_id
+    assert "Alert - Boss Enraged" not in children_by_id["17 - Alerts warTank"]["controlledChildren"]
+    assert "Alert - Wrong Stance" not in children_by_id
+    assert "Alert - Wrong Stance" not in children_by_id["17 - Alerts warTank"]["controlledChildren"]
 
     # Tank Buster Alert in 01 - Procs (Task 20 - WotLK 3.3.5a Database)
     buster = children_by_id["Tank Buster Alert"]
@@ -54,19 +60,13 @@ def run_tests():
     alert_em = children_by_id["Alert - Emergency CD"]
     assert "CRIT HP" in alert_em["customText"]
 
-    # Alert - Wrong Stance in 17 - Alerts warTank (Task 2)
-    alert_stance = children_by_id["Alert - Wrong Stance"]
-    assert "DEFENSIVE STANCE REQUIRED" in alert_stance["displayText"]
-    assert "GetShapeshiftForm() ~= 2" in alert_stance["triggers"][1]["trigger"]["custom"]
-    assert "PLAYER_REGEN_DISABLED" in alert_stance["triggers"][1]["trigger"]["events"]
-
     # 04 - Defensive Stance - OutOfStance (allineato a Fury Warrior: visibile solo out-of-stance in combat)
     stance_warn = children_by_id["04 - Defensive Stance - OutOfStance warTank"]
     assert "GetShapeshiftForm()" in stance_warn["triggers"][1]["trigger"]["custom"] and "form ~= 2" in stance_warn["triggers"][1]["trigger"]["custom"]
     assert stance_warn["width"] == 30 and stance_warn["height"] == 30
     assert "Defensive Stance - Active" not in children_by_id, "Defensive Stance - Active deve essere rimossa per non mostrare l'icona in postura corretta"
 
-    print("[OK] test_danger_alerts completato: allarmi emergenza, tank buster e wrong stance conformi.")
+    print("[OK] test_danger_alerts completato: allarmi emergenza, tank buster e rimozione wrong stance/enraged conformi.")
     return True
 
 if __name__ == "__main__":

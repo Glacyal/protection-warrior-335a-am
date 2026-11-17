@@ -464,20 +464,6 @@
     - Rigenerata `IMPORT_STRING_v5.21.8.txt` (72672 caratteri) e aggiornato `docs/index.html`.
     - Esecuzione CP (Commit & Push su `origin/master`).
 
-- [x] **Task 27: Fix Untrigger Reattivo Target Debuffs (Scomparsa Immediata Senza Target / Target Morto e Reattività al Cambio Target)**:
-  - [x] **Causa del Blocco Visivo Senza Target**:
-    - La funzione `untrigger` nei 3 tracker restituiva `false` staticamente (`function() return false end`), impedendo al motore di WeakAuras di disattivare l'aura una volta attivata, anche in assenza di target o a target morto.
-  - [x] **Implementazione Untrigger Dinamico Reattivo**:
-    - Creata la funzione `make_target_debuff_untrigger(kind)` che valuta `return not show`: non appena `show` diventa `false` (nessun bersaglio attivo `not UnitExists("target")`, bersaglio morto `UnitIsDead("target")`, non attaccabile `not UnitCanAttack` o fuori combattimento), l'aura riceve segnale `true` di untrigger e **scompare istantaneamente**.
-    - Inserito lo svuotamento cache `_G.PWHUD_TargetDebuffScanCache = nil` ad ogni deselezione bersaglio per azzerare lo stato.
-  - [x] **Aggiornamento Istantaneo al Cambio Target (`PLAYER_TARGET_CHANGED`)**:
-    - La scansione frame-accurate confronta `cache.targetGUID ~= tGUID`: non appena si seleziona un nuovo mob o boss, la cache viene ricalcolata al primo tick, mostrando i debuff mancanti sul nuovo target o nascondendo quelli già presenti con durata >10s/5s.
-  - [x] **Test Suite & Documentazione**:
-    - Aggiornato [`tests/test_target_debuffs.py`](file:///d:/0Progetti/protection-warrior-335a-am/tests/test_target_debuffs.py) a verifica di `untrigger` reattivo (`return not show`).
-    - Suite parallela: 10/10 test superati in 0.41s.
-    - Rigenerata `IMPORT_STRING_v5.21.8.txt` (72672 caratteri) e aggiornato `docs/index.html`.
-    - Esecuzione CP (Commit & Push su `origin/master`).
-
 
 - [x] **Task 28: Ottimizzazione e Deduplicazione Architetturale Stringa WeakAuras (Riduzione del 33.3% da 72.672 a 48.502 Caratteri a Parità Funzionale 1:1)**:
   - [x] **Audit e Root Cause Analysis delle Duplicazioni**:
@@ -497,4 +483,18 @@
     - Zero modifiche logiche: rilevamento debuff (Demoralizing Shout, Thunder Clap, Rend con filtro meccanici), allerta MISS, scomparsa con durata abbondante (>10s/5s), conto alla rovescia timer ($\le 10\text{s}$/$\le 5\text{s}$) e reattività al cambio o deselezione target rimangono identici.
     - Test Suite Parallela: 10/10 test superati con successo in 0.41s.
     - Rigenerazione di `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+    - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 29: Rimozione di Alert - Boss Enraged e Alert - Wrong Stance da 17 - Alerts warTank**:
+  - [x] **Contesto e De-cluttering su Richiesta Utente**:
+    - Rimossi gli allarmi testuali centrali `Alert - Boss Enraged` (notifica enrage boss) e `Alert - Wrong Stance` (scritta centrale ad alta priorità `>> DEFENSIVE STANCE REQUIRED! <<` con audio `RaidWarning.ogg` a $y = 64$) per eliminare elementi testuali non desiderati ed evitare sovrapposizioni e allarmi invasivi.
+    - L'icona compatta `04 - Defensive Stance - OutOfStance warTank` (30x30px a fianco degli urli ad $x = -168, y = 0$) rimane attiva e funzionante per segnalare chiaramente quando si è fuori postura difensiva in combattimento in piena conformità 1:1 con la suite Fury Warrior.
+  - [x] **Aggiornamento Componente Alerts (`builder/components/alerts.py`)**:
+    - Aggiornato `controlledChildren` del gruppo `17 - Alerts warTank` a 3 elementi: `Alert - Sword and Board`, `Alert - Emergency CD`, `Alert - Kick Now`.
+    - Eliminate integralmente le strutture dati dizionario per `Alert - Boss Enraged` e `Alert - Wrong Stance`.
+  - [x] **Aggiornamento Simulatore Web & Test Suite**:
+    - Rimosse le classi CSS, gli elementi DOM `#alertWrongStance` e `#alertEnrage`, i pulsanti preset e la gestione JS in `docs/index.html`. Aggiornata la pillola informativa su Defensive Stance.
+    - Aggiornato `tests/test_danger_alerts.py` con asserzioni negative a garanzia che entrambi gli allarmi siano assenti sia dall'albero complessivo che da `controlledChildren`.
+    - Esecuzione Test Suite Parallela: 10/10 superati con successo in 0.37s.
+    - Stringa di importazione WeakAuras rigenerata a **48.237 caratteri** e sincronizzata in `docs/index.html`.
     - Esecuzione CP (Commit & Push su `origin/master`).

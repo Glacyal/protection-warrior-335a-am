@@ -119,7 +119,7 @@ protection-warrior-335a-am/
 - In correct Defensive Stance (`GetShapeshiftForm() == 2`), the stance icon is **completely hidden** (zero visual clutter on screen, identical to Fury Warrior).
 - Dual-layer alert triggers whenever `UnitAffectingCombat("player") and GetShapeshiftForm() ~= 2`:
   1. Local indicator `04 - Defensive Stance - OutOfStance` (X: -158, Y: 0, 28x28px) with red alert color and `STANCE` subtext.
-  2. Master banner `Alert - Wrong Stance` (X: 0, Y: +64) at 20pt `>> DEFENSIVE STANCE REQUIRED! <<` accompanied by `RaidWarning.ogg`.
+  2. Compact icon `04 - Defensive Stance - OutOfStance warTank` (X: -168, Y: 0) alongside shouts (central intrusive text banner removed in Task 29).
 
 ### 4.3 Fury Warrior-Style Tanking Stats Engine & Non-Stacking Debuffs
 - Clean 5-row presentation with white labels `|cFFFFFFFFLabel:|r <Value>`:

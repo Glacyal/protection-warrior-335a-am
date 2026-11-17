@@ -84,8 +84,7 @@ Gruppo posizionato a $y = 78$ appena sopra i procs:
 - **Alert - Sword and Board**: Scritta `SHIELD SLAM READY!` in giallo dorato con suono Tamburi di Guerra (*Drums*).
 - **Alert - Emergency CD**: Notifica critica `CRIT HP: USE SHIELD WALL!` con allarme sonoro.
 - **Alert - Kick Now**: Indicazione `INTERRUPT: SHIELD BASH!`.
-- **Alert - Boss Enraged**: Notifica `BOSS ENRAGED! POP CD!`.
-- **Alert - Wrong Stance**: Allarme visivo prioritario a $y = 64$ `>> DEFENSIVE STANCE REQUIRED! <<` con suono `RaidWarning.ogg` attivo in combattimento quando fuori da Stance 2.
+*(Nota: I banner testuali invasivi per Boss Enraged e Wrong Stance sono stati rimossi per preservare la massima pulizia visiva centrale; gli errori di postura sono segnalati dall'icona compatta dedicata in `04 - Defensive Stance warTank`)*.
 
 ### 6. Pannello Statistiche Tanking Stile Fury Warrior (`18 - Stats Panel warTank`)
 Box compatto $88 \times 60\text{px}$ a $x = -190, y = -45$ (sul lato sinistro della riga utility) con etichette bianche `Label:` e valori colorati con soglie dinamiche:
