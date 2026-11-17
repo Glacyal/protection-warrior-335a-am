@@ -20,7 +20,7 @@ FONT_EXPRESSWAY = "Expressway"
 TEXTURE_STATUSBAR = "Interface\\TargetingFrame\\UI-StatusBar"
 TEXTURE_WHITE8X8 = "Interface\\Buttons\\WHITE8X8"
 
-# Palette Colori RGBA (Conformità con Fury Warrior & Fire Mage)
+# Palette Colori RGBA calibrata per il War Tank
 COLOR_RAGE = [0.78, 0.12, 0.12, 1.0]          # Crimson intenso base
 COLOR_RAGE_DUMP = [1.0, 0.65, 0.10, 1.0]     # Oro/Ambra per soglia scarico sicuro (>= 45)
 COLOR_RAGE_STARVED = [0.45, 0.05, 0.05, 1.0]  # Rosso scuro (< 25)

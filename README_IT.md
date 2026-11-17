@@ -76,7 +76,7 @@ La riga inferiore adotta un'architettura auto-adattiva a centratura dinamica nat
     * `Spell [SHIELD BASH]` (Ciano `[0.0, 0.85, 1.0]`) per lanci interrompibili a raggio di mischia.
     * `Spell [SPELL REFLECTION]` (Magenta/Viola `[0.78, 0.25, 0.95]`) per magie dirette puntate sul tank con scudo equipaggiato, suggerito con priorità anche a distanza ($> 5\text{yd}$) o con Shield Bash in ricarica.
     * `Spell [IMMUNE]` (Grigio piombo `[0.50, 0.50, 0.50]`) per abilità protette non interrompibili.
-  - **Castbar Giocatore (Destra &rarr; Sinistra, `inverse: true`)**: Scorrimento uniforme da destra verso sinistra per lanci e canalizzazioni del tank, con icona dinamica dell'abilità. Si sopprime all'istante quando il bersaglio nemico inizia un lancio prioritario; si annulla e scompare immediatamente in caso di movimento, salto, interruzione o stopcast.
+  - **Castbar Giocatore (Destra &rarr; Sinistra, `inverse: true`)**: Scorrimento uniforme da destra verso sinistra per lanci e canalizzazioni del tank, con icona dinamica dell'abilità (`auto: true`, unpacking canali WotLK 3.3.5a e binding diretto `SetTexture` sul frame). Si sopprime all'istante quando il bersaglio nemico inizia un lancio prioritario; si annulla e scompare immediatamente in caso di movimento, salto, interruzione o stopcast.
 
 ### 5. Avvisi Testuali Centrali (`17 - Alerts warTank`)
 Gruppo allarmi minimalista posizionato a $y = 78$ sopra i procs, limitato rigorosamente alle sole emergenze critiche:

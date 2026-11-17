@@ -115,7 +115,7 @@ Le tre barre orizzontali condividono la larghezza calibrata di **278 px**:
 | **05-13**| Utility Row (11 Icone) | 24-28 px | Y: -45, X centrato | Auto-centratura dinamica naturale per il War Tank: Trinket 1/2, Ring (Solo Ashen Band), Cloak (Solo Proc Ricamo Sartoria), Tier 10 (Solo 4P Shield Block), Enchants (Solo Proc Arma), Gloves (Solo Tinker), Shield Block warTank (Durata 10s & CD 30s/60s), Shield Wall warTank (-60%), Last Stand warTank (+30%), Boots (Solo Tinker/Regen) |
 | **14** | `14 - Rage Bar warTank` | 278x14 px | X: 0, Y: -20 | Barra risorsa con cambio colore a soglia Heroic Strike/Cleave (>= 45 Rage) |
 | **15** | `15 - Rotational Bar warTank` | 278x7 px | X: 0, Y: -7 | Swing timer mano primaria ad animazione progressiva e indicatore di accodamento (OnUpdate frame-rate): barra rame/bronzo a scorrimento tra attacchi con timer %c centrato, oro vibrante + Pixel Glow su Heroic Strike accodato, verde smeraldo + Pixel Glow su Cleave accodato |
-| **16** | `16 - Castbar warTank` | 278x20 px | X: 0, Y: +8 | Gruppo Castbar a direzione uniforme dx->sx: Target (Priorità 1 con cancellazione immediata su kick/stop) e Player (Priorità 2 con icona dinamica e stop su interruzione o cast nemico) per il tank) |
+| **16** | `16 - Castbar warTank` | 278x20 px | X: 0, Y: +8 | Gruppo Castbar a direzione uniforme dx->sx: Target (Priorità 1, Kick/Reflect Advisor, icona dinamica e cancellazione immediata su kick/stop) e Player (Priorità 2, riempimento dx->sx, icona dinamica della spell e interruzione immediata) per il War Tank |
 | **17** | `17 - Alerts warTank` | Testo 18-20pt | X: 0, Y: +78 | Avvisi critici di emergenza difensiva (<35% HP) e interruzione cast target (Zero Clutter: banner testuali rotazionali rimossi) |
 | **18** | `18 - Stats Panel warTank` | 96x60 px | X: -192, Y: -45 | Pannello difensivo compatto a 5 righe per il War Tank (Def 540 Cap, Armor in k, CTC 102.4%, Block %, Hit & Exp, senza % Armor e SBV per massima chiarezza e compattezza) |
 | **19** | `19 - Sunder Armor Tracker warTank` | 32x32 px | X: +160, Y: -7 | Monitoraggio cariche (1-5) e durata Sunder Armor (Warrior), Expose Armor (Rogue) o Acid Spit (Hunter); nome univoco anti-conflitto |
@@ -152,6 +152,32 @@ $$\text{targetX} = \left\lfloor \left( i - \frac{N + 1}{2} \right) \times \text{
    - `11 - Shield Wall warTank`: Riduzione -60% danno, durata 12s, CD e glow di emergenza a <35% HP.
    - `12 - Last Stand warTank`: Vita massima +30%, durata 20s, CD e glow di emergenza a <35% HP.
 8. **Stivali (`13`, Slot 8)**: Incluso se provvisti di tinker attivo d'Ingegneria (*Nitro Boosts*) oppure fallback di utilità su *Enraged Regeneration*.
+
+---
+
+### 4.7 Architettura Castbar Sincronizzata a Doppio Motore (`16 - Castbar warTank`)
+
+Il modulo `16 - Castbar warTank` ($278 \times 20\text{ px}$ a $x = 0, y = +8\text{ px}$) adotta un'architettura sincronizzata a doppio motore gerarchico a direzione unificata da destra verso sinistra (`inverse = True`):
+
+1. **Motore Primario — Castbar Bersaglio (`Castbar - Target warTank`, Priorità 1)**:
+   - Tracciamento in tempo reale di qualsiasi incantesimo o canalizzazione del target ostile corrente tramite `UnitCastingInfo("target")` o `UnitChannelInfo("target")`.
+   - **Kick & Spell Reflection Advisor Contestuale (Opzione A)**:
+     * `Spell [SHIELD BASH]` (Ciano brillante `[0.0, 0.85, 1.0]`): incantesimo interrompibile in corpo a corpo ($\le 5\text{ yd}$) con scudo equipaggiato e Shield Bash pronto.
+     * `Spell [PUMMEL]` / `Spell [STUN / CD]`: varianti contestuali in Berserker Stance o con Shield Bash in ricarica.
+     * `Spell [SPELL REFLECTION]` (Magenta/Viola `[0.78, 0.25, 0.95]`): magia diretta che punta il tank (`UnitIsUnit("targettarget", "player")`) con scudo equipaggiato e Spell Reflection pronto, prioritario anche a distanza ($> 5\text{ yd}$) o quando l'interruzione standard è in ricarica.
+     * `Spell [IMMUNE]` (Grigio piombo `[0.50, 0.50, 0.50]`): incantesimi protetti non interrompibili dai boss, scongiurando cooldown sprecati.
+   - **Cancellazione Istantanea su Kick**: Untrigger semantico immediato (`ki == nil`). Non appena il bersaglio riceve un'interruzione (dal tank o da chiunque nel gruppo/raid) o il lancio termina, la barra si chiude istantaneamente senza rimanere bloccata a schermo.
+
+2. **Motore Secondario — Castbar Giocatore (`Castbar - Player warTank`, Priorità 2)**:
+   - Tracciamento fluido dei lanci e delle canalizzazioni del tank (Tiro/Lancio armi a distanza, professioni, oggetti) con scorrimento da destra a sinistra (`inverse = True`).
+   - **Priorità Assoluta del Bersaglio**: Quando il target nemico inizia un lancio, la castbar del giocatore si sopprime automaticamente all'istante (`if targetSpell then return false end`), cedendo il pieno controllo visivo alla barra del bersaglio.
+   - **Annullamento Immediato su Interruzione**: Untrigger semantico (`spell == nil`): se il tank si muove, salta o preme ESC/stopcast, la barra svanisce istantaneamente.
+
+3. **Risoluzione Icone Dinamiche & Compatibilità WotLK 3.3.5a**:
+   - `auto = True`: WeakAuras preleva nativamente la texture dall'evento di trigger senza sovrascritture statiche.
+   - Unpacking corretto API 3.3.5a: `UnitCastingInfo` (texture 4° ritorno) e `UnitChannelInfo` (texture 3° ritorno, senza `rank`).
+   - Fallback universale con `GetSpellTexture(spell)` per il 100% di copertura.
+   - Override a livello di frame UI: `aura_env.region.icon:SetTexture(icon)` in `customText` e `customIcon` per garantire aggiornamento immediato della texture a ogni frame.
 
 ---
 

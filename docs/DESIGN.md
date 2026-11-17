@@ -76,16 +76,25 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
   - **Cleave accodato (`47520`)**: Barra aurabar sincronizzata in Verde Smeraldo (`[0.1, 0.95, 0.2, 1.0]`) che prosegue lo scorrimento progressivo dello swing timer, corredata da Emerald Green Pixel Glow `LibCustomGlow-1.0` (`PWHUD_CLEAVE_GLOW`).
   - Al reset del colpo (lancio di HS/Cleave o auto-attacco normale tramite `SWING_DAMAGE`/`SWING_MISSED`), lo swing timer riparte istantaneamente dallo 0% e l'effetto di accodamento svanisce.
 
-### 4.3 Castbar con Kick Advisor Integrato (`16 - Castbar warTank`)
+### 4.3 Castbar Sincronizzata a Doppio Motore (`16 - Castbar warTank`)
 - **Dimensioni**: 278 x 20 px
 - **Posizione**: X = 0, Y = +8 px
-- **Funzionalità Unica**:
-  - Mostra il tempo di lancio o canalizzazione del target corrente.
-  - **Interrompibile**: Colore Ciano (`#00E5FF`). Mostra l'etichetta dell'abilità raccomandata in base alla postura e allo scudo:
-    - In Defensive o Battle Stance con Scudo: `[KICK: Shield Bash]`
-    - In Berserker Stance: `[KICK: Pummel]`
-    - Se l'interruzione standard è in cooldown: `[STUN: Concussion Blow / Shockwave]`
-  - **Non Interrompibile**: Colore Grigio scuro con testo rosso `[IMMUNE]`, evitando al tank di sprecare il cooldown di Shield Bash o Pummel su spell non kiccabili.
+- **Direzione Unificata da Destra a Sinistra**: Entrambe le barre condividono lo scorrimento progressivo da destra verso sinistra (`inverse = True`), garantendo continuità visiva ergonomica con lo swing timer e l'intero display centrale.
+- **Motore Primario — Castbar Bersaglio (`Castbar - Target warTank`, Priorità 1)**:
+  - Tracciamento in tempo reale di qualsiasi incantesimo o canalizzazione del target ostile corrente.
+  - **Advisor Intelligente Trifasico (Opzione A)**:
+    - *Lancio Interrompibile a Raggio Mischia*: Colore Ciano brillante (`[0.0, 0.85, 1.0]`), dicitura `NomeSpell [SHIELD BASH]` (o `[PUMMEL]` / `[STUN / CD]`).
+    - *Magia Diretta sul Tank con Scudo*: Colore Magenta/Viola (`[0.78, 0.25, 0.95]`), dicitura `NomeSpell [SPELL REFLECTION]`, prioritario anche a distanza (> 5 yd) o con Shield Bash in ricarica.
+    - *Abilità Non Interrompibile*: Colore Grigio piombo (`[0.50, 0.50, 0.50]`), dicitura `NomeSpell [IMMUNE]`, evitando cooldown sprecati.
+  - **Cancellazione Istantanea su Kick**: Untrigger semantico immediato (`ki == nil`): non appena il bersaglio riceve un kick (dal tank o da alleati nel raid) o il cast termina, la barra svanisce all'istante.
+- **Motore Secondario — Castbar Giocatore (`Castbar - Player warTank`, Priorità 2)**:
+  - Tracciamento fluido dei lanci e delle canalizzazioni del tank (armi a distanza, professioni, oggetti) con scorrimento uniforme da destra verso sinistra.
+  - **Priorità Assoluta del Bersaglio**: Si sopprime automaticamente e istantaneamente non appena il target inizia un cast prioritario.
+  - **Annullamento Immediato su Interruzione**: Untrigger semantico immediato (`spell == nil`): se il tank interrompe il cast muovendosi, saltando o premendo ESC/stopcast, la barra scompare subito.
+- **Risoluzione Icone Dinamiche & Compatibilità WotLK 3.3.5a**:
+  - `auto = True`: WeakAuras preleva nativamente la texture dall'evento di trigger senza override statici.
+  - Unpacking conforme WotLK 3.3.5a: `UnitCastingInfo` (texture 4° ritorno) e `UnitChannelInfo` (texture 3° ritorno, senza `rank`).
+  - Fallback universale con `GetSpellTexture(spell)` e binding diretto `aura_env.region.icon:SetTexture(icon)` per aggiornamento frame a latenza zero.
 
 ### 4.4 Pannello Statistiche Difensive (`18 - Stats Panel warTank`)
 - **Dimensioni**: 96 x 60 px

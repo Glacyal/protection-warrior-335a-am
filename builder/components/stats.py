@@ -111,7 +111,7 @@ def make_stats_custom_text() -> str:
     local expColor = (exp >= 56) and "|cFF00FFFF" or ((exp >= 26) and "|cFF22C55E" or "|cFFFFFFFF")
     local hitExpStr = string.format("%s%.1f%%|r | %s%d Exp|r", hitColor, totalHit, expColor, exp)
 
-    -- FORMATTAZIONE FINALE A 5 RIGHE CON STILE FURY WARRIOR (|cFFFFFFFFLabel:|r <Valore>)
+    -- FORMATTAZIONE FINALE A 5 RIGHE (|cFFFFFFFFLabel:|r <Valore>)
     local res = string.format(
         "|cFFFFFFFFDef:|r %s\n|cFFFFFFFFArmor:|r %s\n|cFFFFFFFFCTC:|r %s\n|cFFFFFFFFBlock:|r %s\n|cFFFFFFFFHit:|r %s",
         defStr, armStr, ctcStr, blockStr, hitExpStr

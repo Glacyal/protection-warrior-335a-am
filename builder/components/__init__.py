@@ -1,6 +1,6 @@
 """
 Componenti modulari per la suite WeakAuras Protection Warrior 3.3.5a.
-Conformità strutturale e visiva 1:1 con Class Warrior (Fury) e Class Mage (TTW Fire).
+Conformità strutturale e architettura modulare nativa per Class Warrior (Protection).
 """
 from builder.components.procs import build_procs_auras
 from builder.components.buffs import build_buffs_auras

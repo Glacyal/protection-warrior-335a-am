@@ -76,7 +76,7 @@ The bottom row features a dynamic auto-adapting architecture engineered specific
     * `Spell [SHIELD BASH]` (Cyan `[0.0, 0.85, 1.0]`) when interruptible in melee range.
     * `Spell [SPELL REFLECTION]` (Magenta/Purple `[0.78, 0.25, 0.95]`) when direct magic targets the tank (`UnitIsUnit("targettarget", "player")`) with shield equipped, also prioritized at range ($> 5\text{yd}$) or when Shield Bash is on CD.
     * `Spell [IMMUNE]` (Lead gray `[0.50, 0.50, 0.50]`) for protected boss abilities.
-  - **Player Castbar (Right-to-Left, `inverse: true`)**: Player cast/channel tracking with smooth right-to-left fill and dynamic spell icon. Automatically yields and suppresses whenever the target starts casting; cancels and hides instantly upon movement, jump, interrupt, or stopcast.
+  - **Player Castbar (Right-to-Left, `inverse: true`)**: Player cast/channel tracking with smooth right-to-left fill and dynamic spell icon (`auto: true`, WotLK 3.3.5a channel unpacking, and direct `SetTexture` frame binding). Automatically yields and suppresses whenever the target starts casting; cancels and hides instantly upon movement, jump, interrupt, or stopcast.
 
 ### 5. Central Text Alerts (`17 - Alerts warTank`)
 Minimalist alert group positioned at $y = 78$ directly above the procs, strictly limited to critical survival prompts:

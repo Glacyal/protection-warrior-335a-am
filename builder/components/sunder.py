@@ -2,13 +2,13 @@
 Modulo Componente: 19 - Sunder Armor Tracker warTank
 ===================================================
 Gestisce il monitoraggio del debuff Sunder Armor / Expose Armor sul bersaglio corrente:
-- Nome univoco: '19 - Sunder Armor Tracker warTank' (previene conflitti/suffisso ' 2' con Fury Warrior o altre classi).
+- Nome univoco: '19 - Sunder Armor Tracker warTank'.
 - Posizione: xOffset = 160, yOffset = -7 (sul lato destro rispetto alla barra centrale, 32x32px).
 - Traccia:
   * Sunder Armor (Warrior all-specs: 47467, 25225, 11597, 7386, 485, 7340).
   * Expose Armor (Rogue all-specs: 48669, 11198, 11197, 8650, 8649, 8647).
   * Acid Spit (Hunter Exotic Worm: 55754, 55753, 55752, 55751, 55750, 55749, 55748, 55747).
-- Segnalazione intelligente 1:1 identica a Fury Warrior:
+- Segnalazione intelligente ottimizzata per il War Tank:
   * %c1 (INNER_BOTTOM, font 10): timer esatto di scadenza (es. 27s) o 'OFF' in rosso quando mancante in combat.
   * %c2 (INNER_TOP, font 12, y=-1): stack count ('x5' in verde, 'x1'-'x4' in bianco) o 'EA' in ciano.
   * customIcon: commuta dinamicamente all'icona di Expose Armor se presente sul bersaglio.
