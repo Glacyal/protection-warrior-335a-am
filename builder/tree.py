@@ -7,6 +7,7 @@ conformandosi al layout grafico, visivo e dimensionale (278px) di Fury Warrior e
 import copy
 from builder.core.constants import PROT_WARRIOR_LOAD
 from builder.components.utility import SHARED_WARRIOR_CORE_BOOTSTRAP_LUA
+from builder.components.procs import SHARED_TARGET_DEBUFFS_LUA, TANK_BUSTER_CHECK_LUA
 from builder.components import (
     build_procs_auras,
     build_buffs_auras,
@@ -87,7 +88,11 @@ def build_wa_tree(target_version: str = "5.21.8", load_override: dict = None) ->
             "actions": {
                 "init": {
                     "do_custom": True,
-                    "custom": f"_G.PWHUD_InitCore = {SHARED_WARRIOR_CORE_BOOTSTRAP_LUA}\n_G.PWHUD_InitCore()",
+                    "custom": f"""_G.PWHUD_InitCore = {SHARED_WARRIOR_CORE_BOOTSTRAP_LUA}
+_G.PWHUD_CheckTargetDebuff = {SHARED_TARGET_DEBUFFS_LUA}
+_G.PWHUD_CheckTankBusters = {TANK_BUSTER_CHECK_LUA}
+_G.PWHUD_InitCore()
+""",
                 },
                 "start": {},
                 "finish": {},

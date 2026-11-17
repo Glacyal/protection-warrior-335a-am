@@ -1399,10 +1399,8 @@ end"""
 
 def make_slot_trigger_custom(slot: int) -> str:
     """Trigger custom per verificare se lo slot è equipaggiato."""
-    bootstrap = f"""    _G.PWHUD_InitCore = {SHARED_WARRIOR_CORE_BOOTSTRAP_LUA}
-    if not _G.PWHUD_CoreInitDone or _G.PWHUD_BUILD_VER ~= 48 then _G.PWHUD_InitCore() end""" if slot == 13 else ""
     return f"""function(event, ...)
-{bootstrap}
+    if (not _G.PWHUD_CoreInitDone or _G.PWHUD_BUILD_VER ~= 48) and _G.PWHUD_InitCore then _G.PWHUD_InitCore() end
     if not _G.PWHUD_CheckSlotEquipped then return false end
     return _G.PWHUD_CheckSlotEquipped({slot})
 end"""

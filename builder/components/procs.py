@@ -395,28 +395,24 @@ end"""
 
 def make_target_debuff_trigger(kind: str) -> str:
     return f"""function(event, ...)
-    _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
-    local show = _G.PWHUD_CheckTargetDebuff("{kind}")
-    return show
+    if not _G.PWHUD_CheckTargetDebuff and _G.PWHUD_InitCore then _G.PWHUD_InitCore() end
+    return _G.PWHUD_CheckTargetDebuff and _G.PWHUD_CheckTargetDebuff("{kind}") or false
 end"""
 
 
 def make_target_debuff_untrigger(kind: str) -> str:
     return f"""function(event, ...)
-    _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
-    local show = _G.PWHUD_CheckTargetDebuff("{kind}")
+    local show = _G.PWHUD_CheckTargetDebuff and _G.PWHUD_CheckTargetDebuff("{kind}")
     return not show
 end"""
 
 
 def make_target_debuff_custom_duration(kind: str, default_dur: int) -> str:
     return f"""function()
-    _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
+    if not _G.PWHUD_CheckTargetDebuff then return 0, 0 end
     local show, status, rem, dur, expTime = _G.PWHUD_CheckTargetDebuff("{kind}")
-    if show then
-        if status == "EXPIRING" and expTime and expTime > 0 then
-            return dur or {default_dur}, expTime
-        end
+    if show and status == "EXPIRING" and expTime and expTime > 0 then
+        return dur or {default_dur}, expTime
     end
     return 0, 0
 end"""
@@ -424,7 +420,7 @@ end"""
 
 def make_target_debuff_custom_text(kind: str) -> str:
     return f"""function()
-    _G.PWHUD_CheckTargetDebuff = _G.PWHUD_CheckTargetDebuff or {SHARED_TARGET_DEBUFFS_LUA}
+    if not _G.PWHUD_CheckTargetDebuff then return "" end
     local show, status, rem = _G.PWHUD_CheckTargetDebuff("{kind}")
     if show then
         if status == "MISS" then
@@ -876,25 +872,24 @@ end""",
                         "custom_type": "status",
                         "check": "event",
                         "events": "UNIT_AURA,PLAYER_TARGET_CHANGED,COMBAT_LOG_EVENT_UNFILTERED,PLAYER_ENTERING_WORLD",
-                        "custom": f"""function(event, ...)
-                            _G.PWHUD_CheckTankBusters = _G.PWHUD_CheckTankBusters or {TANK_BUSTER_CHECK_LUA}
-                            local isAlert = _G.PWHUD_CheckTankBusters(true)
-                            return isAlert
+                        "custom": """function(event, ...)
+                            if not _G.PWHUD_CheckTankBusters and _G.PWHUD_InitCore then _G.PWHUD_InitCore() end
+                            return _G.PWHUD_CheckTankBusters and _G.PWHUD_CheckTankBusters(true) or false
                         end""",
-                        "customText": f"""function()
-                            _G.PWHUD_CheckTankBusters = _G.PWHUD_CheckTankBusters or {TANK_BUSTER_CHECK_LUA}
+                        "customText": """function()
+                            if not _G.PWHUD_CheckTankBusters then return "" end
                             local isAlert, name, count, icon, dur, exp, tag = _G.PWHUD_CheckTankBusters()
                             if isAlert then return tag or "SWAP" end
                             return ""
                         end""",
-                        "customIcon": f"""function()
-                            _G.PWHUD_CheckTankBusters = _G.PWHUD_CheckTankBusters or {TANK_BUSTER_CHECK_LUA}
+                        "customIcon": """function()
+                            if not _G.PWHUD_CheckTankBusters then return "Interface\\Icons\\Spell_Shadow_SoulLeech_3" end
                             local isAlert, name, count, icon = _G.PWHUD_CheckTankBusters()
                             if isAlert and icon then return icon end
                             return "Interface\\Icons\\Spell_Shadow_SoulLeech_3"
                         end""",
-                        "customDuration": f"""function()
-                            _G.PWHUD_CheckTankBusters = _G.PWHUD_CheckTankBusters or {TANK_BUSTER_CHECK_LUA}
+                        "customDuration": """function()
+                            if not _G.PWHUD_CheckTankBusters then return 0, 0 end
                             local isAlert, name, count, icon, dur, exp = _G.PWHUD_CheckTankBusters()
                             if isAlert and exp and exp > 0 then
                                 return dur or 0, exp

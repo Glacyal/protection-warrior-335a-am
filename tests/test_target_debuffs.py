@@ -12,6 +12,7 @@ Verifica:
 7. Rend filtra i bersagli immuni (Meccanici) sia in lingua inglese che italiana (return false, "IMMUNE").
 8. Icone con texture dinamiche native C++ risolte tramite select(3, GetSpellInfo(spellId)) per prevenire question mark '?'.
 9. Dual key subtext check (%c per timer/MISS in basso e acronimo al centro) con customText nel trigger e untrigger funzionante.
+10. Architettura snella e ottimizzata: SHARED_TARGET_DEBUFFS_LUA centralizzata in actions.init senza duplicazioni nei trigger.
 """
 import os
 import sys
@@ -20,6 +21,7 @@ def run_tests():
     root_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     sys.path.insert(0, root_dir)
     from builder.tree import build_wa_tree
+    from builder.components.procs import SHARED_TARGET_DEBUFFS_LUA
 
     tree = build_wa_tree()
     children_by_id = {c["id"]: c for c in tree["c"]}
@@ -40,6 +42,32 @@ def run_tests():
     ]
     assert ctrl == expected_order, f"Expected controlledChildren order {expected_order}, got {ctrl}"
 
+    # Verifica centralizzazione in root actions.init
+    root_init = tree["d"]["actions"]["init"]["custom"]
+    assert "_G.PWHUD_CheckTargetDebuff" in root_init
+    assert "_G.PWHUD_CheckTankBusters" in root_init
+
+    # Verifica logica globale SHARED_TARGET_DEBUFFS_LUA
+    assert "cache.demoFound" in SHARED_TARGET_DEBUFFS_LUA
+    assert "cache.clapFound" in SHARED_TARGET_DEBUFFS_LUA
+    assert "cache.rendFound" in SHARED_TARGET_DEBUFFS_LUA
+    assert 'rem <= 10.0' in SHARED_TARGET_DEBUFFS_LUA
+    assert 'rem <= 5.0' in SHARED_TARGET_DEBUFFS_LUA
+    assert 'return false, "HEALTHY"' in SHARED_TARGET_DEBUFFS_LUA
+    assert 'return true, "EXPIRING"' in SHARED_TARGET_DEBUFFS_LUA
+    assert 'return true, "MISS"' in SHARED_TARGET_DEBUFFS_LUA
+    assert "47437" in SHARED_TARGET_DEBUFFS_LUA  # Demo Shout Rank 8
+    assert "48560" in SHARED_TARGET_DEBUFFS_LUA  # Demoralizing Roar Rank 8 (Druid)
+    assert "50511" in SHARED_TARGET_DEBUFFS_LUA  # Curse of Weakness Rank 9 (Warlock)
+    assert "47502" in SHARED_TARGET_DEBUFFS_LUA  # Thunder Clap Rank 9
+    assert "55095" in SHARED_TARGET_DEBUFFS_LUA  # Frost Fever (DK)
+    assert "53696" in SHARED_TARGET_DEBUFFS_LUA  # Judgements of the Just (Paladin)
+    assert "48485" in SHARED_TARGET_DEBUFFS_LUA  # Infected Wounds (Druid)
+    assert "47465" in SHARED_TARGET_DEBUFFS_LUA  # Rend Rank 10
+    assert 'cType == "Mechanical"' in SHARED_TARGET_DEBUFFS_LUA
+    assert 'cType == "Meccanico"' in SHARED_TARGET_DEBUFFS_LUA
+    assert 'unitCaster == "player"' in SHARED_TARGET_DEBUFFS_LUA
+
     # 2. Demoralizing Shout Tracker
     demo = children_by_id["Demoralizing Shout Tracker warTank"]
     assert demo["width"] == 34 and demo["height"] == 34
@@ -49,19 +77,9 @@ def run_tests():
     trig_demo = demo["triggers"][1]["trigger"]
     assert trig_demo["check"] == "update", f"Expected check 'update', got {trig_demo.get('check')}"
     assert "_G.PWHUD_CheckTargetDebuff" in trig_demo["custom"]
-    assert "cache.demoFound" in trig_demo["custom"]
-    assert 'rem <= 10.0' in trig_demo["custom"]
-    assert 'return false, "HEALTHY"' in trig_demo["custom"]
-    assert 'return true, "EXPIRING"' in trig_demo["custom"]
-    assert 'return true, "MISS"' in trig_demo["custom"]
-    # Check untrigger reactive hiding (no target, dead target, OOC)
+    assert '"DEMO"' in trig_demo["custom"]
     untrig_demo = demo["triggers"][1]["untrigger"]
     assert "return not show" in untrig_demo["custom"], "Untrigger must return not show to hide when no target"
-    # Check raid-aware spell IDs in shared logic
-    custom_demo = trig_demo["custom"]
-    assert "47437" in custom_demo  # Demo Shout Rank 8
-    assert "48560" in custom_demo  # Demoralizing Roar Rank 8 (Druid)
-    assert "50511" in custom_demo  # Curse of Weakness Rank 9 (Warlock)
     assert demo["customText"] != ""
     assert trig_demo["customText"] != ""
     assert trig_demo["customDuration"] != ""
@@ -75,18 +93,9 @@ def run_tests():
     trig_clap = clap["triggers"][1]["trigger"]
     assert trig_clap["check"] == "update"
     assert "_G.PWHUD_CheckTargetDebuff" in trig_clap["custom"]
-    assert "cache.clapFound" in trig_clap["custom"]
-    assert 'rem <= 10.0' in trig_clap["custom"]
-    assert 'return false, "HEALTHY"' in trig_clap["custom"]
-    assert 'return true, "EXPIRING"' in trig_clap["custom"]
+    assert '"CLAP"' in trig_clap["custom"]
     untrig_clap = clap["triggers"][1]["untrigger"]
     assert "return not show" in untrig_clap["custom"], "Untrigger must return not show to hide when no target"
-    # Check raid-aware spell IDs in shared logic
-    custom_clap = trig_clap["custom"]
-    assert "47502" in custom_clap  # Thunder Clap Rank 9
-    assert "55095" in custom_clap  # Frost Fever (DK)
-    assert "53696" in custom_clap  # Judgements of the Just (Paladin)
-    assert "48485" in custom_clap  # Infected Wounds (Druid)
     assert "GetSpellInfo(47502)" in trig_clap["customIcon"]
 
     # 4. Rend Tracker
@@ -97,19 +106,9 @@ def run_tests():
     trig_rend = rend["triggers"][1]["trigger"]
     assert trig_rend["check"] == "update"
     assert "_G.PWHUD_CheckTargetDebuff" in trig_rend["custom"]
-    assert "cache.rendFound" in trig_rend["custom"]
-    assert 'rem <= 5.0' in trig_rend["custom"]
-    assert 'return false, "HEALTHY"' in trig_rend["custom"]
-    assert 'return true, "EXPIRING"' in trig_rend["custom"]
+    assert '"REND"' in trig_rend["custom"]
     untrig_rend = rend["triggers"][1]["untrigger"]
     assert "return not show" in untrig_rend["custom"], "Untrigger must return not show to hide when no target"
-    # Check mechanical immunity filter
-    custom_rend = trig_rend["custom"]
-    assert 'cType == "Mechanical"' in custom_rend
-    assert 'cType == "Meccanico"' in custom_rend
-    # Check player filter
-    assert 'unitCaster == "player"' in custom_rend
-    assert "47465" in custom_rend  # Rend Rank 10
     assert "GetSpellInfo(47465)" in trig_rend["customIcon"]
 
     # 5. Dual key subtext check
@@ -120,7 +119,7 @@ def run_tests():
         assert st.get("text_text") == "%c"
         assert st.get("anchorPoint") == "INNER_BOTTOM"
 
-    print("[OK] test_target_debuffs completato con successo (tutti i 3 debuff tracker verificati con untrigger reattivo).")
+    print("[OK] test_target_debuffs completato con successo (tutti i 3 debuff tracker verificati con untrigger reattivo e zero duplicazioni).")
     return True
 
 if __name__ == "__main__":

@@ -463,3 +463,38 @@
     - Suite parallela: 10/10 test superati in 0.41s.
     - Rigenerata `IMPORT_STRING_v5.21.8.txt` (72672 caratteri) e aggiornato `docs/index.html`.
     - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 27: Fix Untrigger Reattivo Target Debuffs (Scomparsa Immediata Senza Target / Target Morto e Reattività al Cambio Target)**:
+  - [x] **Causa del Blocco Visivo Senza Target**:
+    - La funzione `untrigger` nei 3 tracker restituiva `false` staticamente (`function() return false end`), impedendo al motore di WeakAuras di disattivare l'aura una volta attivata, anche in assenza di target o a target morto.
+  - [x] **Implementazione Untrigger Dinamico Reattivo**:
+    - Creata la funzione `make_target_debuff_untrigger(kind)` che valuta `return not show`: non appena `show` diventa `false` (nessun bersaglio attivo `not UnitExists("target")`, bersaglio morto `UnitIsDead("target")`, non attaccabile `not UnitCanAttack` o fuori combattimento), l'aura riceve segnale `true` di untrigger e **scompare istantaneamente**.
+    - Inserito lo svuotamento cache `_G.PWHUD_TargetDebuffScanCache = nil` ad ogni deselezione bersaglio per azzerare lo stato.
+  - [x] **Aggiornamento Istantaneo al Cambio Target (`PLAYER_TARGET_CHANGED`)**:
+    - La scansione frame-accurate confronta `cache.targetGUID ~= tGUID`: non appena si seleziona un nuovo mob o boss, la cache viene ricalcolata al primo tick, mostrando i debuff mancanti sul nuovo target o nascondendo quelli già presenti con durata >10s/5s.
+  - [x] **Test Suite & Documentazione**:
+    - Aggiornato [`tests/test_target_debuffs.py`](file:///d:/0Progetti/protection-warrior-335a-am/tests/test_target_debuffs.py) a verifica di `untrigger` reattivo (`return not show`).
+    - Suite parallela: 10/10 test superati in 0.41s.
+    - Rigenerata `IMPORT_STRING_v5.21.8.txt` (72672 caratteri) e aggiornato `docs/index.html`.
+    - Esecuzione CP (Commit & Push su `origin/master`).
+
+
+- [x] **Task 28: Ottimizzazione e Deduplicazione Architetturale Stringa WeakAuras (Riduzione del 33.3% da 72.672 a 48.502 Caratteri a Parità Funzionale 1:1)**:
+  - [x] **Audit e Root Cause Analysis delle Duplicazioni**:
+    1. **Trinket 1 Duplicate Bootstrap (67.065 caratteri uncompressed eliminati)**:
+       - Rilevata la duplicazione ridondante dell'intero blocco `SHARED_WARRIOR_CORE_BOOTSTRAP_LUA` dentro il trigger di `05 - Trinket 1 warTank` (già presente e inizializzato nativamente in `actions.init` del master group).
+       - Sostituito con chiamata snella `if (not _G.PWHUD_CoreInitDone or _G.PWHUD_BUILD_VER ~= 48) and _G.PWHUD_InitCore then _G.PWHUD_InitCore() end`.
+    2. **Target Debuffs Template Duplication (~100.000 caratteri uncompressed eliminati)**:
+       - `SHARED_TARGET_DEBUFFS_LUA` (6.7 KB) era interpolato 15 volte (trigger, untrigger, customDuration, customText in trigger, customText in aura root per 3 auras).
+       - Centralizzata l'inizializzazione in `_G.PWHUD_CheckTargetDebuff` all'interno di `actions.init` del root group. I trigger invocano ora semplicemente la funzione globale in 2 righe.
+    3. **Tank Buster Alert Duplication (~46.000 caratteri uncompressed eliminati)**:
+       - `TANK_BUSTER_CHECK_LUA` (11.7 KB contenente il database raid WotLK) era interpolato 4 volte (custom, customText, customIcon, customDuration).
+       - Centralizzato in `_G.PWHUD_CheckTankBusters` in `actions.init`. I trigger sono ora semplici consumatori della funzione globale.
+  - [x] **Metriche di Riduzione**:
+    - **Dimensione Uncompressed AceSerialized**: ridotta da **627.447 caratteri a 363.851 caratteri** (risparmio netto di **263.596 caratteri**, riduzione del **42.0%** del payload in memoria).
+    - **Stringa di Importazione (`IMPORT_STRING_v5.21.8.txt`)**: ridotta da **72.672 caratteri a 48.502 caratteri** (risparmio netto di **24.170 caratteri**, riduzione del **33.3%**).
+  - [x] **Integrità Funzionale al 100%**:
+    - Zero modifiche logiche: rilevamento debuff (Demoralizing Shout, Thunder Clap, Rend con filtro meccanici), allerta MISS, scomparsa con durata abbondante (>10s/5s), conto alla rovescia timer ($\le 10\text{s}$/$\le 5\text{s}$) e reattività al cambio o deselezione target rimangono identici.
+    - Test Suite Parallela: 10/10 test superati con successo in 0.41s.
+    - Rigenerazione di `IMPORT_STRING_v5.21.8.txt` e sincronizzazione simulatore web `docs/index.html`.
+    - Esecuzione CP (Commit & Push su `origin/master`).
