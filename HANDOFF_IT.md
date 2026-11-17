@@ -276,6 +276,16 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.18 Risoluzione Definitiva Icona Castbar: Auto Trigger Icon, Unpacking Canale 3.3.5a & Aggiornamento Diretto Texture Frame
+- **Eliminazione Punto Interrogativo Rosso (`INV_Misc_QuestionMark`)**:
+  - Identificato che `auto: False` costringeva WeakAuras a ignorare `customIcon` per visualizzare `displayIcon` su ogni frame. Impostato `auto: True` ed eliminato `INV_Misc_QuestionMark`.
+- **Compatibilità API WotLK 3.3.5a per `UnitChannelInfo`**:
+  - Corretto l'ordine dei ritorni per gli incantesimi canalizzati: in 3.3.5a restituisce `name, text, texture, startTimeMS, endTimeMS` (la texture è il 3° parametro, non il 4°).
+- **Binding Diretto Texture Frame & Fallback**:
+  - Integrato fallback con `GetSpellTexture(spell)` e mutazione diretta del frame `aura_env.region.icon:SetTexture(icon)` sia in `customText` che in `customIcon` per garantire l'aggiornamento immediato e privo di latenza dell'icona a schermo.
+
+---
+
 ## 5. Glossario & Riferimento Sigle Tecniche Tanking (WotLK 3.3.5a)
 
 | Sigla | Termine Completo | Descrizione Meccanica e Formule WotLK |

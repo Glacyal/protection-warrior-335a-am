@@ -15,7 +15,7 @@ Gestisce le barre centrali sincronizzate a 278px di larghezza:
      * Colori dinamici: Magenta/Viola [0.78, 0.25, 0.95] per Reflect, Ciano [0.0, 0.85, 1.0] per Kick, Grigio [0.55, 0.55, 0.55] per Immune.
      * Dicitura Opzione A: NomeSpell [SHIELD BASH] / NomeSpell [SPELL REFLECTION] / NomeSpell [IMMUNE].
    - Castbar - Player warTank (Aurabar 278x20px, y = 0, inverse = True, scorrimento da destra a sinistra).
-     * Mostra lanci/canalizzazioni del giocatore (stile Fire Mage) quando il bersaglio non sta castando.
+     * Mostra lanci/canalizzazioni del giocatore con icona dinamica, soppressione su cast del bersaglio e stop immediato su interruzione.
 """
 from builder.core.helpers import make_subtext
 from builder.core.constants import (
@@ -35,10 +35,23 @@ SHARED_CASTBAR_LOGIC_LUA = r"""_G.PWHUD_GetTargetCastInfo = function()
     local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo("target")
     local isChannel = false
     if not spell then
-        spell, rank, displayName, icon, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo("target")
-        isChannel = true
+        local cName, cText, cTexture, cStart, cEnd, cTrade, cNotInt = UnitChannelInfo("target")
+        if cName then
+            spell = cName
+            displayName = cText
+            icon = cTexture
+            startTime = cStart
+            endTime = cEnd
+            isTradeSkill = cTrade
+            notInterruptible = cNotInt
+            isChannel = true
+        end
     end
     if not spell then return nil end
+
+    if not icon and spell and GetSpellTexture then
+        icon = GetSpellTexture(spell)
+    end
 
     local now = GetTime()
     local rem = (endTime and (endTime / 1000 - now)) or 0
@@ -268,8 +281,8 @@ def build_bars_auras() -> list[dict]:
             "icon": True,
             "icon_side": "LEFT",
             "iconSource": 0,
-            "auto": False,
-            "displayIcon": "Interface\\Icons\\INV_Misc_QuestionMark",
+            "auto": True,
+            "displayIcon": "Interface\\Icons\\Temp",
             "customTextUpdate": "update",
             "customText": r"""function()
                 if not _G.PWHUD_GetTargetCastInfo then
@@ -279,6 +292,9 @@ def build_bars_auras() -> list[dict]:
                 if not ki then return "" end
                 local reg = aura_env and aura_env.region
                 local bar = reg and (reg.bar or (reg.SetVertexColor and reg))
+                if reg and reg.icon and reg.icon.SetTexture and ki.icon then
+                    reg.icon:SetTexture(ki.icon)
+                end
                 if ki.actionType == "REFLECT" then
                     if bar and bar.SetVertexColor then bar:SetVertexColor(0.78, 0.25, 0.95, 1.0) end
                     return string.format("|cFFFF55FF%s [%s]|r", ki.spell, ki.action)
@@ -315,12 +331,12 @@ def build_bars_auras() -> list[dict]:
                                 return ki.duration, ki.endTime / 1000
                             end
                             local spell, rank, disp, icon, sTime, eTime = UnitCastingInfo("target")
-                            if not spell then
-                                spell, rank, disp, icon, sTime, eTime = UnitChannelInfo("target")
+                            if spell and sTime and eTime then
+                                return (eTime - sTime) / 1000, eTime / 1000
                             end
-                            if sTime and eTime then
-                                local dur = (eTime - sTime) / 1000
-                                return dur, eTime / 1000
+                            local cName, cText, cTexture, cStart, cEnd = UnitChannelInfo("target")
+                            if cName and cStart and cEnd then
+                                return (cEnd - cStart) / 1000, cEnd / 1000
                             end
                             return 0, 0
                         end""",
@@ -329,12 +345,25 @@ def build_bars_auras() -> list[dict]:
                                 """ + SHARED_CASTBAR_LOGIC_LUA + r"""
                             end
                             local ki = _G.PWHUD_GetTargetCastInfo()
-                            if ki and ki.icon then return ki.icon end
-                            local spell, rank, disp, icon = UnitCastingInfo("target")
-                            if not spell then
-                                spell, rank, disp, icon = UnitChannelInfo("target")
+                            local icon = ki and ki.icon
+                            if not icon then
+                                local spell, rank, disp, tIcon = UnitCastingInfo("target")
+                                if not spell then
+                                    local cName, cText, cTexture = UnitChannelInfo("target")
+                                    if cName then
+                                        spell = cName
+                                        tIcon = cTexture
+                                    end
+                                end
+                                if not tIcon and spell and GetSpellTexture then
+                                    tIcon = GetSpellTexture(spell)
+                                end
+                                icon = tIcon
                             end
-                            return icon or "Interface\\Icons\\INV_Misc_QuestionMark"
+                            if icon and aura_env and aura_env.region and aura_env.region.icon and aura_env.region.icon.SetTexture then
+                                aura_env.region.icon:SetTexture(icon)
+                            end
+                            return icon or "Interface\\Icons\\Temp"
                         end""",
                     },
                     "untrigger": {
@@ -357,7 +386,7 @@ def build_bars_auras() -> list[dict]:
         },
 
         # =====================================================================
-        # 16b - CASTBAR PLAYER (SCORRIMENTO DA SINISTRA VERSO DESTRA - NORMALE)
+        # 16b - CASTBAR PLAYER (SCORRIMENTO DA DESTRA VERSO SINISTRA - INVERSE)
         # =====================================================================
         {
             "id": "Castbar - Player warTank",
@@ -376,15 +405,26 @@ def build_bars_auras() -> list[dict]:
             "icon": True,
             "icon_side": "LEFT",
             "iconSource": 0,
-            "auto": False,
-            "displayIcon": "Interface\\Icons\\INV_Misc_QuestionMark",
+            "auto": True,
+            "displayIcon": "Interface\\Icons\\Temp",
             "customTextUpdate": "update",
             "customText": r"""function()
-                local spell = UnitCastingInfo("player")
+                local spell, rank, disp, icon = UnitCastingInfo("player")
                 if not spell then
-                    spell = UnitChannelInfo("player")
+                    local cName, cText, cTexture = UnitChannelInfo("player")
+                    if cName then
+                        spell = cName
+                        icon = cTexture
+                    end
                 end
-                return spell or ""
+                if not spell then return "" end
+                if not icon and GetSpellTexture then
+                    icon = GetSpellTexture(spell)
+                end
+                if icon and aura_env and aura_env.region and aura_env.region.icon and aura_env.region.icon.SetTexture then
+                    aura_env.region.icon:SetTexture(icon)
+                end
+                return spell
             end""",
             "triggers": {
                 1: {
@@ -415,21 +455,31 @@ def build_bars_auras() -> list[dict]:
                             if targetSpell then return 0, 0 end
 
                             local spell, rank, disp, icon, sTime, eTime = UnitCastingInfo("player")
-                            if not spell then
-                                spell, rank, disp, icon, sTime, eTime = UnitChannelInfo("player")
+                            if spell and sTime and eTime then
+                                return (eTime - sTime) / 1000, eTime / 1000
                             end
-                            if sTime and eTime then
-                                local dur = (eTime - sTime) / 1000
-                                return dur, eTime / 1000
+                            local cName, cText, cTexture, csTime, ceTime = UnitChannelInfo("player")
+                            if cName and csTime and ceTime then
+                                return (ceTime - csTime) / 1000, ceTime / 1000
                             end
                             return 0, 0
                         end""",
                         "customIcon": r"""function()
                             local spell, rank, disp, icon = UnitCastingInfo("player")
                             if not spell then
-                                spell, rank, disp, icon = UnitChannelInfo("player")
+                                local cName, cText, cTexture = UnitChannelInfo("player")
+                                if cName then
+                                    spell = cName
+                                    icon = cTexture
+                                end
                             end
-                            return icon or "Interface\\Icons\\INV_Misc_QuestionMark"
+                            if not icon and spell and GetSpellTexture then
+                                icon = GetSpellTexture(spell)
+                            end
+                            if icon and aura_env and aura_env.region and aura_env.region.icon and aura_env.region.icon.SetTexture then
+                                aura_env.region.icon:SetTexture(icon)
+                            end
+                            return icon or "Interface\\Icons\\Temp"
                         end""",
                     },
                     "untrigger": {

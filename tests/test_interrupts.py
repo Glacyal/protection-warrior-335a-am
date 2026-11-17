@@ -69,8 +69,14 @@ def run_tests():
     # Verifiche Untrigger immediato su Kick / Interruzione e Trigger Icon
     assert target_cast["iconSource"] == 0
     assert player_cast["iconSource"] == 0
+    assert target_cast["auto"] is True, "Target castbar must have auto=True for dynamic trigger icon"
+    assert player_cast["auto"] is True, "Player castbar must have auto=True for dynamic trigger icon"
+    assert "INV_Misc_QuestionMark" not in target_cast.get("displayIcon", ""), "Target castbar must not fallback to QuestionMark"
+    assert "INV_Misc_QuestionMark" not in player_cast.get("displayIcon", ""), "Player castbar must not fallback to QuestionMark"
     assert "ki == nil" in target_cast["triggers"][1]["untrigger"]["custom"]
     assert "spell == nil" in player_cast["triggers"][1]["untrigger"]["custom"]
+    assert "GetSpellTexture" in player_cast["customText"]
+    assert "SetTexture" in player_cast["customText"]
 
     # 4. Alert - Kick Now in 17 - Alerts warTank
     alert_kick = children_by_id["Alert - Kick Now"]

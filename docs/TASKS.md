@@ -694,3 +694,20 @@ floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$
     - Suite parallela: 10/10 test superati con successo in 0.46s.
     - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (75.792 caratteri).
     - Esecuzione CP (Commit & Push su `origin/master`).
+- [x] **Task 39: Risoluzione Definitiva Icona Castbar warTank (Eliminazione Punto Interrogativo Rosso, Abilitazione `auto = True`, Unpacking API WotLK 3.3.5a per `UnitChannelInfo` e Override Diretto Frame)**:
+  - [x] **Direttiva Utente**:
+    - *"questo va risolto"* (screenshot con icona a punto interrogativo rosso `INV_Misc_QuestionMark` su castbar attiva).
+  - [x] **Causa Radice Identificata**:
+    1. WeakAuras gestisce l'icona dell'aurabar verificando `if not data.auto and data.displayIcon then icon = data.displayIcon end`. Avendo impostato `auto: False` con `displayIcon: "Interface\Icons\INV_Misc_QuestionMark"`, WeakAuras ignorava il valore calcolato da `customIcon` e forzava su ogni fotogramma il punto interrogativo rosso (`INV_Misc_QuestionMark`).
+    2. Nelle chiamate canalizzate (`UnitChannelInfo`), la firma API di WotLK 3.3.5a restituisce `name, text, texture, startTimeMS, endTimeMS` (la texture è il 3° parametro, senza `rank`). La precedente estrazione trattava il 4° parametro come texture, che corrispondeva a `startTimeMS` (un timestamp numerico), provocando fallback errati o errori aritmetici nei calcoli di durata.
+  - [x] **Implementazione Fix**:
+    - `auto: True`: abilitato il recupero automatico dell'icona dal trigger per entrambe le castbar (`Castbar - Target warTank` e `Castbar - Player warTank`).
+    - Eliminato qualsiasi riferimento a `INV_Misc_QuestionMark`, impostando `displayIcon: "Interface\Icons\Temp"`.
+    - Integrato fallback robusto via `GetSpellTexture(spell)` sia in target che in player castbar.
+    - Gestione distinta e sicura dei parametri di `UnitChannelInfo` conforme alle API WotLK 3.3.5a (`cName, cText, cTexture, cStart, cEnd`).
+    - Applicazione diretta a livello di frame UI: `aura_env.region.icon:SetTexture(icon)` in `customText` e `customIcon` per garantire l'aggiornamento immediato e senza latenza dell'icona a schermo.
+  - [x] **Validazione & Collaudo**:
+    - Aggiornati test in `tests/test_interrupts.py` con verifiche vincolanti su `auto == True`, assenza di `INV_Misc_QuestionMark`, presenza di `GetSpellTexture` e `SetTexture`.
+    - Test Suite parallela: 10/10 PASS in 0.51s.
+    - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (76.253 caratteri).
+    - Commit & push su `origin/master`.

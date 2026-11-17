@@ -278,6 +278,16 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.18 Castbar Dynamic Icon Resolution: Auto Trigger Icon, 3.3.5a Channel Unpacking & Direct Frame Texture Update
+- **Elimination of Red Question Mark (`INV_Misc_QuestionMark`)**:
+  - Identified that `auto: False` forced WeakAuras to ignore `customIcon` and render `displayIcon` on every frame update. Enabled `auto: True` and removed `INV_Misc_QuestionMark`.
+- **WotLK 3.3.5a `UnitChannelInfo` Compatibility**:
+  - Corrected return unpacking for `UnitChannelInfo`: in 3.3.5a, channeled spells return `name, text, texture, startTimeMS, endTimeMS` (texture is 3rd argument, not 4th).
+- **Direct Frame Texture Binding & Fallback**:
+  - Added robust `GetSpellTexture(spell)` fallback and explicit `aura_env.region.icon:SetTexture(icon)` in both `customText` and `customIcon` ensuring instant, zero-latency icon updates on screen.
+
+---
+
 ## 5. Technical Glossary & Tanking Acronyms (WotLK 3.3.5a)
 
 | Acronym | Full Name | Mechanics & Formulas |
