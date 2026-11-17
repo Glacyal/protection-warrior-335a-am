@@ -51,7 +51,7 @@ builder/
 │   ├── bars.py                  # 14 - Rage Bar warTank & 16 - Castbar warTank (con Kick Advisor integrato)
 │   ├── rotational.py            # 15 - Rotational Bar warTank (Indicatore statico di accodamento 278x7px per HS/Cleave con Pixel Glow)
 │   ├── alerts.py                # 17 - Alerts warTank (Gruppo avvisi sonori e visivi per emergenze difensive e interrupt)
-│   ├── stats.py                 # 18 - Stats Panel warTank (Pannello 126x60px difensivo: Armor, Def, Block, Parry/Dodge, HP)
+│   ├── stats.py                 # 18 - Stats Panel warTank (Pannello 88x60px difensivo: Armor, Def, Block, CTC, Hit/Exp)
 │   ├── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px a x=160, y=-7 con supporto Expose Armor & Acid Spit)
 │   └── __init__.py              # Export aggregato dei builder dei componenti
 │
@@ -99,7 +99,7 @@ Le tre barre orizzontali condividono la larghezza calibrata di **278 px**:
 ==================== [ 14 - Rage Bar (278x14px, y = -20) ] =====================
 
 [ Shouts & Stance ]                                            [ Utility Row ]
-(x = -222, -190, -158, y = 0)                                  (y = -45, 10 icone)
+(x = -223, -201, -179, -157, y = 0, 20x20px)                  (y = -45, 10 icone)
 [ 18 - Stats Panel ]
 (x = -190, y = -45, 88x60px)
 ```
@@ -108,16 +108,16 @@ Le tre barre orizzontali condividono la larghezza calibrata di **278 px**:
 | :--- | :--- | :--- | :--- | :--- |
 | **Root** | `Class Warrior (Protection)` | Scale 1.2 | X: 0, Y: -190 | Gruppo master contenitore con icona Defensive Stance e bootstrap core |
 | **01** | `01 - Procs warTank` | 34x34 px (icone) | X: 0, Y: +52 | Dynamic group orizzontale con sort="none" (gerarchia da sinistra a destra): 1. Emergency Low HP, 2. Tank Buster, 3. Revenge Ready warTank, 4. Sword and Board, 5. Demoralizing Shout, 6. Thunder Clap, 7. Rend. Parità visiva 1:1 tra SAB e REV (34x34, auto=False, cooldownEdge=False, subbackground, timer decimale %p in basso, etichette SLAM/REV centrate in alto, Gold Pixel Glow identico). Gestione multi-proc dinamica con riavvio swipe a 5.0s su re-proc e scomparsa immediata al lancio di Shield Slam/Revenge. Debuff bersaglio filtrati a vita totale >= 500k HP |
-| **02** | `02 - Battle Shout warTank` | 30x30 px | X: -264, Y: 0 | Monitoraggio buff; soppresso intelligentemente da Blessing of Might del Paladino |
-| **03** | `03 - Commanding Shout warTank`| 30x30 px | X: -232, Y: 0 | Buff salute; soppresso intelligentemente da Blood Pact dell'Imp del Warlock |
-| **04b** | `04b - Vigilance warTank` | 30x30 px | X: -200, Y: 0 | Allerta Vigilanza mancante su alleato (OFF stile Focus Magic) e timer scadenza (<= 60s) |
-| **04** | `04 - Defensive Stance warTank`| 30x30 px | X: -168, Y: 0 | Allerta visiva immediata e glow rosso se in combat fuori dalla Postura Difensiva |
+| **02** | `02 - Battle Shout warTank` | 20x20 px | X: -223, Y: 0 | Monitoraggio buff; soppresso intelligentemente da Blessing of Might del Paladino |
+| **03** | `03 - Commanding Shout warTank`| 20x20 px | X: -201, Y: 0 | Buff salute; soppresso intelligentemente da Blood Pact dell'Imp del Warlock |
+| **04b** | `04b - Vigilance warTank` | 20x20 px | X: -179, Y: 0 | Allerta Vigilanza mancante su alleato (OFF stile Focus Magic) e timer scadenza (<= 60s) |
+| **04** | `04 - Defensive Stance warTank`| 20x20 px | X: -157, Y: 0 | Allerta visiva immediata e glow rosso se in combat fuori dalla Postura Difensiva |
 | **05-13**| Utility Row (11 Icone) | 24-28 px | Y: -45, X centrato | Auto-centratura dinamica naturale per il War Tank: Trinket 1/2, Ring (Solo Ashen Band), Cloak (Solo Proc Ricamo Sartoria), Tier 10 (Solo 4P Shield Block), Enchants (Solo Proc Arma), Gloves (Solo Tinker), Shield Block warTank (Durata 10s & CD 30s/60s), Shield Wall warTank (-60%), Last Stand warTank (+30%), Boots (Solo Tinker/Regen) |
 | **14** | `14 - Rage Bar warTank` | 278x14 px | X: 0, Y: -20 | Barra risorsa con cambio colore a soglia Heroic Strike/Cleave (>= 45 Rage) |
 | **15** | `15 - Rotational Bar warTank` | 278x7 px | X: 0, Y: -7 | Swing timer mano primaria ad animazione progressiva e indicatore di accodamento (OnUpdate frame-rate): barra rame/bronzo a scorrimento tra attacchi con timer %c centrato, oro vibrante + Pixel Glow su Heroic Strike accodato, verde smeraldo + Pixel Glow su Cleave accodato |
 | **16** | `16 - Castbar warTank` | 278x20 px | X: 0, Y: +8 | Gruppo Castbar speculare: Target dx->sx (Priorità 1, Shield Bash, Spell Reflection viola, Immune) e Player sx->dx (Priorità 2: lanci e canalizzazioni del tank) |
 | **17** | `17 - Alerts warTank` | Testo 18-20pt | X: 0, Y: +78 | Avvisi critici di emergenza difensiva (<35% HP) e interruzione cast target (Zero Clutter: banner testuali rotazionali rimossi) |
-| **18** | `18 - Stats Panel warTank` | 126x60 px | X: -216, Y: -49 | Pannello difensivo compatto a 5 righe per il War Tank (Def 540 Cap, Armor DR%, CTC 102.4%, Block % & SBV, Hit & Exp) |
+| **18** | `18 - Stats Panel warTank` | 88x60 px | X: -190, Y: -45 | Pannello difensivo compatto a 5 righe per il War Tank (Def 540 Cap, Armor in k, CTC 102.4%, Block %, Hit & Exp, senza % Armor e SBV per massima chiarezza e compattezza) |
 | **19** | `19 - Sunder Armor Tracker warTank` | 32x32 px | X: +160, Y: -7 | Monitoraggio cariche (1-5) e durata Sunder Armor (Warrior), Expose Armor (Rogue) o Acid Spit (Hunter); nome univoco anti-conflitto |
 
 ---

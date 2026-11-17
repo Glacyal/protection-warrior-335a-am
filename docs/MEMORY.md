@@ -257,3 +257,22 @@ In WeakAuras 3.3.5a, la funzione `WeakAuras.CheckTalentByIndex(index)` non usa s
   - `HANDOFF_IT.md` (Italiano)
 - **Regola di Parità 1:1**: I file in inglese e in italiano devono mantenere la medesima struttura gerarchica, sezioni, badge, tabelle e comandi di compilazione, differendo esclusivamente per la lingua del testo. Ogni volta che viene modificato un `README` o un `HANDOFF`, è **obbligatorio** aggiornare entrambi contemporaneamente.
 - **Simulatore Web (`docs/index.html`)**: Deve essere **puramente in lingua inglese** in tutta l'interfaccia (titoli, sottotitoli, pulsanti, scenari di test, etichette dei preset, slider dei parametri, allarmi, avvisi toast e tabelle di documentazione/glossario).
+
+---
+
+## 7. Regola Geometrica Vincolante: Stats Panel (88x60px) e Cluster Buff Sovrastante (20x20px con gap 2px)
+
+A seguito della rimozione di `% armor` e `SBV` per garantire la massima pulizia visiva e compattezza dell'HUD, la geometria del blocco sinistro è standardizzata secondo i seguenti vincoli matematici:
+1. **Stats Panel (`18 - Stats Panel warTank`)**:
+   - Dimensioni: $88 \times 60\text{ px}$.
+   - Coordinate: $X = -190\text{ px}, Y = -45\text{ px}$.
+   - Contenuto a 5 righe: Def, Armor (in k), CTC, Block (%), Hit & Exp. Nessun testo superfluo di `% armor` né di `SBV`.
+2. **Cluster 4 Icone Sovrastanti**:
+   - `02 - Battle Shout warTank`: $X = -223\text{ px}, Y = 0$, dimensione $20 \times 20\text{ px}$.
+   - `03 - Commanding Shout warTank`: $X = -201\text{ px}, Y = 0$, dimensione $20 \times 20\text{ px}$.
+   - `04b - Vigilance warTank`: $X = -179\text{ px}, Y = 0$, dimensione $20 \times 20\text{ px}$.
+   - `04 - Defensive Stance warTank`: $X = -157\text{ px}, Y = 0$, dimensione $20 \times 20\text{ px}$.
+   - Spaziatura: passo di $22\text{ px}$ ($20\text{ px}$ larghezza + $2\text{ px}$ gap).
+   - Estensione totale: da $X = -233\text{ px}$ a $X = -147\text{ px}$ (ampiezza $86\text{ px}$), perfettamente centrata su $X = -190\text{ px}$ con $1\text{ px}$ di margine simmetrico rispetto al pannello da $88\text{ px}$.
+   - Dimensione font subtext: 9pt per timer countdown `%c`, 8pt per etichette `OFF`, 7pt per etichetta `STANCE`.
+   - **Divieto Assoluto di Regressione**: Non allargare mai il pannello né le icone oltre queste dimensioni salvo esplicita richiesta dell'utente.

@@ -72,7 +72,7 @@ def make_stats_custom_text() -> str:
     local k = (targetLevel >= 83) and 16635 or (400 + 85 * targetLevel + 4.5 * 85 * (targetLevel - 59))
     local armorDR = math.min(75.0, (effectiveArmor / (effectiveArmor + k)) * 100)
     local armColor = armorDR >= 75.0 and "|cFF22C55E" or "|cFFFFFFFF"
-    local armStr = string.format("%s%.1fk|r |cFF80D0FF(%.1f%%)|r", armColor, effectiveArmor / 1000, armorDR)
+    local armStr = string.format("%s%.1fk|r", armColor, effectiveArmor / 1000)
 
     -- 3. COMBAT TABLE COVERAGE (CTC = Dodge + Parry + Block + BossMiss)
     local dodge = GetDodgeChance() or 0
@@ -88,9 +88,9 @@ def make_stats_custom_text() -> str:
         ctcStr = string.format("|cFFFFD700%.1f%%|r", ctc)
     end
 
-    -- 4. BLOCK & SHIELD BLOCK VALUE (SBV)
+    -- 4. BLOCK
     local sbv = GetShieldBlock() or 0
-    local blockStr = string.format("|cFF80D0FF%.1f%%|r |cFFFFD700(%d SBV)|r", block, sbv)
+    local blockStr = string.format("|cFF80D0FF%.1f%%|r", block)
 
     -- 5. HIT & EXPERTISE (Melee Hit: CR 6, Draenei Heroic Presence +1%; Soft Cap 26, Hard Cap 56)
     local hasHeroicPresence = false
@@ -135,8 +135,8 @@ def build_stats_auras() -> list[dict]:
             "internalVersion": 90,
             "anchorPoint": "CENTER",
             "selfPoint": "CENTER",
-            "xOffset": -216,
-            "yOffset": -49,
+            "xOffset": -190,
+            "yOffset": -45,
             "controlledChildren": [
                 "Stats Panel - Background warTank",
                 "Stats Panel - Text warTank",
@@ -148,7 +148,7 @@ def build_stats_auras() -> list[dict]:
             "parent": "18 - Stats Panel warTank",
             "regionType": "texture",
             "internalVersion": 90,
-            "width": 126,
+            "width": 88,
             "height": 60,
             "xOffset": 0,
             "yOffset": 0,
@@ -183,7 +183,7 @@ def build_stats_auras() -> list[dict]:
             "color": [1, 1, 1, 1],
             "selfPoint": "CENTER",
             "anchorPoint": "CENTER",
-            "xOffset": 0,
+            "xOffset": 2,
             "yOffset": 0,
             "displayText": "%c",
             "customTextUpdate": "update",

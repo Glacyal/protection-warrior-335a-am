@@ -59,7 +59,7 @@ def run_tests():
     # 04 - Defensive Stance - OutOfStance (allineato a Fury Warrior: visibile solo out-of-stance in combat)
     stance_warn = children_by_id["04 - Defensive Stance - OutOfStance warTank"]
     assert "GetShapeshiftForm()" in stance_warn["triggers"][1]["trigger"]["custom"] and "form ~= 2" in stance_warn["triggers"][1]["trigger"]["custom"]
-    assert stance_warn["width"] == 30 and stance_warn["height"] == 30
+    assert stance_warn["width"] == 20 and stance_warn["height"] == 20
     assert "Defensive Stance - Active" not in children_by_id, "Defensive Stance - Active deve essere rimossa per non mostrare l'icona in postura corretta"
 
     print("[OK] test_danger_alerts completato: allarmi emergenza, tank buster e rimozione banner testuali conformi.")

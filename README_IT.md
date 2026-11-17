@@ -24,7 +24,7 @@ Visualizza e interagisci con l'HUD direttamente dal browser senza installare nul
 - **Ergonomia e Precisione Visiva per War Tank**: proporzioni native, barre a 278px, indicatore statico di accodamento con Glow additivo e animazioni clock swipe.
 - **Allerta Emergenza Salute Critica (<35% HP)**: suggerimento dinamico prioritizzato del miglior cooldown difensivo pronto (*Shield Wall* > *Last Stand* > *Shield Block* > *Enraged Regen* > *Pozione/Pietra della Salute*).
 - **Kick Advisor Dinamico Integrato**: la castbar ($278 \times 20\text{px}$ a $y = +8$) rileva lo stato di interruzione (`notInterruptible`) e consiglia la spell ottimale (*Shield Bash*, *Pummel*, *Stun* o allerta cast *Immune*).
-- **Pannello Statistiche Tank Live**: calcolo real-time di Combat Table Coverage (CTC), immunità ai critici dei boss Lv.83 (**540 Difesa**), Armor DR%, Shield Block Value (SBV), Hit/Exp ed EHP.
+- **Pannello Statistiche Tank Live**: calcolo real-time di Combat Table Coverage (CTC), immunità ai critici dei boss Lv.83 (**540 Difesa**), Armatura effettiva, Blocco %, Hit/Exp ed EHP.
 
 ---
 
@@ -88,9 +88,9 @@ Gruppo allarmi minimalista posizionato a $y = 78$ sopra i procs, limitato rigoro
 Box compatto $88 \times 60\text{px}$ a $x = -190, y = -45$ (sul lato sinistro della riga utility) con etichette bianche `Label:` e valori colorati con soglie dinamiche:
 ```text
 Def:   541 (CAP)
-Armor: 25.3k (62.4%)
+Armor: 25.3k
 CTC:   74.6%
-Block: 21.7% (1800 SBV)
+Block: 21.7%
 Hit:   9.1% | 25 Exp
 ```
 

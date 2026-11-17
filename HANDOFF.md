@@ -51,7 +51,7 @@ protection-warrior-335a-am/
 │       ├── bars.py                  # 14 - Rage Bar & 16 - Castbar warTank (Dual specular Target dx->sx & Player sx->dx with Bash/Reflect advisor)
 │       ├── rotational.py            # 15 - Rotational Bar warTank (Main-Hand swing timer 274x5px aurabar at y = -7 with synchronized HS/Cleave queue Pixel Glow)
 │       ├── alerts.py                # 17 - Alerts warTank (Minimalist emergency text alerts: Emergency CD, Kick Now)
-│       ├── stats.py                 # 18 - Stats Panel warTank (144x68px panel at x = -216, y = -53, perfectly adapted to 5-row text)
+│       ├── stats.py                 # 18 - Stats Panel warTank (88x60px panel at x = -190, y = -45, perfectly adapted to 5-row text without % Armor or SBV)
 │       └── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px at x = 160, y = -7)
 │
 ├── docs/                            # Documentation and interactive preview for GitHub Pages
@@ -231,6 +231,25 @@ protection-warrior-335a-am/
   7. **Defensive Cooldowns (`10b`, `11`, `12`)**: `Shield Block` (10s duration, 30s/60s CD), `Shield Wall` (-60% DR for 12s, emergency glow <35% HP), and `Last Stand` (+30% max HP for 20s, emergency glow <35% HP) are permanently integrated into the active row preceding boots.
   8. **Boots (Slot 8)**: Active engineering *Nitro Boosts* tinker or utility fallback on *Enraged Regeneration*.
 - **Core Initialization Bootstrap**: Due to WeakAuras 3.3.5a omitting execution of `actions.init` on container groups, global bootstrap (`_G.PWHUD_InitCore` and `_G.PWHUD_UpdateUtilityRowPositions`) is strictly located within the trigger of `05 - Trinket 1 warTank` (`slot == 13`).
+
+---
+
+### 4.15 Stats Panel Text Optimization (% Armor & SBV Removal) & 88x60px Geometric Adaptation with Top 4-Buff Cluster Harmony
+- **Removal of Redundant Text**:
+  - Cleaned line 2 (`Armor`) by removing `(%.1f%%)` $\rightarrow$ displays strictly `Armor: 25.3k` (retaining dynamic green coloration at $\ge 75\%$ DR hard cap).
+  - Cleaned line 4 (`Block`) by removing `(%d SBV)` $\rightarrow$ displays strictly `Block: 21.7%`.
+  - The resulting 5-row layout is ultra-clean, legible, and compact.
+- **Compact 88x60px Stats Panel Geometry**:
+  - Reconfigured group `18 - Stats Panel warTank` to $X = -190\text{px}, Y = -45\text{px}$.
+  - Background `Stats Panel - Background warTank` sized to $88 \times 60\text{px}$.
+  - Text `Stats Panel - Text warTank` centered with $X = 2$ and left-aligned, eliminating lateral wasted space.
+- **Top 4-Buff Cluster Harmonization (20x20px with 2px gap)**:
+  - Reconfigured the 4 icons directly above:
+    1. `02 - Battle Shout warTank`: $X = -223\text{px}, Y = 0$, size $20 \times 20\text{px}$ (Active: font 9pt; OFF: font 8pt).
+    2. `03 - Commanding Shout warTank`: $X = -201\text{px}, Y = 0$, size $20 \times 20\text{px}$ (Active: font 9pt; OFF: font 8pt).
+    3. `04b - Vigilance warTank`: $X = -179\text{px}, Y = 0$, size $20 \times 20\text{px}$ (Active: font 9pt; OFF: font 8pt).
+    4. `04 - Defensive Stance warTank`: $X = -157\text{px}, Y = 0$, size $20 \times 20\text{px}$ (OutOfStance: font 7pt).
+  - Uniform $22\text{px}$ pitch ($20\text{px}$ width + $2\text{px}$ gap) spanning exactly $86\text{px}$ from $X = -233$ to $X = -147$, centered symmetrically over the $88\text{px}$ Stats Panel at $X = -190$ with $1\text{px}$ border margin.
 
 ---
 

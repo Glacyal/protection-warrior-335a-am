@@ -627,3 +627,29 @@ floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$
     - Suite parallela: 10/10 test superati con successo in 0.46s.
     - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (75.114 caratteri).
     - Esecuzione CP (Commit & Push su `origin/master`).
+- [x] **Task 36: Ottimizzazione Testuale dello Stats Panel (Rimozione % Armor & SBV) e Riconfigurazione Geometrica Compatta (88x60px) con Armonizzazione del Cluster Buff Sovrastante (20x20px)**:
+  - [x] **Direttiva Utente**:
+    - *"fammi vedere % armor e di SBV non devono piu comparire riadatta le componenti in base a questa riduzione di testo, incluse le 4 componenti che stanno sopra task e fix"*
+  - [x] **Rimozione Stringhe `% armor` e `SBV`**:
+    - In `builder/components/stats.py` (`make_stats_custom_text`):
+      - Rimosso `|cFF80D0FF(%.1f%%)|r` dalla riga Armatura: la stringa è ora semplicemente `Armor: %s%.1fk|r` (es. `Armor: 25.3k`). Mantenuta la colorazione dinamica in verde al raggiungimento del cap 75% DR.
+      - Rimosso `|cFFFFD700(%d SBV)|r` dalla riga Blocco: la stringa è ora semplicemente `Block: |cFF80D0FF%.1f%%|r` (es. `Block: 21.7%`).
+      - Risultato visivo: 5 righe ultra-pulite, compatte e prive di testo ridondante.
+  - [x] **Riconfigurazione Geometrica Compatta dello Stats Panel ($88 \times 60\text{ px}$)**:
+    - Riconfigurato il gruppo `18 - Stats Panel warTank` da $X = -216, Y = -49$ a $X = -190, Y = -45$.
+    - Ridotto lo sfondo `Stats Panel - Background warTank` da $126 \times 60\text{ px}$ a $88 \times 60\text{ px}$.
+    - Ancoraggio testo `Stats Panel - Text warTank` centrato con `xOffset = 2` e `justify = "LEFT"`, garantendo un margine interno perfetto senza clipping o spazi vuoti laterali.
+  - [x] **Armonizzazione Geometrica delle 4 Componenti Sovrastanti ($20 \times 20\text{ px}$ con gap $2\text{ px}$)**:
+    - Riconfigurati i 4 gruppi e icone sovrastanti:
+      1. `02 - Battle Shout warTank`: $X = -223\text{ px}, Y = 0$, dimensione $20 \times 20\text{ px}$ (Active: font 9pt; OFF: font 8pt).
+      2. `03 - Commanding Shout warTank`: $X = -201\text{ px}, Y = 0$, dimensione $20 \times 20\text{ px}$ (Active: font 9pt; OFF: font 8pt).
+      3. `04b - Vigilance warTank`: $X = -179\text{ px}, Y = 0$, dimensione $20 \times 20\text{ px}$ (Active: font 9pt; OFF: font 8pt).
+      4. `04 - Defensive Stance warTank`: $X = -157\text{ px}, Y = 0$, dimensione $20 \times 20\text{ px}$ (OutOfStance: font 7pt).
+    - Passo uniforme di $22\text{ px}$ per icona ($20\text{ px}$ + $2\text{ px}$ spaziatura).
+    - Estensione orizzontale complessiva: $86\text{ px}$ (da $X = -233$ a $X = -147$), perfettamente centrata sull'asse $X = -190$ del pannello statistiche sottostante con $1\text{ px}$ di margine simmetrico per lato.
+  - [x] **Aggiornamento Simulatore Web & Test Suite**:
+    - Aggiornato `docs/index.html`: `.left-col` e `.stats-panel-box` ridotti a $88\text{ px}$, icone convertite a `.size-20`, rimossi i frammenti `(62.4%)` e `(1800 SBV)`.
+    - Aggiornati i test `tests/test_tree_layout.py`, `tests/test_stats_panel.py` e `tests/test_danger_alerts.py`.
+    - Suite parallela: 10/10 test superati con successo in 0.38s.
+    - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (75.077 caratteri).
+    - Esecuzione CP (Commit & Push su `origin/master`).

@@ -53,6 +53,8 @@ def run_tests():
     assert "Insect Swarm" in lua_code
     assert "Scorpid Sting" in lua_code
     assert "Heroic Presence" in lua_code
+    assert "SBV" not in lua_code
+    assert "(%.1f%%)" not in lua_code
 
     print(f"[OK] test_stats_panel completato: Armor DR Lv.80={dr_80:.1f}%, Lv.83={dr_83:.1f}%, EHP={ehp:.0f}, CTC={ctc:.1f}% e stile Fury Warrior verificati.")
     return True

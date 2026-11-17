@@ -24,7 +24,7 @@ Explore and interact with the HUD directly inside your browser without installin
 - **High-Precision Tanking Ergonomics**: Native proportions, 278px bars, responsive rotational queue bar with additive glow, and clock swipe cooldown overlays.
 - **Critical Health Emergency Advisor (<35% HP)**: Dynamic prioritized recommendation of the best ready defensive cooldown (*Shield Wall* > *Last Stand* > *Shield Block* > *Enraged Regen* > *Healthstone/Potion*).
 - **Integrated Contextual Kick Advisor**: Castbar ($278 \times 20\text{px}$ at $y = +8$) evaluates spell interruptibility (`notInterruptible`) and prompts the optimal ability (*Shield Bash*, *Pummel*, *Stun*, or cast *Immune* notice).
-- **Live Tanking Stats Panel**: Real-time evaluation of Combat Table Coverage (CTC), raid boss Lv.83 crit immunity (**540 Defense**), contextual Armor DR%, Shield Block Value (SBV), Hit/Exp, and EHP.
+- **Live Tanking Stats Panel**: Real-time evaluation of Combat Table Coverage (CTC), raid boss Lv.83 crit immunity (**540 Defense**), contextual Effective Armor, Shield Block %, Hit/Exp, and EHP.
 
 ---
 
@@ -88,9 +88,9 @@ Minimalist alert group positioned at $y = 78$ directly above the procs, strictly
 Compact $88 \times 60\text{px}$ frame at $x = -190, y = -45$ (left of the utility row) featuring clean white labels `Label:` and color-coded values with dynamic thresholds:
 ```text
 Def:   541 (CAP)
-Armor: 25.3k (62.4%)
+Armor: 25.3k
 CTC:   74.6%
-Block: 21.7% (1800 SBV)
+Block: 21.7%
 Hit:   9.1% | 25 Exp
 ```
 

@@ -41,21 +41,21 @@ def run_tests():
     assert children_by_id["Revenge Ready warTank"]["uid"] == "PWHUD_PROC_REVENGE"
 
     bs = children_by_id["02 - Battle Shout warTank"]
-    assert bs["xOffset"] == -264 and bs["yOffset"] == 0
+    assert bs["xOffset"] == -223 and bs["yOffset"] == 0
 
     cs = children_by_id["03 - Commanding Shout warTank"]
-    assert cs["xOffset"] == -232 and cs["yOffset"] == 0
+    assert cs["xOffset"] == -201 and cs["yOffset"] == 0
 
     vig = children_by_id["04b - Vigilance warTank"]
-    assert vig["xOffset"] == -200 and vig["yOffset"] == 0
+    assert vig["xOffset"] == -179 and vig["yOffset"] == 0
 
     ds = children_by_id["04 - Defensive Stance warTank"]
-    assert ds["xOffset"] == -168 and ds["yOffset"] == 0
+    assert ds["xOffset"] == -157 and ds["yOffset"] == 0
 
     stats = children_by_id["18 - Stats Panel warTank"]
-    assert stats["xOffset"] == -216 and stats["yOffset"] == -49
+    assert stats["xOffset"] == -190 and stats["yOffset"] == -45
     stats_bg = children_by_id["Stats Panel - Background warTank"]
-    assert stats_bg["width"] == 126 and stats_bg["height"] == 60
+    assert stats_bg["width"] == 88 and stats_bg["height"] == 60
 
     sunder = children_by_id["19 - Sunder Armor Tracker warTank"]
     assert sunder["xOffset"] == 160 and sunder["yOffset"] == -7

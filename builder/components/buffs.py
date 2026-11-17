@@ -1,17 +1,17 @@
 """
 Modulo Componente: 02 - Battle Shout, 03 - Commanding Shout, 04 - Defensive Stance
 ===================================================================================
-Gestisce i buff di classe e la postura a x = -222, -190, -158 a y = 0:
+Gestisce i buff di classe e la postura a x = -223, -201, -179, -157 a y = 0 (20x20px con gap 2px):
 1. 02 - Battle Shout:
-   - Gruppo a x = -222, y = 0
+   - Gruppo a x = -223, y = 0
    - Active: visibile SOLO quando il buff (Battle Shout o BoM/GBoM del Paladino) sta per scadere (<= 30s).
    - OFF: visibile quando manca SIA Battle Shout CHE BoM/GBoM (desaturato + 'OFF' con native aura2).
 2. 03 - Commanding Shout:
-   - Gruppo a x = -190, y = 0
+   - Gruppo a x = -201, y = 0
    - Active: visibile SOLO quando il buff (Commanding Shout o Blood Pact dell'Imp) sta per scadere (<= 30s).
    - OFF: visibile quando manca SIA Commanding Shout CHE Blood Pact (desaturato + 'OFF' con native aura2).
 3. 04 - Defensive Stance:
-   - Gruppo a x = -158, y = 0
+   - Gruppo a x = -157, y = 0
    - Active: icona postura difensiva.
    - Warning: allerta immediata con glow rosso e scritta 'STANCE' se in combattimento fuori dalla Postura Difensiva (Stance 2).
 """
@@ -500,7 +500,7 @@ def build_buffs_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
             "internalVersion": 90,
-            "xOffset": -264,
+            "xOffset": -223,
             "yOffset": 0,
             "controlledChildren": [
                 "Battle Shout - Active warTank",
@@ -516,8 +516,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 30,
-            "height": 30,
+            "width": 20,
+            "height": 20,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_BattleShout",
             "auto": False,
             "color": [1, 1, 1, 1],
@@ -546,7 +546,7 @@ def build_buffs_auras() -> list[dict]:
             },
             "subRegions": [
                 {"type": "subbackground"},
-                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=0),
+                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=9, y_offset=0),
             ],
         },
         # 02 - OFF (Architettura nativa aura2 con showOnMissing e controllo sovrapposizioni BoM/GBoM)
@@ -558,8 +558,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 30,
-            "height": 30,
+            "width": 20,
+            "height": 20,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_BattleShout",
             "auto": False,
             "desaturate": True,
@@ -587,7 +587,7 @@ def build_buffs_auras() -> list[dict]:
             },
             "subRegions": [
                 {"type": "subbackground"},
-                make_subtext("|cFFFF4444OFF|r", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=1),
+                make_subtext("|cFFFF4444OFF|r", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=8, y_offset=1),
             ],
         },
 
@@ -600,7 +600,7 @@ def build_buffs_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
             "internalVersion": 90,
-            "xOffset": -232,
+            "xOffset": -201,
             "yOffset": 0,
             "controlledChildren": [
                 "Commanding Shout - Active warTank",
@@ -616,8 +616,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 30,
-            "height": 30,
+            "width": 20,
+            "height": 20,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_RallyingCry",
             "auto": False,
             "color": [1, 1, 1, 1],
@@ -646,7 +646,7 @@ def build_buffs_auras() -> list[dict]:
             },
             "subRegions": [
                 {"type": "subbackground"},
-                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=0),
+                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=9, y_offset=0),
             ],
         },
         # 03 - OFF (Architettura nativa aura2 con showOnMissing e controllo sovrapposizioni Blood Pact)
@@ -658,8 +658,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 30,
-            "height": 30,
+            "width": 20,
+            "height": 20,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_RallyingCry",
             "auto": False,
             "desaturate": True,
@@ -685,7 +685,7 @@ def build_buffs_auras() -> list[dict]:
             },
             "subRegions": [
                 {"type": "subbackground"},
-                make_subtext("|cFFFF4444OFF|r", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10, y_offset=1),
+                make_subtext("|cFFFF4444OFF|r", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=8, y_offset=1),
             ],
         },
 
@@ -698,7 +698,7 @@ def build_buffs_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
             "internalVersion": 90,
-            "xOffset": -200,
+            "xOffset": -179,
             "yOffset": 0,
             "controlledChildren": [
                 "Vigilance - Active warTank",
@@ -714,8 +714,8 @@ def build_buffs_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 30,
-            "height": 30,
+            "width": 20,
+            "height": 20,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_Vigilance",
             "auto": False,
             "color": [1, 1, 1, 1],
@@ -747,7 +747,7 @@ end""",
             },
             "subRegions": [
                 {"type": "subbackground"},
-                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10),
+                make_subtext("%c", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=9),
             ],
         },
         # 04b - OFF (allerta prominente con icona desaturata e testo rosso 'OFF' se nessun alleato ha il buff)
@@ -759,8 +759,8 @@ end""",
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": 0,
-            "width": 30,
-            "height": 30,
+            "width": 20,
+            "height": 20,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_Vigilance",
             "desaturate": True,
             "color": [0.6, 0.6, 0.6, 0.8],
@@ -781,7 +781,7 @@ end""",
             },
             "subRegions": [
                 {"type": "subbackground"},
-                make_subtext("|cFFFF4444OFF|r", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=10),
+                make_subtext("|cFFFF4444OFF|r", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=8),
             ],
         },
 
@@ -794,7 +794,7 @@ end""",
             "parent": "Class Warrior (Protection)",
             "regionType": "group",
             "internalVersion": 90,
-            "xOffset": -168,
+            "xOffset": -157,
             "yOffset": 0,
             "controlledChildren": [
                 "04 - Defensive Stance - OutOfStance warTank",
@@ -806,15 +806,15 @@ end""",
             "parent": "04 - Defensive Stance warTank",
             "regionType": "icon",
             "internalVersion": 90,
-            "width": 30,
-            "height": 30,
+            "width": 20,
+            "height": 20,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_DefensiveStance",
             "auto": False,
             "color": [1, 0.2, 0.1, 1],
             "desaturate": False,
             "subRegions": [
                 {"type": "subbackground"},
-                make_subtext("STANCE", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=8, y_offset=1),
+                make_subtext("STANCE", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=7, y_offset=1),
             ],
             "triggers": {
                 1: {

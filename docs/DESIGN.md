@@ -93,17 +93,17 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
 - **Stile Tipografico**: Visualizzazione ad alta leggibilità con etichette bianche (`|cFFFFFFFFLabel:|r <ValoreColorato>`) e valori colorati dinamicamente in base alle soglie di cap difensive del War Tank.
 - **Layout a 5 Righe (Throttle a 10 Hz)**:
   1. `|cFFFFFFFFDef:|r |cFF22C55E540 (CAP)|r` (o `|cFFFFD700535 (HC)|r` / `|cFFFF2020%d/540|r`)
-  2. `|cFFFFFFFFArmor:|r |cFFFFFFFF32.4k|r |cFF80D0FF(66.1%)|r` (Physical DR% contro boss Lv.83, Cap 75%)
+  2. `|cFFFFFFFFArmor:|r |cFFFFFFFF32.4k|r` (Armatura effettiva in k, verde se raggiunge il Cap 75% DR)
   3. `|cFFFFFFFFCTC:|r |cFF00FFFF102.4% (MAX)|r` (o `|cFFFFD700%.1f%%|r`, Avoidance totale con non-stacking debuffs)
-  4. `|cFFFFFFFFBlock:|r |cFF80D0FF38.2%|r |cFFFFD700(2450 SBV)|r` (Percentuale di blocco e Shield Block Value)
+  4. `|cFFFFFFFFBlock:|r |cFF80D0FF38.2%|r` (Percentuale di blocco con lo scudo)
   5. `|cFFFFFFFFHit:|r |cFF22C55E8.0%|r | |cFF22C55E26 Exp|r` (Melee Hit con Draenei +1% e Soft Cap 26 / Hard Cap 56)
 
 #### Legenda & Significato delle Sigle del Pannello
 - **`Def` (Defense Skill)**: Abilità di difesa del personaggio (`base + rating`). A livello 80 il cap di immunità dai colpi critici dei boss Lv.83 è **540** (riduce del 5.6% il crit subito). In dungeon eroici il cap è **535**.
-- **`Armor` (Armatura & DR% Contestuale)**: Armatura effettiva del player; tra parentesi la percentuale di riduzione danno fisico contestuale: calcolata con costante Blizzard $K = 15232.5$ a Lv.80 (es. 25.253 armatura $\implies \mathbf{62.4\%}$, identico al $62.38\%$ visualizzato nel tooltip in-game della scheda personaggio) e con $K = 16635$ contro Raid Boss Lv.83 / Skull ($\implies \mathbf{60.3\%}$, mitigazione effettiva sul boss). Hard cap al 75.0% DR.
+- **`Armor` (Armatura)**: Armatura effettiva del player visualizzata in migliaia (es. 25.3k). Colorata in verde al raggiungimento del cap di riduzione danno fisico del 75.0% DR. (Percentuale DR% rimossa per massima leggibilità e compattezza).
 - **`CTC` (Combat Table Coverage)**: Copertura totale della tabella colpi: $\text{Dodge} + \text{Parry} + \text{Block} + \text{BossMiss}$. A $\ge 102.4\%$ il tank è *Unhittable* (tutti i colpi bianchi vengono mitigati o evitati). Include debuff non-stacking (*Insect Swarm* o *Scorpid Sting* max +3%).
 - **`Block`**: Percentuale di parare un colpo con lo scudo (durante *Shield Block* sale al 100%).
-- **`SBV` (Shield Block Value)**: Quantità netta di danno fisico assorbito da ciascun blocco; scala anche il danno e la minaccia di *Shield Slam*.
+- **`Block`**: Percentuale di parare un colpo con lo scudo (durante *Shield Block* sale al 100%). (Valore numerico SBV rimosso dal testo per compattezza).
 - **`Hit`**: Melee Hit Rating; cap speciale all'**8.0%** (263 rating), ridotto al 7.0% con *Heroic Presence* Draenei.
 - **`Exp` (Expertise)**: Competenza/Perizia; **Soft Cap 26** (elimina le schivate del boss dal fronte), **Hard Cap 56** (elimina le parate e scongiura il *Parry-Haste*).
 
