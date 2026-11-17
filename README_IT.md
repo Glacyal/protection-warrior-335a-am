@@ -11,9 +11,9 @@
 [![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-gray.svg?logo=paypal&logoColor=white&labelColor=0079c1)](https://www.paypal.me/AMantmar)
 
 Suite WeakAuras completa, modulare e avanzata per **Warrior Protection (Tank) Livello 80** in World of Warcraft 3.3.5a (*Wrath of the Lich King - Build 12340*).  
-Progettata per garantire la massima conformità visiva, geometrica e prestazionale con le suite **Class Warrior (Fury)** e **Class Mage (TTW Fire)**: barre centrali sincronizzate a **278px**, riga utility dinamica a $y = -45$, gruppo procs orizzontale a $y = 52$, pannello statistiche $88 \times 60\text{px}$ a $x = -190$ e tracker Sunder Armor a $x = 160$.
+Ingegnerizzata da zero come suite HUD ad alta precisione e livello di produzione per il Guerriero Protezione (War Tank) in World of Warcraft 3.3.5a: barre centrali sincronizzate a **278px**, riga utility dinamica a $y = -45$, gruppo procs orizzontale a $y = 52$, pannello statistiche $88 \times 60\text{px}$ a $x = -190$ e tracker Sunder Armor a $x = 160$.
 
-La suite è condizionata al caricamento esclusivo su guerrieri con il talento **[Devastate]** (Devastazione, Indice WeakAuras `103`, Tab 3 Protezione, Posizione 23), disattivandosi automaticamente su spec Arms o Fury.
+La suite è condizionata al caricamento esclusivo su guerrieri con il talento **[Devastate]** (Devastazione, Indice WeakAuras `103`, Tab 3 Protezione, Posizione 23), disattivandosi automaticamente su altre specializzazioni o classi.
 
 ---
 
@@ -21,7 +21,7 @@ La suite è condizionata al caricamento esclusivo su guerrieri con il talento **
 
 Visualizza e interagisci con l'HUD direttamente dal browser senza installare nulla:  
 👉 **[Apri il Simulatore Web su GitHub Pages](https://glacyal.github.io/protection-warrior-335a-am/)**  
-- **Visuale 1:1 Identica a Fury Warrior**: proporzioni native, barre a 278px, swing timer reattivo con Glow additivo e animazioni clock swipe.
+- **Ergonomia e Precisione Visiva per War Tank**: proporzioni native, barre a 278px, indicatore statico di accodamento con Glow additivo e animazioni clock swipe.
 - **Allerta Emergenza Salute Critica (<35% HP)**: suggerimento dinamico prioritizzato del miglior cooldown difensivo pronto (*Shield Wall* > *Last Stand* > *Shield Block* > *Enraged Regen* > *Pozione/Pietra della Salute*).
 - **Kick Advisor Dinamico Integrato**: la castbar ($278 \times 20\text{px}$ a $y = +8$) rileva lo stato di interruzione (`notInterruptible`) e consiglia la spell ottimale (*Shield Bash*, *Pummel*, *Stun* o allerta cast *Immune*).
 - **Pannello Statistiche Tank Live**: calcolo real-time di Combat Table Coverage (CTC), immunità ai critici dei boss Lv.83 (**540 Difesa**), Armor DR%, Shield Block Value (SBV), Hit/Exp ed EHP.
@@ -46,14 +46,13 @@ Posizionato nella parte superiore dell'HUD ($y = 52$), configurato con `sort: "n
 Posizionati a sinistra direttamente sopra il pannello statistiche a $x = -264, -232, -200, -168$ e $y = 0$ (griglia a 4 icone da $30 \times 30\text{px}$ con 2px di spaziatura, combaciante con i 126px del pannello sottostante):
 - **02 - Battle Shout warTank**: Timer attivo Battle Shout / allerta buff mancante (OFF).
 - **03 - Commanding Shout warTank**: Timer attivo Commanding Shout / allerta buff mancante (OFF).
-- **04b - Vigilance warTank**: Allerta Vigilanza mancante su alleato (OFF) su puro modello Focus Magic (icona desaturata con scritta OFF se nessun alleato ha la vigilanza; countdown quando $\le 60\text{s}$).
-- **04 - Defensive Stance warTank**: Allerta postura errata fuori dalla Defensive Stance in combattimento (STANCE).
+- **04b - Vigilance warTank**: Allerta Vigilanza mancante su alleato (icona desaturata con scritta `OFF` se nessun alleato ha la vigilanza; countdown quando $\le 60\text{s}$).
 - **02 - Battle Shout warTank**: Compare con timer solo se in scadenza ($\le 30\text{s}$) o desaturato con scritta `OFF` se manca sia Battle Shout che *Blessing of Might* del Paladino.
 - **03 - Commanding Shout warTank**: Compare con timer solo se in scadenza ($\le 30\text{s}$) o desaturato con scritta `OFF` se manca sia Commanding Shout che *Blood Pact* dell'Imp.
-- **04 - Defensive Stance warTank**: Allineato al modello Fury Warrior (invisibile durante la corretta Defensive Stance; compare con allerta rossa e label `STANCE` solo fuori postura in combattimento tramite `04 - Defensive Stance - OutOfStance warTank`).
+- **04 - Defensive Stance warTank**: Monitoraggio postura a Zero-Clutter (invisibile durante la corretta Defensive Stance; compare con allerta rossa e label `STANCE` solo fuori postura in combattimento tramite `04 - Defensive Stance - OutOfStance warTank`).
 
-### 3. Riga Utility Inferiore (`05` - `13`, a $y = -45$) — Auto-Centratura Dinamica (Parità 1:1 con Fire Mage e Fury Warrior)
-La riga inferiore adotta la medesima architettura auto-adattiva implementata nelle suite `fire-mage-335a-am` e `fury-warrior-335a-am`. Invece di una griglia statica (che produrrebbe buchi vuoti o derive verso destra), il sistema filtra gli oggetti equipaggiati e ricentra tutte le icone attive a $x = 0$ sotto la barra rabbia da $278\text{px}$ tramite la formula $\text{targetX} = \lfloor (i - \frac{N+1}{2}) \times \text{step} + 0.5 \rfloor$, scalando passo ($25\text{px}-52\text{px}$) e dimensioni ($24\text{px}-28\text{px}$) per $N = 3 \dots 11$ elementi attivi:
+### 3. Riga Utility Inferiore (`05` - `13`, a $y = -45$) — Auto-Centratura Dinamica per War Tank
+La riga inferiore adotta un'architettura auto-adattiva a centratura dinamica naturale ingegnerizzata specificamente per il War Tank. Invece di una griglia statica (che produrrebbe buchi vuoti o derive verso destra), il sistema filtra gli oggetti equipaggiati e ricentra tutte le icone attive a $x = 0$ sotto la barra rabbia da $278\text{px}$ tramite la formula $\text{targetX} = \lfloor (i - \frac{N+1}{2}) \times \text{step} + 0.5 \rfloor$, scalando passo ($25\text{px}-52\text{px}$) e dimensioni ($24\text{px}-28\text{px}$) per $N = 3 \dots 11$ elementi attivi:
 - **05 - Trinket 1 warTank** & **06 - Trinket 2 warTank**: Slot 13 e 14 con rilevamento automatico di tutti i monili WotLK (*Sindragosa's Flawless Fang*, *Glyph of Indomitability*, *Corpse Tongue Coin*, *Satrina's Impeding Scarab*, *Corroded Skeleton Key*, *Deathbringer's Will*, *STS*, ecc.) con tracciamento di On-Use, ICD (45s–120s) e durata proc. Sempre visibili se equipaggiati.
 - **06b - Ring warTank**: Slot 11/12. **SOLO ed esclusivamente** per *Ashen Band of Endless Courage* (Tank Armor proc, Spell ID 72414) o *Ashen Band of Endless Vengeance* (Melee AP proc, Spell ID 72412). Anelli con sole statistiche statiche sono rigorosamente soppressi e nascosti.
 - **07 - Cloak warTank**: Slot 15. **SOLO ed esclusivamente** per incanti da combattimento con proc attivo (Sartoria: *Swordguard Embroidery* / *Ricamo della Spada* +400 AP, Spell ID 55775). Il paracadute d'Ingegneria (*Flexweave Underlay*) e tutti gli incanti con statistiche passive statiche (+22 Agilità, +16 Difesa, +225 Armatura) sono tassativamente soppressi per preservare la pulizia visiva.
@@ -77,7 +76,7 @@ La riga inferiore adotta la medesima architettura auto-adattiva implementata nel
     * `Spell [SHIELD BASH]` (Ciano `[0.0, 0.85, 1.0]`) per lanci interrompibili a raggio di mischia.
     * `Spell [SPELL REFLECTION]` (Magenta/Viola `[0.78, 0.25, 0.95]`) per magie dirette puntate sul tank con scudo equipaggiato, suggerito con priorità anche a distanza ($> 5\text{yd}$) o con Shield Bash in ricarica.
     * `Spell [IMMUNE]` (Grigio piombo `[0.50, 0.50, 0.50]`) per abilità protette non interrompibili.
-  - **Castbar Giocatore (Sinistra &rarr; Destra, `inverse: false`)**: Scorrimento classico in avanti da sinistra a destra per lanci del player (Tiro, Lancio, professioni) in perfetto stile Fire Mage; si nasconde istantaneamente per cedere il passo ogni volta che il bersaglio inizia a castare.
+  - **Castbar Giocatore (Sinistra &rarr; Destra, `inverse: false`)**: Scorrimento classico in avanti da sinistra a destra per lanci del player (Tiro, Lancio, professioni) per lanci e canalizzazioni del tank; si nasconde istantaneamente per cedere il passo ogni volta che il bersaglio inizia a castare.
 
 ### 5. Avvisi Testuali Centrali (`17 - Alerts warTank`)
 Gruppo allarmi minimalista posizionato a $y = 78$ sopra i procs, limitato rigorosamente alle sole emergenze critiche:
@@ -85,7 +84,7 @@ Gruppo allarmi minimalista posizionato a $y = 78$ sopra i procs, limitato rigoro
 - **Alert - Kick Now**: Chiamata di interruzione immediata `INTERRUPT: SHIELD BASH!`.
 *(Nota: Tutti i banner testuali rotazionali ed invasivi—inclusi Shield Slam Ready, Boss Enraged e Wrong Stance—sono stati eliminati definitivamente per garantire zero clutter visivo centrale; i proc rotazionali vivono esclusivamente come icone compatte in `01 - Procs warTank`)*.
 
-### 6. Pannello Statistiche Tanking Stile Fury Warrior (`18 - Stats Panel warTank`)
+### 6. Pannello Statistiche Tanking del War Tank (`18 - Stats Panel warTank`)
 Box compatto $88 \times 60\text{px}$ a $x = -190, y = -45$ (sul lato sinistro della riga utility) con etichette bianche `Label:` e valori colorati con soglie dinamiche:
 ```text
 Def:   541 (CAP)
@@ -113,7 +112,7 @@ Hit:   9.1% | 25 Exp
 
 ### 7. Sunder Armor Tracker (`19 - Sunder Armor Tracker warTank`)
 Posizionato sul lato destro delle barre ($x = 160, y = -7$, $32 \times 32\text{px}$):
-- ID univoco `19 - Sunder Armor Tracker warTank` per prevenire collisioni di denominazione WeakAuras e suffissi automatici duplicati ` 2` in caso di coesistenza con la suite Fury Warrior o altre classi.
+- ID univoco `19 - Sunder Armor Tracker warTank` per prevenire collisioni di denominazione WeakAuras e suffissi automatici duplicati ` 2` in caso di coesistenza con altre suite WeakAuras o profili.
 - Supporto completo ai debuff di riduzione armatura maggiori multi-classe e multi-spec: traccia *Sunder Armor* (tutti i rank 1-6 del Guerriero), *Expose Armor* del Ladro (`EA` in ciano) e *Acid Spit* del verme del Cacciatore.
 - Conteggio cariche: `x5` in verde a 5 cariche, `x1`–`x4` in bianco, e cambio icona dinamico verso Expose Armor quando attivo.
 - Timer di scadenza numerico alla base (%c1) e cariche centrate in alto (%c2).

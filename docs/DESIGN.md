@@ -49,7 +49,7 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
 - **Dimensioni**: 278 x 7 px
 - **Posizione**: X = 0, Y = -7 px
 - **Design Statico a Piena Larghezza**: Occupa interamente lo spazio assegnato (278px) con barra base Warrior copper/bronze, **senza animazione di scorrimento/swipe** e **senza testo o numeri del tempo residuo** (timer invisibile, zero clutter).
-- **Sistema di Accodamento Dinamico (Modello Fury Warrior)**:
+- **Sistema di Accodamento Dinamico per il War Tank**:
   - **Heroic Strike accodato (`47450`)**: Retroilluminazione additiva con blend mode `ADD` e Pixel Glow `LibCustomGlow-1.0` Oro (`1.0, 0.84, 0.0`), confermando istantaneamente che il prossimo attacco consumerà rabbia per generare massimo threat single-target.
   - **Cleave accodato (`47520`)**: Retroilluminazione additiva e Pixel Glow Verde Smeraldo (`0.1, 0.95, 0.2`) per la gestione multi-target/aoe.
   - **Nessuna abilità accodata**: Glow disattivato, barra statica pulita a perfetta integrazione con il layout centrale a 278px.
@@ -68,7 +68,7 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
 ### 4.4 Pannello Statistiche Difensive (`18 - Stats Panel warTank`)
 - **Dimensioni**: 88 x 60 px
 - **Posizione**: X = -190 px, Y = -45 px
-- **Stile Tipografico**: Allineato al 100% con `fury-warrior-335a-am` (`|cFFFFFFFFLabel:|r <ValoreColorato>`).
+- **Stile Tipografico**: Visualizzazione ad alta leggibilità con etichette bianche (`|cFFFFFFFFLabel:|r <ValoreColorato>`) e valori colorati dinamicamente in base alle soglie di cap difensive del War Tank.
 - **Layout a 5 Righe (Throttle a 10 Hz)**:
   1. `|cFFFFFFFFDef:|r |cFF22C55E540 (CAP)|r` (o `|cFFFFD700535 (HC)|r` / `|cFFFF2020%d/540|r`)
   2. `|cFFFFFFFFArmor:|r |cFFFFFFFF32.4k|r |cFF80D0FF(66.1%)|r` (Physical DR% contro boss Lv.83, Cap 75%)
@@ -85,9 +85,9 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
 - **`Hit`**: Melee Hit Rating; cap speciale all'**8.0%** (263 rating), ridotto al 7.0% con *Heroic Presence* Draenei.
 - **`Exp` (Expertise)**: Competenza/Perizia; **Soft Cap 26** (elimina le schivate del boss dal fronte), **Hard Cap 56** (elimina le parate e scongiura il *Parry-Haste*).
 
-### 4.5 Riga Utility Adattiva (`05 - 13`) — Auto-Centratura Dinamica (Parità 1:1 con Fire Mage e Fury Warrior)
+### 4.5 Riga Utility Adattiva (`05 - 13`) — Auto-Centratura Dinamica per il War Tank
 - **Principio Architetturale**:
-  La riga inferiore (`05` - `13`, posizionata a $y = -45\text{ px}$ sotto la barra della rabbia da $278\text{ px}$) adotta la medesima architettura auto-adattiva implementata e collaudata nelle suite `fire-mage-335a-am` e `fury-warrior-335a-am`. Non si tratta di una riga statica o rigida, ma di una riga a **centratura dinamica naturale**: gli slot non equipaggiati o non qualificati vengono completamente soppressi, e le icone attive vengono ricentrate orizzontalmente attorno a $x = 0$ senza buchi, spazi vuoti o slittamenti asimmetrici a destra.
+  La riga inferiore (`05` - `13`, posizionata a $y = -45\text{ px}$ sotto la barra della rabbia da $278\text{ px}$) adotta un'architettura a **centratura dinamica naturale** appositamente studiata per il War Tank: gli slot non equipaggiati o non qualificati vengono completamente soppressi, e le icone attive vengono ricentrate orizzontalmente attorno a $x = 0$ senza buchi, spazi vuoti o slittamenti asimmetrici a destra.
 - **Formula di Calcolo delle Coordinate Orizzontali**:
   $$\text{targetX} = \left\lfloor \left( i - \frac{N + 1}{2} \right) \times \text{step} + 0.5 \right\rfloor$$
   dove $i$ è l'indice dell'elemento qualificato all'interno della lista `activeOrder`, ed $N = \#\text{activeOrder}$ è il numero totale di icone attualmente attive (variabile dinamicamente tra $3$ e $11$).
@@ -132,7 +132,7 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
 
 ### 4.6 Allerte Centrali & Rilevamento Postura Errata (`17 - Alerts warTank` & `04 - Defensive Stance`)
 - **Filosofia Zero-Clutter Centrale**:
-  Coerentemente con gli standard di massima pulizia visiva delle suite WotLK (modello Fury Warrior e Fire Mage), al centro dello schermo non compare alcun banner testuale per abilità ordinarie o proc rotazionali.
+  Coerentemente con la filosofia Zero-Clutter del War Tank per massimizzare la visibilità delle meccaniche dei boss in raid, al centro dello schermo non compare alcun banner testuale per abilità ordinarie o proc rotazionali.
   - **Banner Testuali Eliminati**: `Alert - Sword and Board`, `Alert - Boss Enraged` e `Alert - Wrong Stance` sono stati **definitivamente rimossi** dal gruppo `17 - Alerts warTank`.
   - **Proc Rotazionali in Gruppo Dedicato (`01 - Procs warTank`)**: *Sword and Board*, *Revenge Ready*, *Shield Slam* e i debuff su target vivono esclusivamente come icone compatte con timer e bordi dedicati sopra la barra di cast.
 - **Allarmi Critici di Sopravvivenza Residui (`17 - Alerts warTank`)**:
@@ -148,7 +148,7 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
 ### 4.7 Tracker Debuff Armatura (`19 - Sunder Armor Tracker warTank`)
 - **Dimensioni**: 32 x 32 px
 - **Posizione**: X = +160 px, Y = -7 px (lato destro centrale)
-- **Denominazione Univoca Anti-Conflitto**: Identificatore `19 - Sunder Armor Tracker warTank` per scongiurare collisioni e rinomine automatiche a suffisso ` 2` nell'import WeakAuras accanto alla suite Fury Warrior o altre classi.
+- **Denominazione Univoca Anti-Conflitto**: Identificatore `19 - Sunder Armor Tracker warTank` con suffisso protetto `warTank` per scongiurare collisioni e rinomine automatiche a suffisso ` 2` nell'import WeakAuras accanto ad altre configurazioni presenti nell'addon.
 - **Rilevamento Intelligente Sovrapposizioni (All-Specs & Cross-Class)**:
   - *Sunder Armor* (Guerriero all-specs, rank 1-6): contatore cariche `x1`–`x4` in bianco, `x5` in verde smeraldo, e timer di scadenza alla base.
   - *Expose Armor* (Ladro): etichetta `EA` in ciano con icona dinamica di Expose Armor, riconoscendo la sovrapposizione al 100% (-20% armor).

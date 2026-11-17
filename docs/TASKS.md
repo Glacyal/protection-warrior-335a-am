@@ -72,7 +72,7 @@
   - [x] `test_string_sync.py` (PASS)
   - [x] `test_danger_alerts.py` (PASS)
 - [x] Simulatore web interattivo in `docs/index.html`.
-- [x] Documentazione completa allineata a Fury e Fire:
+- [x] Documentazione tecnica e architetturale completa per il War Tank:
   - [x] `docs/ARCHITECTURE.md`
   - [x] `docs/DESIGN.md`
   - [x] `docs/PRD.md`
@@ -97,8 +97,8 @@
   - [x] Trigger event-driven immediato basato su `PLAYER_REGEN_DISABLED`, `PLAYER_REGEN_ENABLED`, `UPDATE_SHAPESHIFT_FORM`, `PLAYER_ENTERING_WORLD`.
   - [x] Aggiornamento test di verifica in `tests/test_danger_alerts.py`.
   - [x] Rigenerazione stringa finale `IMPORT_STRING_v5.21.8.txt` e verifica superamento 8/8 test paralleli.
-- [x] **Task 3: Refactoring Pannello Statistiche Difensive Stile Fury Warrior & Motore Buff/Debuff WotLK**:
-  - [x] Adozione dello stile grafico uniforme a Fury Warrior: etichette bianche `|cFFFFFFFFLabel:|r <ValoreColorato>`.
+- [x] **Task 3: Refactoring Pannello Statistiche Difensive del War Tank & Motore Buff/Debuff WotLK**:
+  - [x] Adozione dello stile grafico ad alto contrasto per il War Tank: etichette bianche `|cFFFFFFFFLabel:|r <ValoreColorato>`.
   - [x] Integrazione motore di calcolo non-stacking per debuff boss sul target: *Insect Swarm* (Druido) vs *Scorpid Sting* (Hunter) per un bonus Miss massimo di +3.0%.
   - [x] Gestione contestuale del livello bersaglio (Boss Raid Lv.83 = 540 Def, Eroica Lv.82 = 535 Def).
   - [x] Calcolo accurato Armor Physical DR% con costante $K = 16635$ e rilevamento automatico di *Inspiration* (+25%), *Stoneskin/Devotion* e debuff *Sunder/Acid/Faerie Fire/Melt Armor*.
@@ -106,11 +106,11 @@
   - [x] Rilevamento aura di gruppo Draenei *Heroic Presence* (+1.0% Hit) e Soft Cap 26 / Hard Cap 56 di Competenza (Expertise).
   - [x] Aggiornamento test di verifica in `tests/test_stats_panel.py`.
   - [x] Sincronizzazione in `docs/index.html` e rigenerazione `IMPORT_STRING_v5.21.8.txt`.
-- [x] **Task 4: Allineamento 1:1 Icona Stance al Modello Fury Warrior (Nascosta in Stance Corretta, Attiva solo Out-of-Stance in Combat)**:
+- [x] **Task 4: Riconfigurazione Icona Stance per il War Tank (Nascosta in Stance Corretta, Attiva solo Out-of-Stance in Combat)**:
   - [x] Rimozione di `Defensive Stance - Active` in `builder/components/buffs.py`: l'icona non deve essere mostrata quando il tank si trova nella postura difensiva corretta (`GetShapeshiftForm() == 2`).
   - [x] Riconfigurazione del gruppo `04 - Defensive Stance` con unico figlio `04 - Defensive Stance - OutOfStance` (UID `PWHUD_STANCE_WARN`) di dimensione 28x28px a $x = -158, y = 0$.
-  - [x] Trigger condizionale reattivo identico a Fury Warrior: visibile esclusivamente in combattimento quando fuori postura difensiva (`GetShapeshiftForm() ~= 2 and UnitAffectingCombat("player")`).
-  - [x] Ridimensionamento delle icone Shouts (`02 - Battle Shout`, `03 - Commanding Shout`) a 28x28px in `builder/components/buffs.py` per garantire perfetta coerenza geometrica con Fury Warrior sopra lo Stats Panel (88px).
+  - [x] Trigger condizionale reattivo: visibile esclusivamente in combattimento quando fuori postura difensiva (`GetShapeshiftForm() ~= 2 and UnitAffectingCombat("player")`).
+  - [x] Ridimensionamento delle icone Shouts (`02 - Battle Shout`, `03 - Commanding Shout`) a 28x28px in `builder/components/buffs.py` per garantire perfetta coerenza geometrica del War Tank sopra lo Stats Panel (88px).
   - [x] Aggiornamento test di regressione (`tests/test_danger_alerts.py`, `tests/test_components_integrity.py`).
   - [x] Rigenerazione stringa WeakAuras `IMPORT_STRING_v5.21.8.txt` e verifica superamento suite 8/8 test paralleli.
   - [x] Aggiornamento simulatore web `docs/index.html`: icona stance nascosta di default e nel preset standard; visibile con bordo rosso pulsante solo nel preset `stance_fail`.
@@ -128,7 +128,7 @@
   - [x] Istituzione della regola permanente non negoziabile in `docs/RULES.md` e memoria tecnica in `docs/MEMORY.md`.
 - [x] **Task 7: Allineamento Componente 15 - Rotational Bar (Static Queue Indicator Senza Scorrimento e Senza Timer Rimanente, 278x7px)**:
   - [x] Riconfigurazione di `15 - Rotational Bar` in `builder/components/rotational.py`: la barra occupa l'intero spazio assegnato (278x7px a $y = -7$) senza animazione di scorrimento/swipe e senza testo del tempo rimanente (`%c` rimosso/invisibile).
-  - [x] Implementazione del meccanismo di Queue Indicator ereditato dal Fury Warrior:
+  - [x] Implementazione del meccanismo di Queue Indicator per Heroic Strike e Cleave sul War Tank:
     - Rilevamento in tempo reale dell'accodamento di *Heroic Strike* (`47450`) o *Cleave* (`47520`) tramite `IsCurrentSpell()`.
     - Retroilluminazione additiva con blend mode `ADD` e Pixel Glow via `LibCustomGlow-1.0`: Oro (`1.0, 0.84, 0.0`) per Heroic Strike, Verde Smeraldo (`0.1, 0.95, 0.2`) per Cleave.
     - Spegnimento del glow e ripristino della barra base quando nessuna abilità è accodata.
@@ -137,10 +137,10 @@
   - [x] Aggiornamento sincronizzato di tutti i documenti bilingue: `README.md` & `README_IT.md`, `HANDOFF.md` & `HANDOFF_IT.md`, `docs/ARCHITECTURE.md`, `docs/DESIGN.md`.
   - [x] Esecuzione e superamento della suite di test (8/8 test paralleli).
   - [x] Commit Git con messaggio descrittivo.
-- [x] **Task 8: Allineamento 1:1 di 19 - Sunder Armor Tracker warTank (Prevenzione Collisioni Nomi Multi-Spec/Classi & Funzionamento Identico a Fury Warrior)**:
-  - [x] Ridenominazione univoca ID da `19 - Sunder Armor Tracker` a `19 - Sunder Armor Tracker warTank` in `builder/components/sunder.py` e `builder/tree.py` per prevenire sovrapposizioni e suffissi automatici ` 2` nell'importazione WeakAuras accanto a Fury Warrior o altre classi.
+- [x] **Task 8: Standardizzazione di 19 - Sunder Armor Tracker warTank (Prevenzione Collisioni Nomi & Ottimizzazione Funzionale War Tank)**:
+  - [x] Ridenominazione univoca ID da `19 - Sunder Armor Tracker` a `19 - Sunder Armor Tracker warTank` in `builder/components/sunder.py` e `builder/tree.py` per prevenire sovrapposizioni e suffissi automatici ` 2` nell'importazione WeakAuras accanto ad altre configurazioni presenti nell'addon.
   - [x] Correzione typo storico sullo spell ID di Sunder Armor Rank 6 (`47467`, precedentemente `47437`) e supporto completo a tutti i rank di *Sunder Armor* (Warrior all-specs), *Expose Armor* (Rogue) e *Acid Spit* (Hunter Worm).
-  - [x] Allineamento 1:1 di layout ed eventi con Fury Warrior:
+  - [x] Ottimizzazione del layout e gestione eventi per il War Tank:
     - Subtext `%c1` in basso (`INNER_BOTTOM`, font size 10) per timer di scadenza numerico o `OFF` in rosso in combattimento.
     - Subtext `%c2` in alto (`INNER_TOP`, font size 12, y=-1) per stack count (`x5` in verde, `x1`-`x4` in bianco, `EA` in ciano).
     - `customIcon` dinamica che commuta sull'icona di *Expose Armor* quando il debuff del ladro è attivo sul bersaglio.
@@ -151,7 +151,7 @@
   - [x] Esecuzione e superamento della suite parallela multi-core (8/8 test).
   - [x] Commit Git con messaggio descrittivo.
 - [x] **Task 9: Eliminazione Integrale Sovrapposizioni Nomi (Standardizzazione Suffisso warTank su tutte le Aure 01-19 e Figli)**:
-  - [x] Standardizzazione globale dell'albero WeakAuras: applicazione del suffisso univoco `warTank` a tutti i nodi principali da 01 a 19 e ai relativi figli interni suscettibili di collisione multi-spec (Fury/Arms) o multi-classe:
+  - [x] Standardizzazione globale dell'albero WeakAuras: applicazione del suffisso univoco `warTank` a tutti i nodi principali da 01 a 19 e ai relativi figli interni suscettibili di collisione multi-spec o multi-classe:
     - `02 - Battle Shout warTank` (e figli `Battle Shout - Active warTank`, `Battle Shout - OFF warTank`).
     - `03 - Commanding Shout warTank` (e figli `Commanding Shout - Active warTank`, `Commanding Shout - OFF warTank`).
     - `04 - Defensive Stance warTank` (e figlio `04 - Defensive Stance - OutOfStance warTank`).
@@ -267,7 +267,7 @@
   - [x] Esecuzione e superamento di tutti gli 8 test paralleli multi-core.
   - [x] Esecuzione CP (Commit & Push su `origin/master`).
 
-- [x] **Task 18: Integrazione Componente 04b - Vigilance warTank (Allerta 'OFF' su Mancanza Buff Alleato - Modello Focus Magic Fire Mage)**:
+- [x] **Task 18: Integrazione Componente 04b - Vigilance warTank (Allerta 'OFF' su Mancanza Buff Vigilanza su Alleato)**:
   - [x] Implementazione del modulo e della logica event-driven `SHARED_VIGILANCE_CHECK_LUA` in `builder/components/buffs.py`:
     - Verifica del talento appreso: `_G.PWHUD_CheckVigilance` controlla in tempo reale se il giocatore ha appreso il talento *Vigilance* (Spell ID 50720 / 59665) tramite `IsSpellKnown` e scansione spellbook. Se il talento non è presente, il componente rimane totalmente inattivo.
     - Tracciamento dinamico su alleati:
@@ -400,7 +400,7 @@
          - *Spell Reflection*: `NomeSpell [SPELL REFLECTION]` se il target sta mirando al tank (`UnitIsUnit("targettarget", "player")`), il tank ha lo scudo e Spell Reflection è pronto (consigliato prioritariamente anche a distanza $> 5\text{yd}$ o con Shield Bash in CD), con barra magenta/viola (`[0.78, 0.25, 0.95]`).
          - *Immune*: `NomeSpell [IMMUNE]` con barra grigio piombo (`[0.50, 0.50, 0.50]`) se il cast è non interrompibile e non riflettibile.
     2. **Castbar - Player warTank** (UID `PWHUD_CASTBAR_PLAYER`, $278 	imes 20\text{px}$, `inverse: False`):
-       - **Scorrimento standard da sinistra verso destra**: identico al modello Fire Mage, visualizza i lanci e le cannellature del giocatore (Shoot, Throw, professioni, Slam, ecc.) con icona a sinistra, nome incantesimo e tempo residuo a destra.
+       - **Scorrimento standard da sinistra verso destra**: visualizza i lanci e le canalizzazioni del giocatore (Shoot, Throw, professioni, Slam, ecc.) con icona a sinistra, nome incantesimo e tempo residuo a destra.
        - Soppressione automatica se il bersaglio sta lanciando un incantesimo (`if targetSpell then return false end`).
   - [x] Aggiornamento delle costanti grafiche (`COLOR_CASTBAR_REFLECT = [0.78, 0.25, 0.95, 1.0]` in `builder/core/constants.py`).
   - [x] Aggiornamento dei test di regressione (`tests/test_interrupts.py` e `tests/test_tree_layout.py`) a copertura del gruppo, delle due barre speculari, dell'inversione e dell'advisor.
@@ -488,7 +488,7 @@
 - [x] **Task 29: Rimozione di Alert - Boss Enraged e Alert - Wrong Stance da 17 - Alerts warTank**:
   - [x] **Contesto e De-cluttering su Richiesta Utente**:
     - Rimossi gli allarmi testuali centrali `Alert - Boss Enraged` (notifica enrage boss) e `Alert - Wrong Stance` (scritta centrale ad alta priorità `>> DEFENSIVE STANCE REQUIRED! <<` con audio `RaidWarning.ogg` a $y = 64$) per eliminare elementi testuali non desiderati ed evitare sovrapposizioni e allarmi invasivi.
-    - L'icona compatta `04 - Defensive Stance - OutOfStance warTank` (30x30px a fianco degli urli ad $x = -168, y = 0$) rimane attiva e funzionante per segnalare chiaramente quando si è fuori postura difensiva in combattimento in piena conformità 1:1 con la suite Fury Warrior.
+    - L'icona compatta `04 - Defensive Stance - OutOfStance warTank` (30x30px a fianco degli urli ad $x = -168, y = 0$) rimane attiva e funzionante per segnalare chiaramente quando si è fuori postura difensiva in combattimento garantendo massima reattività e zero clutter sul War Tank.
   - [x] **Aggiornamento Componente Alerts (`builder/components/alerts.py`)**:
     - Aggiornato `controlledChildren` del gruppo `17 - Alerts warTank` a 3 elementi: `Alert - Sword and Board`, `Alert - Emergency CD`, `Alert - Kick Now`.
     - Eliminate integralmente le strutture dati dizionario per `Alert - Boss Enraged` e `Alert - Wrong Stance`.
@@ -543,25 +543,26 @@
     - Aggiornata memoria tecnica in `docs/MEMORY.md` (Sezione 2.4).
     - Esecuzione CP (Commit & Push su `origin/master`).
 
-- [x] **Task 33: Allineamento Globale Documentazione DOCS su Riga Utility Auto-Adattiva e Specifiche Filtri Item (Parità 1:1 con Fire Mage e Fury Warrior)**:
+- [x] **Task 33: Allineamento Globale Documentazione DOCS su Riga Utility Auto-Adattiva e Specifiche Filtri Item per il War Tank**:
   - [x] **Direttiva Utente**:
-    - "I file interessati dentro DOCS devono ricordarsi che quello che sta sotto come i due trinket, l'eventuale anello, mantello, solo se ha le specifiche da me indicate, e i cd difensivi devono adattarsi dinamicamente così come fatto con il mage e il war dps."
+    - "Quello che sta sotto come i due trinket, l'eventuale anello, mantello, solo se ha le specifiche indicate, e i cooldown difensivi devono adattarsi dinamicamente centrandosi in modo naturale sotto la barra della rabbia del War Tank."
   - [x] **Allineamento File di Documentazione Eseguito**:
     - **`docs/ARCHITECTURE.md`**:
       - Aggiornata la tabella riassuntiva dei componenti per la riga utility (`05` - `13`).
-      - Aggiunta la Sezione 4.1 dedicata con descrizione dell'architettura auto-adattiva a centratura dinamica naturale, formula matematica $X$ ($\lfloor (i - rac{N+1}{2}) 	imes 	ext{step} + 0.5 floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$, larghezza $24	ext{px} \dots 28	ext{px}$) e specifiche di filtraggio whitelist per ogni slot.
+      - Aggiunta la Sezione 4.1 dedicata con descrizione dell'architettura auto-adattiva a centratura dinamica naturale, formula matematica $X$ ($\lfloor (i - rac{N+1}{2}) 	imes 	ext{step} + 0.5 
+floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$, larghezza $24	ext{px} \dots 28	ext{px}$) e specifiche di filtraggio whitelist per ogni slot.
       - Bonificata la Sezione 7: rimosso il riferimento al banner `Alert - Wrong Stance` a favore della sola icona compatta `04 - Defensive Stance - OutOfStance warTank`.
     - **`docs/DESIGN.md`**:
       - Aggiornata la Sezione 4.5 con la formula di centratura orizzontale, la tabella di passo/dimensione e le regole tassative per trinket, anello (solo Ashen Band), mantello (solo ricamo Swordguard, soppressione totale del paracadute e statici), tier set (solo T10 4P), incanti arma (solo proc, statici soppressi), guanti (solo tinker), cooldown difensivi (fissi e integrati) e stivali.
       - Aggiornata la Sezione 4.6 con la filosofia Zero-Clutter ed eliminazione definitiva dei banner centrali `Alert - Sword and Board`, `Alert - Boss Enraged` e `Alert - Wrong Stance`.
     - **`docs/DECISIONS.md`**:
       - Aggiornato ADR-012 (filosofia Zero-Clutter su allarme postura con eliminazione del banner testuale).
-      - Redatto e integrato **ADR-014**: "Architettura Riga Utility Auto-Adattiva a Centratura Dinamica con Filtri Selettivi Proc-Only (Parità 1:1 con Fire Mage e Fury Warrior)".
+      - Redatto e integrato **ADR-014**: "Architettura Riga Utility Auto-Adattiva a Centratura Dinamica con Filtri Selettivi Proc-Only per il War Tank".
     - **`docs/PRD.md`**:
       - Aggiornata la specifica dei Moduli 05 - 13 per la riga utility dinamica e la whitelist selettiva rigorosa.
       - Aggiornati i requisiti `FR-STANCE-01` e `17 - Alerts warTank` (zero banner invasivi per abilità rotazionali o postura).
     - **`docs/MEMORY.md`**:
-      - Aggiunta la **Sezione 2.5**: "Specifica Tassativa della Riga Utility Auto-Adattiva e Filtri Item Proc-Only (Parità 1:1 con Fire Mage e Fury Warrior)".
+      - Aggiunta la **Sezione 2.5**: "Specifica Tassativa della Riga Utility Auto-Adattiva e Filtri Item Proc-Only per il War Tank".
     - **`README.md` & `README_IT.md`**:
       - Formalizzata la riga utility dinamica ad auto-centratura e dettagliate le regole di whitelist (parità 1:1 bilingue).
     - **`HANDOFF.md` & `HANDOFF_IT.md`**:

@@ -11,7 +11,7 @@ Technical reference manual for the development, maintenance, and architectural e
 ## 1. Project Overview
 
 The suite is distributed as a **standalone WeakAura** in compressed `!WA:1!` format (`AceSerializer-3.0` binary serialization + Deflate RFC 1951 level 9 compression + `LibDeflate` character print encoding).  
-It strictly complies with the synchronized 278px visual geometry established with **Class Warrior (Fury)** and **Class Mage (TTW Fire)**, guaranteeing Zero Native Warnings on WeakAuras 5.21.8+ (`internalVersion = 90`).
+It features precision 278px visual geometry engineered specifically for the Protection Warrior, guaranteeing Zero Native Warnings on WeakAuras 5.21.8+ (`internalVersion = 90`).
 
 | Property | Detail |
 | :--- | :--- |
@@ -44,7 +44,7 @@ protection-warrior-335a-am/
 │   │   ├── deflate.py               # Deflate RFC 1951 compression + LibDeflate Print Encoding
 │   │   ├── encoder.py               # Final string generator (!WA:1!...)
 │   │   └── helpers.py               # Dual-key subtext generators and UI helpers
-│   └── components/                  # Component modules (identical architecture to Fury)
+│   └── components/                  # Component modules (modular builder architecture)
 │       ├── procs.py                 # 01 - Procs warTank (Dynamic group 34x34 at y = 52 with fixed priority sort: none -> Emergencies, Procs, Target Debuffs)
 │       ├── buffs.py                 # 02 - Battle Shout warTank, 03 - Commanding Shout warTank, 04 - Defensive Stance warTank (x = -271, -216, -161, y = 0, 34x34px)
 │       ├── utility.py               # 05-13 - Utility Row (Trinkets, Ring, Cloak, Tier, Enchants, Gloves, Shield Wall warTank, Last Stand warTank, Boots) at y = -45
@@ -55,7 +55,7 @@ protection-warrior-335a-am/
 │       └── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px at x = 160, y = -7)
 │
 ├── docs/                            # Documentation and interactive preview for GitHub Pages
-│   └── index.html                   # Interactive HTML/CSS/JS simulator (purely in English, 1:1 Fury layout)
+│   └── index.html                   # Interactive HTML/CSS/JS simulator (purely in English, standalone Protection Warrior HUD)
 │
 ├── scripts/
 │   └── sync_docs.py                 # Automatic sync script for v5 string into docs/index.html
@@ -64,7 +64,7 @@ protection-warrior-335a-am/
     ├── run_parallel_tests.py        # Multi-core test runner (ProcessPoolExecutor)
     ├── test_components_integrity.py # Structural module integrity verification (20 sequential nodes & UIDs)
     ├── test_lua.py                  # Lua syntax validation (triggers, untriggers, custom scripts)
-    ├── test_tree_layout.py          # Geometric 1:1 layout verification with Fury Warrior
+    ├── test_tree_layout.py          # Geometric layout and positioning verification
     ├── test_string_sync.py          # String consistency check between builder and IMPORT_STRING_v5.21.8.txt
     ├── test_stats_panel.py          # Tank formulas verification (Contextual Armor DR, EHP, CTC, 540 Defense)
     ├── test_defensives.py           # Defensive mitigation cooldown verification (Shield Wall, Last Stand, Shield Block)
@@ -115,13 +115,13 @@ protection-warrior-335a-am/
   ```
 - Uniformly inherited by the root group and all 43 child auras.
 
-### 4.2 Out-of-Stance Alert in Combat (Fury Warrior Model)
-- In correct Defensive Stance (`GetShapeshiftForm() == 2`), the stance icon is **completely hidden** (zero visual clutter on screen, identical to Fury Warrior).
+### 4.2 Out-of-Stance Alert in Combat (Zero-Clutter Model)
+- In correct Defensive Stance (`GetShapeshiftForm() == 2`), the stance icon is **completely hidden** (zero visual clutter on screen).
 - Dual-layer alert triggers whenever `UnitAffectingCombat("player") and GetShapeshiftForm() ~= 2`:
   1. Local indicator `04 - Defensive Stance - OutOfStance` (X: -158, Y: 0, 28x28px) with red alert color and `STANCE` subtext.
   2. Compact icon `04 - Defensive Stance - OutOfStance warTank` (X: -168, Y: 0) alongside shouts (central intrusive text banner removed in Task 29).
 
-### 4.3 Fury Warrior-Style Tanking Stats Engine & Non-Stacking Debuffs
+### 4.3 Protection Warrior Tanking Stats Engine & Non-Stacking Debuffs
 - Clean 5-row presentation with white labels `|cFFFFFFFFLabel:|r <Value>`:
   1. `Def:` (540 Cap for Lv.83 raid bosses, 535 for Lv.82 heroic dungeon bosses).
   2. `Armor:` with contextual Physical DR% ($K=15232.5$ at Lv.80 default showing 62.4% identical to in-game character sheet; $K=16635$ on Lv.83 raid bosses showing 60.3% actual raid mitigation, hard cap 75.0%).
@@ -213,13 +213,13 @@ protection-warrior-335a-am/
 
 ### 4.4 Static Rotational Queue Indicator (Heroic Strike & Cleave)
 - Occupies the allocated 278x7px space at $y = -7$ as a static, solid bar without swipe animation and without remaining time countdown numbers.
-- Dynamic queueing logic inherited from Fury Warrior via `IsCurrentSpell()`:
+- Dynamic queueing logic for Heroic Strike and Cleave via `IsCurrentSpell()`:
   - Gold pixel glow (`LibCustomGlow-1.0`) and ADD vertex tint when *Heroic Strike* (`47450`) is queued.
   - Emerald Green pixel glow and ADD vertex tint when *Cleave* (`47520`) is queued.
   - Returns to neutral warrior copper/bronze static appearance when no ability is queued.
 
-### 4.14 Dynamic Auto-Adapting Utility Row (1:1 Parity with Fire Mage & Fury Warrior)
-- **Architectural Parity**: The bottom utility row (`05` - `13`, at $y = -45\text{px}$) implements the identical dynamic centering engine used in `fire-mage-335a-am` and `fury-warrior-335a-am`.
+### 4.14 Dynamic Auto-Adapting Utility Row for War Tank
+- **Natural Dynamic Centering**: The bottom utility row (`05` - `13`, at $y = -45\text{px}$) implements a dynamic auto-centering engine engineered specifically for the Protection Warrior.
 - **Dynamic Centering Algorithm**: The engine dynamically evaluates `activeOrder` containing exclusively equipped and qualified items, positioning all active frames centered at $x = 0$ under the $278\text{px}$ rage bar via $\text{targetX} = \lfloor (i - \frac{N+1}{2}) \times \text{step} + 0.5 \rfloor$, dynamically scaling step ($25\text{px}-52\text{px}$) and frame width ($24\text{px}-28\text{px}$) for $N = 3 \dots 11$ active icons.
 - **Strict Item Whitelist Enforcement**:
   1. **Trinkets 1 & 2 (Slot 13/14)**: Always visible when equipped (`itemID > 0`). Full database of WotLK mitigation and DPS trinkets with On-Use, ICD (45s–120s), and proc duration tracking.

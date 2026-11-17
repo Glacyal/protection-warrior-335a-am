@@ -11,9 +11,9 @@
 [![Buy me a coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-gray.svg?logo=paypal&logoColor=white&labelColor=0079c1)](https://www.paypal.me/AMantmar)
 
 Complete, modular, and high-performance WeakAuras suite for **Level 80 Protection Warrior (Tank)** in World of Warcraft 3.3.5a (*Wrath of the Lich King - Build 12340*).  
-Designed to guarantee 100% visual, geometric, and performance conformity with the **Class Warrior (Fury)** and **Class Mage (TTW Fire)** suites: synchronized **278px** center bars, dynamic utility row at $y = -45$, horizontal procs group at $y = 52$, compact $88 \times 60\text{px}$ stats panel at $x = -190$, and Sunder Armor tracker at $x = 160$.
+Engineered from the ground up as a standalone, production-grade HUD for the Protection Warrior in World of Warcraft 3.3.5a: synchronized **278px** center bars, dynamic utility row at $y = -45$, horizontal procs group at $y = 52$, compact $88 \times 60\text{px}$ stats panel at $x = -190$, and Sunder Armor tracker at $x = 160$.
 
-The suite features an exclusive load condition bound to warriors with the **[Devastate]** talent learned (Talent Index `103`, Tab 3 Protection, Tier 8 Position 23), automatically remaining disabled and consuming zero CPU on Arms or Fury specs.
+The suite features an exclusive load condition bound to warriors with the **[Devastate]** talent learned (Talent Index `103`, Tab 3 Protection, Tier 8 Position 23), automatically remaining disabled and consuming zero CPU on other specs or classes.
 
 ---
 
@@ -21,7 +21,7 @@ The suite features an exclusive load condition bound to warriors with the **[Dev
 
 Explore and interact with the HUD directly inside your browser without installing anything:  
 👉 **[Open Live Web Simulator on GitHub Pages](https://glacyal.github.io/protection-warrior-335a-am/)**  
-- **1:1 Visual Alignment with Fury Warrior**: Native proportions, 278px bars, responsive swing timer with additive glow, and clock swipe cooldown overlays.
+- **High-Precision Tanking Ergonomics**: Native proportions, 278px bars, responsive rotational queue bar with additive glow, and clock swipe cooldown overlays.
 - **Critical Health Emergency Advisor (<35% HP)**: Dynamic prioritized recommendation of the best ready defensive cooldown (*Shield Wall* > *Last Stand* > *Shield Block* > *Enraged Regen* > *Healthstone/Potion*).
 - **Integrated Contextual Kick Advisor**: Castbar ($278 \times 20\text{px}$ at $y = +8$) evaluates spell interruptibility (`notInterruptible`) and prompts the optimal ability (*Shield Bash*, *Pummel*, *Stun*, or cast *Immune* notice).
 - **Live Tanking Stats Panel**: Real-time evaluation of Combat Table Coverage (CTC), raid boss Lv.83 crit immunity (**540 Defense**), contextual Armor DR%, Shield Block Value (SBV), Hit/Exp, and EHP.
@@ -46,14 +46,13 @@ Positioned at the upper region of the HUD ($y = 52$), configured with `sort: "no
 Positioned on the left side directly above the Stats Panel at $x = -264, -232, -200, -168$ and $y = 0$ ($30 \times 30\text{px}$, 4-icon grid perfectly spanning the 126px width of the stats panel with 2px spacing):
 - **02 - Battle Shout warTank**: Battle Shout active timer / missing alert (OFF).
 - **03 - Commanding Shout warTank**: Commanding Shout active timer / missing alert (OFF).
-- **04b - Vigilance warTank**: Vigilance missing alert on ally (OFF) using pure Focus Magic model (displays desaturated icon with red OFF whenever no group/raid ally carries Vigilance; countdown timer when $\le 60\text{s}$).
-- **04 - Defensive Stance warTank**: Wrong stance combat warning (STANCE).
+- **04b - Vigilance warTank**: Vigilance missing alert on ally (displays desaturated icon with red `OFF` whenever no group/raid ally carries Vigilance; countdown timer when $\le 60\text{s}$).
 - **02 - Battle Shout warTank**: Displays countdown timer only when expiring ($\le 30\text{s}$) or desaturated with red `OFF` label when neither Battle Shout nor Paladin *Blessing of Might* is present.
 - **03 - Commanding Shout warTank**: Displays countdown timer only when expiring ($\le 30\text{s}$) or desaturated with red `OFF` label when neither Commanding Shout nor Warlock *Blood Pact* is present.
-- **04 - Defensive Stance warTank**: Aligned 1:1 with Fury Warrior (completely hidden during correct Defensive Stance; visible with red alert border and `STANCE` subtext only when out-of-stance during combat via `04 - Defensive Stance - OutOfStance warTank`).
+- **04 - Defensive Stance warTank**: Zero-clutter stance monitor (completely hidden during correct Defensive Stance; visible with red alert border and `STANCE` subtext only when out-of-stance during combat via `04 - Defensive Stance - OutOfStance warTank`).
 
-### 3. Bottom Utility Row (`05` - `13`, at $y = -45$) — Dynamic Auto-Centering (1:1 Parity with Fire Mage & Fury Warrior)
-The bottom row adopts the dynamic auto-adapting architecture from the `fire-mage-335a-am` and `fury-warrior-335a-am` suites. Rather than using a static grid (which creates unsightly empty gaps or drifts to the right), the system dynamically filters equipped items and centers all active elements at $x = 0$ directly under the $278\text{px}$ rage bar using $\text{targetX} = \lfloor (i - \frac{N+1}{2}) \times \text{step} + 0.5 \rfloor$, scaling step ($25\text{px}-52\text{px}$) and size ($24\text{px}-28\text{px}$) for $N = 3 \dots 11$ active icons:
+### 3. Bottom Utility Row (`05` - `13`, at $y = -45$) — Dynamic Auto-Centering for War Tank
+The bottom row features a dynamic auto-adapting architecture engineered specifically for the Protection Warrior. Rather than using a static grid (which creates unsightly empty gaps or drifts to the right), the system dynamically filters equipped items and centers all active elements at $x = 0$ directly under the $278\text{px}$ rage bar using $\text{targetX} = \lfloor (i - \frac{N+1}{2}) \times \text{step} + 0.5 \rfloor$, scaling step ($25\text{px}-52\text{px}$) and size ($24\text{px}-28\text{px}$) for $N = 3 \dots 11$ active icons:
 - **05 - Trinket 1 warTank** & **06 - Trinket 2 warTank**: Slot 13 & 14 auto-detection for all WotLK trinkets (*Sindragosa's Flawless Fang*, *Glyph of Indomitability*, *Corpse Tongue Coin*, *Satrina's Impeding Scarab*, *Corroded Skeleton Key*, *Deathbringer's Will*, *STS*, etc.) with On-Use, ICD (45s–120s), and proc duration tracking. Always visible when equipped.
 - **06b - Ring warTank**: Slot 11/12 tracker. **Strictly limited** to *Ashen Band of Endless Courage* (Tank Armor proc, Spell ID 72414) or *Ashen Band of Endless Vengeance* (Melee AP proc, Spell ID 72412). Static stat rings are strictly suppressed and hidden.
 - **07 - Cloak warTank**: Slot 15 tracker. **Strictly limited** to combat proc enchants (Tailoring *Swordguard Embroidery* / *Ricamo della Spada* +400 AP, Spell ID 55775). Parachute tinker (*Flexweave Underlay*) and static enchants (+22 Agility, +16 Defense, +225 Armor) are strictly suppressed to eliminate visual clutter.
@@ -77,7 +76,7 @@ The bottom row adopts the dynamic auto-adapting architecture from the `fire-mage
     * `Spell [SHIELD BASH]` (Cyan `[0.0, 0.85, 1.0]`) when interruptible in melee range.
     * `Spell [SPELL REFLECTION]` (Magenta/Purple `[0.78, 0.25, 0.95]`) when direct magic targets the tank (`UnitIsUnit("targettarget", "player")`) with shield equipped, also prioritized at range ($> 5\text{yd}$) or when Shield Bash is on CD.
     * `Spell [IMMUNE]` (Lead gray `[0.50, 0.50, 0.50]`) for protected boss abilities.
-  - **Player Castbar (Left-to-Right, `inverse: false`)**: Standard left-to-right player cast/channel tracking (Shoot, Throw, professions) aligned with Fire Mage; automatically yields and suppresses whenever the target starts casting.
+  - **Player Castbar (Left-to-Right, `inverse: false`)**: Standard left-to-right player cast/channel tracking (Shoot, Throw, professions) designed for non-intrusive casting; automatically yields and suppresses whenever the target starts casting.
 
 ### 5. Central Text Alerts (`17 - Alerts warTank`)
 Minimalist alert group positioned at $y = 78$ directly above the procs, strictly limited to critical survival prompts:
@@ -85,7 +84,7 @@ Minimalist alert group positioned at $y = 78$ directly above the procs, strictly
 - **Alert - Kick Now**: Clear interrupt prompt `INTERRUPT: SHIELD BASH!`.
 *(Note: All rotational and intrusive text banners—including Shield Slam Ready, Boss Enraged, and Wrong Stance—have been completely removed to preserve zero center-screen clutter; rotational procs live exclusively as compact icons in `01 - Procs warTank`)*.
 
-### 6. Fury Warrior-Style Tanking Stats Panel (`18 - Stats Panel warTank`)
+### 6. Protection Warrior Tanking Stats Panel (`18 - Stats Panel warTank`)
 Compact $88 \times 60\text{px}$ frame at $x = -190, y = -45$ (left of the utility row) featuring clean white labels `Label:` and color-coded values with dynamic thresholds:
 ```text
 Def:   541 (CAP)
@@ -113,7 +112,7 @@ Hit:   9.1% | 25 Exp
 
 ### 7. Sunder Armor Tracker (`19 - Sunder Armor Tracker warTank`)
 Positioned on the right side of the bars ($x = 160, y = -7$, $32 \times 32\text{px}$):
-- Unique ID `19 - Sunder Armor Tracker warTank` preventing WeakAuras naming collisions and automated ` 2` duplicate suffixes when coexisting with Fury Warrior or other class suites.
+- Unique ID `19 - Sunder Armor Tracker warTank` preventing WeakAuras naming collisions and automated ` 2` duplicate suffixes when coexisting with other WeakAuras suites or profiles.
 - Full multi-class and multi-spec armor debuff support: tracks *Sunder Armor* (Warrior all-specs ranks 1-6), Rogue *Expose Armor* (`EA` in cyan), and Hunter Worm *Acid Spit*.
 - Stack tracking: green `x5` at 5 stacks, white `x1`–`x4`, and dynamic icon shift to Expose Armor when rogue debuff is active.
 - Numeric expiration countdown timer at base (%c1) and centered stacks (%c2).

@@ -112,19 +112,19 @@ Le tre barre orizzontali condividono la larghezza calibrata di **278 px**:
 | **03** | `03 - Commanding Shout warTank`| 30x30 px | X: -232, Y: 0 | Buff salute; soppresso intelligentemente da Blood Pact dell'Imp del Warlock |
 | **04b** | `04b - Vigilance warTank` | 30x30 px | X: -200, Y: 0 | Allerta Vigilanza mancante su alleato (OFF stile Focus Magic) e timer scadenza (<= 60s) |
 | **04** | `04 - Defensive Stance warTank`| 30x30 px | X: -168, Y: 0 | Allerta visiva immediata e glow rosso se in combat fuori dalla Postura Difensiva |
-| **05-13**| Utility Row (11 Icone) | 24-28 px | Y: -45, X centrato | Auto-centratura dinamica (Parità 1:1 con Fire Mage e Fury Warrior): Trinket 1/2, Ring (Solo Ashen Band), Cloak (Solo Proc Ricamo Sartoria), Tier 10 (Solo 4P Shield Block), Enchants (Solo Proc Arma), Gloves (Solo Tinker), Shield Block warTank (Durata 10s & CD 30s/60s), Shield Wall warTank (-60%), Last Stand warTank (+30%), Boots (Solo Tinker/Regen) |
+| **05-13**| Utility Row (11 Icone) | 24-28 px | Y: -45, X centrato | Auto-centratura dinamica naturale per il War Tank: Trinket 1/2, Ring (Solo Ashen Band), Cloak (Solo Proc Ricamo Sartoria), Tier 10 (Solo 4P Shield Block), Enchants (Solo Proc Arma), Gloves (Solo Tinker), Shield Block warTank (Durata 10s & CD 30s/60s), Shield Wall warTank (-60%), Last Stand warTank (+30%), Boots (Solo Tinker/Regen) |
 | **14** | `14 - Rage Bar warTank` | 278x14 px | X: 0, Y: -20 | Barra risorsa con cambio colore a soglia Heroic Strike/Cleave (>= 45 Rage) |
 | **15** | `15 - Rotational Bar warTank` | 278x7 px | X: 0, Y: -7 | Indicatore statico di accodamento a 278x7px (OnUpdate frame-rate): barra rame neutra a riposo, oro vibrante + Pixel Glow su Heroic Strike accodato, verde smeraldo + Pixel Glow su Cleave accodato |
-| **16** | `16 - Castbar warTank` | 278x20 px | X: 0, Y: +8 | Gruppo Castbar speculare: Target dx->sx (Priorità 1, Shield Bash, Spell Reflection viola, Immune) e Player sx->dx (Priorità 2, stile Fire Mage) |
+| **16** | `16 - Castbar warTank` | 278x20 px | X: 0, Y: +8 | Gruppo Castbar speculare: Target dx->sx (Priorità 1, Shield Bash, Spell Reflection viola, Immune) e Player sx->dx (Priorità 2: lanci e canalizzazioni del tank) |
 | **17** | `17 - Alerts warTank` | Testo 18-20pt | X: 0, Y: +78 | Avvisi critici di emergenza difensiva (<35% HP) e interruzione cast target (Zero Clutter: banner testuali rotazionali rimossi) |
-| **18** | `18 - Stats Panel warTank` | 126x60 px | X: -216, Y: -49 | Pannello difensivo compatto a 5 righe stile Fury Warrior (Def 540 Cap, Armor DR%, CTC 102.4%, Block % & SBV, Hit & Exp) |
+| **18** | `18 - Stats Panel warTank` | 126x60 px | X: -216, Y: -49 | Pannello difensivo compatto a 5 righe per il War Tank (Def 540 Cap, Armor DR%, CTC 102.4%, Block % & SBV, Hit & Exp) |
 | **19** | `19 - Sunder Armor Tracker warTank` | 32x32 px | X: +160, Y: -7 | Monitoraggio cariche (1-5) e durata Sunder Armor (Warrior), Expose Armor (Rogue) o Acid Spit (Hunter); nome univoco anti-conflitto |
 
 ---
 
-### 4.1 Architettura Riga Utility Auto-Adattiva a Centratura Dinamica (Parità 1:1 con Fire Mage e Fury Warrior)
+### 4.1 Architettura Riga Utility Auto-Adattiva a Centratura Dinamica per il War Tank
 
-La riga utility inferiore (`05` - `13`) a $y = -45\text{ px}$ rispecchia fedelmente l'architettura dinamica e la formula matematica collaudata nelle suite `fire-mage-335a-am` e `fury-warrior-335a-am`. Invece di posizionare staticamente 11 icone fisse (che lascerebbero buchi visivi o genererebbero derive verso destra), il motore `_G.PWHUD_UpdateUtilityRowPositions()` esegue un censimento reattivo dell'equipaggiamento e delle abilità qualificate, costruendo la lista `activeOrder` e riposizionando tutte le icone perfettamente centrate attorno a $x = 0$ sotto la barra della rabbia da $278\text{ px}$.
+La riga utility inferiore (`05` - `13`) a $y = -45\text{ px}$ adotta un'architettura a centratura dinamica naturale concepita specificamente per il War Tank. Invece di posizionare staticamente 11 icone fisse (che lascerebbero buchi visivi o genererebbero derive verso destra in base alla configurazione difensiva del tank), il motore `_G.PWHUD_UpdateUtilityRowPositions()` esegue un censimento reattivo dell'equipaggiamento e delle abilità qualificate del tank, costruendo la lista `activeOrder` e riposizionando tutte le icone perfettamente centrate attorno a $x = 0$ sotto la barra della rabbia da $278\text{ px}$.
 
 #### Formula di Calcolo Orizzontale:
 $$\text{targetX} = \left\lfloor \left( i - \frac{N + 1}{2} \right) \times \text{step} + 0.5 \right\rfloor$$
@@ -195,7 +195,7 @@ PROT_WARRIOR_LOAD = {
 In WeakAuras per la build 12340, `WeakAuras.CheckTalentByIndex(index)` mappa l'albero tramite:
 $$\text{tab} = \left\lceil \frac{\text{index}}{40} \right\rceil, \quad \text{num\_talent} = ((\text{index} - 1) \bmod 40) + 1$$
 - **Tab 1**: Arms (indici 1–31)
-- **Tab 2**: Fury (indici 41–67, con Rampage = 64)
+- **Tab 2**: Secondo albero talenti (indici 41–80)
 - **Tab 3**: Protection (indici 81–107)
 All'interno del Tab 3 (Protection), **Devastate** (Spell ID: `20243`) si trova al Tier 8, Colonna 1, occupando l'ordinale **23**. L'indice WeakAuras risulta quindi:
 $$\text{Index} = (3 - 1) \times 40 + 23 = \mathbf{103}$$
@@ -206,7 +206,7 @@ $$\text{Index} = (3 - 1) \times 40 + 23 = \mathbf{103}$$
 
 La gestione della postura è critica per la sopravvivenza del Protection Warrior in raid e dungeon. Un guerriero che affronta il combattimento fuori da *Defensive Stance* perde il 10% di mitigazione passiva, il bonus di Threat moltiplicato e l'accesso ad abilità salvavita (*Shield Block*, *Shield Wall*, *Revenge*).
 
-Coerentemente con la filosofia **Zero Clutter** e gli standard delle suite Fury Warrior e Fire Mage, l'architettura adotta un indicatore compatto altamente visibile ed elegante anziché banner testuali invasivi:
+Coerentemente con la filosofia **Zero Clutter** progettata per offrire al War Tank la massima visuale libera sul boss e sul posizionamento in raid, l'architettura adotta un indicatore compatto altamente visibile ed elegante anziché banner testuali invasivi:
 1. **Indicatore Locale su Slot Postura (`04 - Defensive Stance - OutOfStance`, UID `PWHUD_STANCE_WARN`)**:
    - Posizionato a $x = -158, y = 0$ (dimensione 28x28px, allineato alle shout e al pannello statistiche).
    - In postura difensiva corretta (`GetShapeshiftForm() == 2`) l'icona è **completamente invisibile** (zero distrazioni in combattimento).

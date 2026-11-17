@@ -24,7 +24,7 @@ Questo documento registra le decisioni architetturali e progettuali adottate nel
   - `14 - Rage Bar`: 278 x 14 px (Y = -20 px)
   - `15 - Rotational Bar`: 278 x 7 px (Y = -7 px)
   - `16 - Castbar warTank`: 278 x 20 px (Y = +8 px)
-- **Conseguenze**: Allineamento visivo perfetto 1:1 con `fury-warrior-335a-am` e `fire-mage-335a-am`.
+- **Conseguenze**: Geometria orizzontale perfettamente proporzionata, simmetrica e pulita sotto la visuale del tank.
 
 ---
 
@@ -96,14 +96,14 @@ Questo documento registra le decisioni architetturali e progettuali adottate nel
 
 - **Stato**: Approvato / Implementato
 - **Contesto**: In WeakAuras per client 3.3.5a, le auras di tipo `icon` che contengono esclusivamente elementi `subtext` possono manifestare anomalie di contrasto o errori di rendering dello sfondo nativo dell'icona Blizzard.
-- **Decisione**: Prependere l'elemento `{"type": "subbackground"}` come primo elemento (`index 0`) in `subRegions` di tutte le auras ad icona isolate (Shouts, Stance, Utility Row e Sunder Armor Tracker), uniformando la struttura al 100% con `fury-warrior-335a-am`.
+- **Decisione**: Prependere l'elemento `{"type": "subbackground"}` come primo elemento (`index 0`) in `subRegions` di tutte le auras ad icona isolate (Shouts, Stance, Utility Row e Sunder Armor Tracker), garantendo bordi scuri netti, contrasto elevato e piena conformità agli standard WeakAuras.
 - **Conseguenze**: Rendering estetico privo di artefatti e perfetta parità architetturale tra le suite.
 
 ---
 
 ## ADR-009: Banca Dati Completa WotLK 3.3.5a per Monili, Anelli, Incanti e Tier Set
 - **Stato**: Approvato / Implementato
-- **Contesto**: L'utente ha richiesto la parità funzionale completa con `fury-warrior-335a-am`, integrando tutti i monili da tank/threat, anelli reputazione Ashen Verdict, incanti arma (Blade Ward, Blood Draining con 5 stack e cura d'emergenza, Mongoose) e set bonus T7, T8, T9, T10 incluse combinazioni ibride.
+- **Contesto**: Il War Tank necessita di una banca dati onnicomprensiva per WotLK 3.3.5a che riconosca tutti i monili da mitigazione/threat, gli anelli reputazione Ashen Verdict, gli incanti arma difensivi (Blade Ward, Blood Draining con 5 stack e cura d'emergenza, Mongoose) e i set bonus T7, T8, T9, T10 incluse combinazioni ibride.
 - **Decisione**: Integrare tabelle di lookup globali complete in `_G.PWHUD_TrinketDB`, `_G.PWHUD_RingDB`, `_G.PWHUD_WeaponEnchantDB`, `_G.PWHUD_TierDB` gestite dal modulo `builder/components/utility.py`.
 - **Conseguenze**: La suite rileva automaticamente e dinamizza gli slot equipaggiati (13, 14, 11/12, 15, 10, 8) senza configurazioni manuali.
 
@@ -131,13 +131,13 @@ Questo documento registra le decisioni architetturali e progettuali adottate nel
   3. L'indice matematico lineare è: $(3 - 1) \times 40 + 23 = \mathbf{103}$.
   4. Aggiornata la costante `PROT_WARRIOR_LOAD` in `builder/core/constants.py` con:
      `"talent": {"single": 103, "multi": {103: True}}`, propagata a root e a tutti i nodi figli.
-- **Conseguenze**: La suite si carica istantaneamente solo su Guerrieri Protezione talentati con Devastate, rimanendo invisibile su spec Arms, Fury o altre classi.
+- **Conseguenze**: La suite si carica istantaneamente solo su Guerrieri Protezione talentati con Devastate, rimanendo invisibile su altre specializzazioni o classi.
 
 ---
 
 ## ADR-012: Notifica Visiva Compatta Out-of-Stance ed Eliminazione Banner Testuali Ridondanti
 - **Stato**: Aggiornato / Implementato (Banner testuale superato da filosofia Zero-Clutter)
-- **Contesto**: Trovarsi fuori dalla Postura Difensiva durante il combattimento comporta la perdita di mitigazione e threat essenziali per il tank. Tuttavia, l'uso di banner testuali centrali duplicati genera clutter visivo non allineato con le suite Fury Warrior e Fire Mage.
+- **Contesto**: Trovarsi fuori dalla Postura Difensiva durante il combattimento comporta la perdita di mitigazione e threat essenziali per il tank. Tuttavia, l'uso di banner testuali centrali duplicati genera un ingombro visivo intollerabile che ostacola la visuale del tank sul posizionamento del boss e sui pericoli a terra.
 - **Decisione**:
   1. Configurare `04 - Defensive Stance - OutOfStance warTank` (UID `PWHUD_STANCE_WARN`) nel gruppo `04 - Defensive Stance` con Pixel Glow rosso pulsante e label `STANCE` attivo istantaneamente su `UnitAffectingCombat("player") and (GetShapeshiftForm() ~= 2)`.
   2. Mantenere l'icona completamente invisibile quando il guerriero è in Defensive Stance (zero ingombro).
@@ -147,28 +147,28 @@ Questo documento registra le decisioni architetturali e progettuali adottate nel
 
 ---
 
-## ADR-013: Riorganizzazione Pannello Statistiche Difensive Stile Fury Warrior e Motore Buff/Debuff
+## ADR-013: Riorganizzazione Pannello Statistiche Difensive del War Tank e Motore Buff/Debuff
 - **Stato**: Approvato / Implementato
-- **Contesto**: L'utente ha richiesto di uniformare la resa grafica del pannello statistiche a quella di `fury-warrior-335a-am` (`|cFFFFFFFFLabel:|r <ValoreColorato>`), calcolando accuratamente tutti gli effetti di buff e debuff di boss, mob e raid in WotLK 3.3.5a e gestendo le regole di precedenza/sovrapposizione (non-stacking).
+- **Contesto**: Il War Tank necessita di una resa grafica chiara e ad alto contrasto per il pannello statistiche (`|cFFFFFFFFLabel:|r <ValoreColorato>`), calcolando accuratamente tutti gli effetti di buff e debuff di boss, mob e raid in WotLK 3.3.5a e gestendo le regole di precedenza/sovrapposizione (non-stacking).
 - **Decisione**:
   1. **Stile Tipografico**: Adozione delle etichette bianche su 5 righe: `Def:`, `Armor:`, `CTC:`, `Block:`, `Hit:` con valori colorati dinamicamente in base alle soglie di cap.
   2. **Motore Non-Stacking su Target**: Rilevamento di *Insect Swarm* e *Scorpid Sting* sul bersaglio per assegnare un massimo di +3.0% Miss al boss (evitando somme erronee di +6.0%).
   3. **Adattamento Livello Bersaglio**: Calcolo del Cap Difesa dinamico (540 per Boss Raid Lv.83, 535 per Eroiche Lv.82) e costante di riduzione armatura $K = 16635$.
   4. **Aura di Gruppo Draenei**: Rilevamento di *Heroic Presence* (+1.0% Hit fisico) nel party e verifica Soft Cap 26 ed Hard Cap 56 di Competenza.
   5. **Throttling e Ottimizzazione**: Aggiornamento vincolato a 10 Hz (0.1s) con caching su `_G.PWHUD_LastStatsText` per minimizzare l'impatto sulla CPU in raid.
-- **Conseguenze**: Il tank dispone di un pannello completo, visivamente identico a Fury Warrior, con calcoli matematici rigorosi e affidabili contro qualunque boss.
+- **Conseguenze**: Il tank dispone di un pannello completo, visivamente pulito ed elegante, con calcoli matematici rigorosi e affidabili contro qualunque boss.
 
 
 ---
 
-## ADR-014: Architettura Riga Utility Auto-Adattiva a Centratura Dinamica con Filtri Selettivi Proc-Only (Parità 1:1 con Fire Mage e Fury Warrior)
+## ADR-014: Architettura Riga Utility Auto-Adattiva a Centratura Dinamica con Filtri Selettivi Proc-Only per il War Tank
 - **Stato**: Approvato / Implementato
 - **Contesto**: Nella suite Protection Warrior la riga inferiore (`05` - `13`, a $y = -45\text{ px}$) comprende monili, anello, mantello, bonus tier set, incanti arma, guanti d'ingegneria, i 3 cooldown difensivi maggiori del guerriero e stivali. Senza un algoritmo di centratura dinamica, slot non equipaggiati o soppressi genererebbero buchi visivi antiestetici o asimmetrie (icone spostate solo a destra). Inoltre, l'utente richiede una whitelist rigorosa che sopprima oggetti/incanti a statistiche statiche o non qualificati.
 - **Decisione**:
   1. **Algoritmo di Centratura Dinamica**: Implementare la funzione globale `_G.PWHUD_UpdateUtilityRowPositions()` con formula matematica di calcolo $X$:
      $$\text{targetX} = \left\lfloor \left( i - \frac{N + 1}{2} \right) \times \text{step} + 0.5 \right\rfloor$$
      adattando il passo orizzontale $\text{step}$ ($25\text{ px}$ a $52\text{ px}$) e la dimensione icona ($24\text{ px}$ a $28\text{ px}$) in base alla cardinalità $N$ degli elementi attivi ($3 \le N \le 11$). Tutte le icone rimangono centrate sotto la barra rabbia da $278\text{ px}$.
-  2. **Parità 1:1 con Fire Mage e Fury Warrior**: L'esperienza visiva, la fluidità di riposizionamento all'equipaggiamento/cambio item e l'assenza totale di buchi replicano al 100% l'architettura collaudata delle altre suite HUD.
+  2. **Esperienza Visiva Fluida e Senza Spazi Vuoti**: La fluidità di riposizionamento all'equipaggiamento/cambio item e l'assenza totale di spazi vuoti garantiscono la massima ergonomia visiva per il War Tank durante le transizioni di gear in raid.
   3. **Specifiche Tassative di Filtraggio Oggetti (Whitelist Rigorosa)**:
      - **Trinket 1 & 2 (Slot 13/14)**: Sempre visibili quando equipaggiati (database ICC/RS/ToC/Ulduar con tracciamento On-Use, ICD e procs).
      - **Anello (Slot 11/12)**: Solo *Ashen Band of Endless Courage* (Tank Armor proc) o *Endless Vengeance* (Melee AP proc con 60s ICD). Soppresso per anelli a statistiche statiche.

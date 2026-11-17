@@ -11,7 +11,7 @@ Manuale di riferimento tecnico per lo sviluppo, la manutenzione e l'estensione d
 ## 1. Panoramica del Progetto
 
 La suite è distribuita come **WeakAura autonoma** in formato compresso `!WA:1!` (serializzazione binaria `AceSerializer-3.0` + compressione Deflate RFC 1951 livello 9 + codifica di stampa `LibDeflate`).  
-Rispetta l'identica geometria visiva a 278px introdotta con **Class Warrior (Fury)** e **Class Mage (TTW Fire)**, garantendo Zero Warning nativa su WeakAuras 5.21.8+ (`internalVersion = 90`).
+Adotta una geometria visiva a 278px ingegnerizzata specificamente per il Protection Warrior, garantendo Zero Warning nativa su WeakAuras 5.21.8+ (`internalVersion = 90`).
 
 | Proprietà | Dettaglio |
 | :--- | :--- |
@@ -44,7 +44,7 @@ protection-warrior-335a-am/
 │   │   ├── deflate.py               # Compressione Deflate RFC 1951 + LibDeflate Print Encoding
 │   │   ├── encoder.py               # Generatore stringa finale (!WA:1!...)
 │   │   └── helpers.py               # Generatori di subtext dual-key e helper grafici
-│   └── components/                  # Moduli dedicati ai singoli componenti dell'HUD (identici a Fury)
+│   └── components/                  # Moduli dedicati ai singoli componenti dell'HUD
 │       ├── procs.py                 # 01 - Procs warTank (Gruppo dinamico 34x34 a y = 52 con ordinamento fisso prioritario sort: none -> Emergenze, Proc, Debuff target)
 │       ├── buffs.py                 # 02 - Battle Shout warTank, 03 - Commanding Shout warTank, 04 - Defensive Stance warTank (x = -271, -216, -161, y = 0, 34x34px)
 │       ├── utility.py               # 05-13 - Utility Row (Monili, Anello, Mantello, Tier, Incanti, Guanti, Shield Wall warTank, Last Stand warTank, Boots) a y = -45
@@ -55,7 +55,7 @@ protection-warrior-335a-am/
 │       └── sunder.py                # 19 - Sunder Armor Tracker warTank (32x32px a x = 160, y = -7)
 │
 ├── docs/                            # Documentazione e anteprima interattiva per GitHub Pages
-│   └── index.html                   # Simulatore interattivo HTML/CSS/JS (puramente in Inglese, proporzioni 1:1 identico a Fury)
+│   └── index.html                   # Simulatore interattivo HTML/CSS/JS (puramente in Inglese, HUD War Tank nativo)
 │
 ├── scripts/
 │   └── sync_docs.py                 # Sincronizzazione automatica della stringa v5 in docs/index.html
@@ -64,7 +64,7 @@ protection-warrior-335a-am/
     ├── run_parallel_tests.py        # Test runner parallelo multi-processore (ProcessPoolExecutor)
     ├── test_components_integrity.py # Verifica integrità strutturale moduli (20 nodi sequenziali e UIDs)
     ├── test_lua.py                  # Validazione sintassi codice Lua (trigger, untrigger, actions)
-    ├── test_tree_layout.py          # Verifica conformità geometrica 1:1 con Fury Warrior
+    ├── test_tree_layout.py          # Verifica conformità geometrica e posizionamento
     ├── test_string_sync.py          # Verifica corrispondenza tra builder e IMPORT_STRING_v5.21.8.txt
     ├── test_stats_panel.py          # Verifica formule tank (Armor DR contestuale, EHP, CTC, Defense 540)
     ├── test_defensives.py           # Verifica cooldown di mitigazione (Shield Wall, Last Stand, Shield Block)
@@ -115,13 +115,13 @@ protection-warrior-335a-am/
   ```
 - Propagata uniformemente su root e su tutte le 43 aure figlie.
 
-### 4.2 Notifica Postura Errata in Combattimento (Wrong Stance Alert — Modello Fury Warrior)
-- In postura difensiva corretta (`GetShapeshiftForm() == 2`), l'icona è **completamente invisibile** (zero clutter a schermo, identico a Fury Warrior).
+### 4.2 Notifica Postura Errata in Combattimento (Wrong Stance Alert — Modello Zero-Clutter)
+- In postura difensiva corretta (`GetShapeshiftForm() == 2`), l'icona è **completamente invisibile** (zero visual clutter a schermo).
 - Doppio livello di allarme attivo quando `UnitAffectingCombat("player") and GetShapeshiftForm() ~= 2`:
   1. Indicatore locale `04 - Defensive Stance - OutOfStance` (X: -158, Y: 0, 28x28px) con colore rosso e label `STANCE`.
   2. Icona compatta `04 - Defensive Stance - OutOfStance warTank` (X: -168, Y: 0) a fianco degli urli (banner centrale invasivo rimosso nel Task 29).
 
-### 4.3 Motore Statistiche Tanking Stile Fury Warrior & Buff/Debuff Non-Stacking
+### 4.3 Motore Statistiche Tanking del War Tank & Buff/Debuff Non-Stacking
 - Formattazione a 5 righe con etichette bianche `|cFFFFFFFFLabel:|r <Valore>`:
   1. `Def:` (540 Cap per Lv.83, 535 per Lv.82).
   2. `Armor:` con Physical DR% contestuale ($K=15232.5$ a Lv.80 default pari a 62.4% come scheda PG; $K=16635$ su Raid Boss Lv.83 pari a 60.3%, hard cap 75%).
@@ -213,13 +213,13 @@ protection-warrior-335a-am/
 
 ### 4.4 Indicatore Statico di Accodamento Rotazionale (Heroic Strike & Cleave)
 - Occupa l'intero spazio assegnato di 278x7px a $y = -7$ come barra statica e solida, senza animazione di scorrimento/swipe e senza numeri di tempo rimanente.
-- Logica di queuing dinamico mutuata da Fury Warrior tramite `IsCurrentSpell()`:
+- Logica di queuing dinamico per Heroic Strike e Cleave tramite `IsCurrentSpell()`:
   - Pixel Glow dorato (`LibCustomGlow-1.0`) e tinta vertex ADD quando *Heroic Strike* (`47450`) è accodato.
   - Pixel Glow verde smeraldo e tinta vertex ADD quando *Cleave* (`47520`) è accodato.
   - Ritorno all'aspetto copper/bronze neutro quando nessuna abilità è accodata.
 
-### 4.15 Riga Utility Auto-Adattiva a Centratura Dinamica (Parità 1:1 con Fire Mage e Fury Warrior)
-- **Parità Architetturale**: La riga utility inferiore (`05` - `13`, a $y = -45\text{px}$) adotta la medesima architettura a centratura dinamica collaudata in `fire-mage-335a-am` e `fury-warrior-335a-am`.
+### 4.15 Riga Utility Auto-Adattiva a Centratura Dinamica per il War Tank
+- **Centratura Dinamica Naturale**: La riga utility inferiore (`05` - `13`, a $y = -45\text{px}$) adotta un'architettura a centratura dinamica naturale ingegnerizzata appositamente per il War Tank.
 - **Algoritmo di Centratura Dinamica**: Il motore calcola `activeOrder` contenente esclusivamente gli item equipaggiati e qualificati, ricentrando tutte le icone a $x = 0$ sotto la barra rabbia da $278\text{px}$ tramite $\text{targetX} = \lfloor (i - \frac{N+1}{2}) \times \text{step} + 0.5 \rfloor$, con scaling dinamico del passo ($25\text{px}-52\text{px}$) e della dimensione ($24\text{px}-28\text{px}$) per $N = 3 \dots 11$ icone attive.
 - **Whitelist Rigorosa degli Oggetti**:
   1. **Trinket 1 & 2 (Slot 13/14)**: Sempre visibili quando equipaggiati (`itemID > 0`). Database completo ICC/RS/ToC/Ulduar con monitoraggio On-Use, ICD (45s–120s) e procs.

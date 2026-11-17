@@ -116,11 +116,11 @@ Questo documento raccoglie la memoria tecnica, le particolarità delle API WotLK
      - Tutte le funzioni di scansione slot (`_G.PWHUD_CheckSlotEquipped`, `_G.PWHUD_CheckSlot`, `_G.PWHUD_UpdateUtilityRowPositions`, `_G.PWHUD_CheckTargetDebuff`, `_G.PWHUD_CheckTankBusters`) vengono registrate istantaneamente in `_G`.
      - Tutti i trinket ricompaiono e la riga si auto-adatta fluidamente centrandosi sotto la barra rabbia.
 
-### 2.5 Specifica Tassativa della Riga Utility Auto-Adattiva e Filtri Item Proc-Only (Parità 1:1 con Fire Mage e Fury Warrior)
+### 2.5 Specifica Tassativa della Riga Utility Auto-Adattiva e Filtri Item Proc-Only per il War Tank
 - **Direttiva Utente Tassativa**:
-  "I file interessati dentro DOCS devono ricordarsi che quello che sta sotto come i due trinket, l'eventuale anello, mantello, solo se ha le specifiche da me indicate, e i cd difensivi devono adattarsi dinamicamente così come fatto con il mage e il war dps."
+  "Quello che sta sotto come i due trinket, l'eventuale anello, mantello, solo se ha le specifiche indicate, e i cooldown difensivi devono adattarsi dinamicamente centrandosi in modo naturale sotto la barra della rabbia del War Tank."
 - **Contratto Architetturale della Riga Utility (`05` - `13`, a $y = -45\text{ px}$)**:
-  1. **Auto-Adattamento Dinamico Naturale (Parità 1:1 con Fire Mage e Fury Warrior)**:
+  1. **Auto-Adattamento Dinamico Naturale per il War Tank**:
      - La riga non è una griglia statica: non deve MAI presentare buchi vuoti tra le icone o slittare a destra quando un elemento è assente o soppresso.
      - Tutte le icone qualificate vengono raccolte in `activeOrder` e centrate orizzontalmente a $x = 0$ sotto la barra rabbia ($278\text{ px}$) tramite la formula:
        $$\text{targetX} = \left\lfloor \left( i - \frac{N + 1}{2} \right) \times \text{step} + 0.5 \right\rfloor$$
@@ -159,7 +159,7 @@ In WeakAuras 3.3.5a, la funzione `WeakAuras.CheckTalentByIndex(index)` non usa s
 - Formula: $\text{tab} = \lceil \text{index} / 40 \rceil$, $\text{num\_talent} = ((\text{index} - 1) \bmod 40) + 1$.
 - Per il Guerriero:
   - Tab 1 = Arms
-  - Tab 2 = Fury (es. Rampage = 64, ovvero $(2-1)*40 + 24$)
+  - Tab 2 = Secondo ramo talenti (indici 41–80)
   - Tab 3 = Protection (27 talenti totali)
 - Nel ramo Protection (Tab 3), **Devastate** (Spell ID: `20243`) si trova al Tier 8, Colonna 1, occupando l'ordinale **23**.
 - Indice lineare WeakAuras: $(3 - 1) \times 40 + 23 = \mathbf{103}$.
