@@ -85,7 +85,12 @@ def run_tests():
     assert "UnitCanAttack" in alert_kick["customText"]
     assert "ki == nil" in alert_kick["triggers"][1]["untrigger"]["custom"]
 
-    print("[OK] test_interrupts completato con successo (Castbar Target e Player entrambe dx->sx con Kick/Reflect, icone dinamiche e untrigger immediato validati).")
+    # 5. Verifica unpacking con cRank per UnitChannelInfo in Player Castbar (previene errore aritmetico su stringa durante canalizzazioni/pesca)
+    assert "cRank" in player_cast["triggers"][1]["trigger"]["customDuration"], "customDuration deve scompattare cRank per calcolare (ceTime - csTime)"
+    assert "cRank" in player_cast["customText"], "customText deve scompattare cRank per assegnare correttamente cTexture"
+    assert "cRank" in player_cast["triggers"][1]["trigger"]["customIcon"], "customIcon deve scompattare cRank per assegnare cTexture all'icona"
+
+    print("[OK] test_interrupts completato con successo (Castbar Target e Player entrambe dx->sx con Kick/Reflect, icone dinamiche, canale 3.3.5a e untrigger immediato validati).")
     return True
 
 if __name__ == "__main__":

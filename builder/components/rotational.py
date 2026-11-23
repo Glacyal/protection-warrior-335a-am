@@ -32,6 +32,12 @@ SHARED_SWING_TIMER_LUA = r"""_G.PWHUD_GetSwing = function()
         cleaveQueued = false,
     }
     local sw = _G.PWHUD_Swing
+    if _G.PWHUD_IsFishingOrPole and _G.PWHUD_IsFishingOrPole() then
+        sw.mhStart = 0
+        sw.hsQueued = false
+        sw.cleaveQueued = false
+        return sw
+    end
 
     local f = _G.PWHUD_SwingFrame
     if not f then
@@ -105,6 +111,33 @@ SHARED_SWING_TIMER_LUA = r"""_G.PWHUD_GetSwing = function()
     sw.cleaveQueued = (isCleave == true or isCleave == 1)
 
     return sw
+end
+
+_G.PWHUD_IsFishingOrPole = function()
+    -- 1. Verifica se il giocatore sta canalizzando Fishing/Pesca
+    local cName = UnitChannelInfo("player")
+    if cName and (cName == "Fishing" or cName == "Pesca") then
+        return true
+    end
+
+    -- 2. Verifica se ha una canna da pesca equipaggiata (IsEquippedItemType WotLK 3.3.5a)
+    if IsEquippedItemType and (IsEquippedItemType("Fishing Poles") or IsEquippedItemType("Fishing Pole") or IsEquippedItemType("Canne da pesca") or IsEquippedItemType("Canna da pesca")) then
+        return true
+    end
+
+    -- 3. Fallback accurato su slot 16 (Main Hand) tramite GetInventoryItemID / GetItemInfo
+    local itemID = GetInventoryItemID and GetInventoryItemID("player", 16)
+    if itemID and GetItemInfo then
+        local name, _, _, _, _, itemClass, itemSubClass = GetItemInfo(itemID)
+        if itemSubClass and (itemSubClass == "Fishing Poles" or itemSubClass == "Fishing Pole" or itemSubClass == "Canne da pesca" or itemSubClass == "Canna da pesca") then
+            return true
+        end
+        if name and (name:find("Fishing") or name:find("Pesca") or name:find("Canna da pesca") or name:find("Canna")) then
+            return true
+        end
+    end
+
+    return false
 end"""
 
 
@@ -159,17 +192,35 @@ def build_rotational_auras() -> list[dict]:
             "color": [0.08, 0.04, 0.04, 0.85],
             "selfPoint": "CENTER",
             "anchorPoint": "CENTER",
+            "actions": {
+                "init": {
+                    "do_custom": True,
+                    "custom": SHARED_SWING_TIMER_LUA,
+                },
+                "start": {},
+                "finish": {},
+            },
             "triggers": {
                 1: {
                     "trigger": {
                         "type": "custom",
                         "custom_type": "status",
-                        "check": "event",
-                        "events": "PLAYER_ENTERING_WORLD,PLAYER_ALIVE",
-                        "custom": "function() return true end",
+                        "check": "update",
+                        "custom": r"""function()
+                            if _G.PWHUD_IsFishingOrPole and _G.PWHUD_IsFishingOrPole() then
+                                return false
+                            end
+                            return true
+                        end""",
                     },
                     "untrigger": {
-                        "custom": "function() return false end",
+                        "type": "custom",
+                        "custom": r"""function()
+                            if _G.PWHUD_IsFishingOrPole and _G.PWHUD_IsFishingOrPole() then
+                                return true
+                            end
+                            return false
+                        end""",
                     }
                 },
                 "activeTriggerMode": -10,
@@ -224,7 +275,12 @@ def build_rotational_auras() -> list[dict]:
                         "type": "custom",
                         "custom_type": "status",
                         "check": "update",
-                        "custom": "function() return true end",
+                        "custom": r"""function()
+                            if _G.PWHUD_IsFishingOrPole and _G.PWHUD_IsFishingOrPole() then
+                                return false
+                            end
+                            return true
+                        end""",
                         "customDuration": r"""function()
                             if _G.PWHUD_GetSwing then _G.PWHUD_GetSwing() end
                             local sw = _G.PWHUD_Swing
@@ -253,7 +309,13 @@ def build_rotational_auras() -> list[dict]:
                         "customTextUpdate": "update",
                     },
                     "untrigger": {
-                        "custom": "function() return false end",
+                        "type": "custom",
+                        "custom": r"""function()
+                            if _G.PWHUD_IsFishingOrPole and _G.PWHUD_IsFishingOrPole() then
+                                return true
+                            end
+                            return false
+                        end""",
                     }
                 },
                 "activeTriggerMode": -10,
@@ -332,6 +394,9 @@ end""",
                         "custom_type": "status",
                         "check": "update",
                         "custom": r"""function()
+                            if _G.PWHUD_IsFishingOrPole and _G.PWHUD_IsFishingOrPole() then
+                                return false
+                            end
                             local hsName = _G.PWHUD_HSName
                             if not hsName then
                                 hsName = GetSpellInfo(47450) or "Heroic Strike"
@@ -370,6 +435,9 @@ end""",
                     "untrigger": {
                         "type": "custom",
                         "custom": r"""function()
+                            if _G.PWHUD_IsFishingOrPole and _G.PWHUD_IsFishingOrPole() then
+                                return true
+                            end
                             local hsName = _G.PWHUD_HSName
                             if not hsName then
                                 hsName = GetSpellInfo(47450) or "Heroic Strike"
@@ -456,6 +524,9 @@ end""",
                         "custom_type": "status",
                         "check": "update",
                         "custom": r"""function()
+                            if _G.PWHUD_IsFishingOrPole and _G.PWHUD_IsFishingOrPole() then
+                                return false
+                            end
                             local clName = _G.PWHUD_CleaveName
                             if not clName then
                                 clName = GetSpellInfo(47520) or "Cleave"
@@ -494,6 +565,9 @@ end""",
                     "untrigger": {
                         "type": "custom",
                         "custom": r"""function()
+                            if _G.PWHUD_IsFishingOrPole and _G.PWHUD_IsFishingOrPole() then
+                                return true
+                            end
                             local clName = _G.PWHUD_CleaveName
                             if not clName then
                                 clName = GetSpellInfo(47520) or "Cleave"

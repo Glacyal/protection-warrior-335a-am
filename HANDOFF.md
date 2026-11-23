@@ -300,6 +300,15 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.20 Player Castbar Channeled/Fishing Fix & Fishing Rod Auto-Suppression on Rotational Bar
+- **Resolution of Channeled/Fishing Arithmetic String Error**:
+  - Corrected `UnitChannelInfo("player")` return unpacking in `Castbar - Player warTank`. WotLK 3.3.5a returns 8 parameters including `rank`. Adding `cRank` ensures `csTime` and `ceTime` receive numeric millisecond timestamps, eliminating `attempt to perform arithmetic on a string value` when channeling Fishing or any trade skill.
+- **Fishing Rod Auto-Suppression on 15 - Rotational Bar warTank**:
+  - Added global detector `_G.PWHUD_IsFishingOrPole` checking active fishing channels and Main Hand slot 16 fishing pole equipment (`IsEquippedItemType("Fishing Poles")` / `"Canne da pesca"` / `GetItemInfo`).
+  - Automatically suppresses and untriggers all 4 swing timer auras (`Background`, `Base Bar`, `HS Queued`, `Cleave Queued`) while a fishing rod is equipped or active, delegating fishing visual progress strictly to `16 - Castbar warTank`.
+
+---
+
 ## 5. Technical Glossary & Tanking Acronyms (WotLK 3.3.5a)
 
 | Acronym | Full Name | Mechanics & Formulas |

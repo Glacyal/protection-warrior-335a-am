@@ -729,3 +729,29 @@ floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$
     - Test Suite parallela: 10/10 test superati con successo in 0.40s.
     - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (76.853 caratteri).
     - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 41: Risoluzione Errore Lua Durante Pesca/Canalizzazioni in "Castbar - Player warTank" ed Esclusione Automatica Canna da Pesca da "15 - Rotational Bar warTank"**:
+  - [x] **Direttive Utente**:
+    - *"lo fa ancora , tipo mentre pesco"* (screenshot con errore `WeakAuras: Aura 'Castbar - Player warTank': This aura has caused a Lua error`).
+    - *"tipo se ho la canna da pesca questa deve essere ignorata dalla 15 - Rotational Bar warTank, infatti dovrebbe appartenere solo a 16 - Castbar warTank"*.
+  - [x] **Analisi Causa Radice Errore Lua in Castbar Player**:
+    - In WotLK 3.3.5a, l'API nativa `UnitChannelInfo("unit")` restituisce 8 valori: `name, rank, text, texture, startTime, endTime, isTradeSkill, notInterruptible`.
+    - In `Castbar - Player warTank` (`builder/components/bars.py`), `customDuration` estraeva i ritorni omettendo il parametro `rank`: `local cName, cText, cTexture, csTime, ceTime = UnitChannelInfo("player")`.
+    - L'omissione di `rank` faceva slittare le variabili: `csTime` riceveva `cTexture` (la stringa del percorso icona `"Interface\Icons\Trade_Fishing"`), mentre `ceTime` riceveva `startTime`.
+    - Al calcolo di durata `(ceTime - csTime) / 1000`, l'interprete Lua 5.1 tentava un'operazione aritmetica sottraendo una stringa ad un numero (`attempt to perform arithmetic on a string value`), scatenando l'errore ad ogni frame durante la pesca.
+    - Similmente, in `customText` e `customIcon`, l'assenza di `cRank` causava l'assegnazione del testo a display invece del percorso icona.
+  - [x] **Implementazione Fix Castbar (Canale WotLK 3.3.5a)**:
+    - Corretto l'unpack in `customText`, `customDuration` e `customIcon` per `Castbar - Player warTank` e `Castbar - Target warTank`: `local cName, cRank, cText, cTexture, csTime, ceTime = UnitChannelInfo("player")`.
+    - `csTime` e `ceTime` sono ora garantiti come numeri in millisecondi; la barra di pesca e qualsiasi canalizzazione scorrono fluidamente senza errori con la rispettiva icona.
+  - [x] **Esclusione Canna da Pesca da 15 - Rotational Bar warTank**:
+    - Definita la funzione di rilevamento globale `_G.PWHUD_IsFishingOrPole` in `SHARED_SWING_TIMER_LUA`:
+      1. Rileva se il giocatore sta canalizzando *Fishing* o *Pesca*.
+      2. Rileva se è equipaggiata una canna da pesca nello slot 16 (Main Hand) tramite `IsEquippedItemType("Fishing Poles")` / `"Canne da pesca"`.
+      3. Esegue fallback accurato tramite `GetItemInfo(GetInventoryItemID("player", 16))` per identificare qualsiasi canna da pesca su qualsiasi localizzazione.
+    - Applicato il check in `trigger` e `untrigger` per tutte e 4 le aure del gruppo `15 - Rotational Bar warTank` (`Background`, `Base Bar`, `HS Queued`, `Cleave Queued`).
+    - Quando la canna da pesca è impugnata o si sta pescando, la barra rotazionale dello swing timer si disattiva e si nasconde istantaneamente, lasciando la gestione del lancio esclusivamente alla castbar centrale [16 - Castbar warTank](file:///d:/0Progetti/protection-warrior-335a-am/builder/components/bars.py).
+  - [x] **Validazione & Collaudo**:
+    - Aggiornati test in `tests/test_interrupts.py` (verifica unpacking `cRank`) e `tests/test_rotational.py` (verifica disattivazione `PWHUD_IsFishingOrPole`).
+    - Suite parallela: 10/10 test superati con successo in 0.40s.
+    - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (77.536 caratteri).
+    - Esecuzione CP (Commit & Push su `origin/master`).

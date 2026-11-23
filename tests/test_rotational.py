@@ -102,7 +102,15 @@ def run_tests():
     assert "PixelGlow_Stop" in act_fin_cl.get("custom", "")
     assert "PWHUD_CLEAVE_GLOW" in act_fin_cl.get("custom", "")
 
-    print("[OK] test_rotational completato con successo (tutti i componenti di 15 - Rotational Bar verificati).")
+    # 6. Esclusione Canna da Pesca / Pesca attiva (15 - Rotational Bar deve ignorare la canna da pesca)
+    assert "PWHUD_IsFishingOrPole" in base["triggers"][1]["trigger"]["custom"], "Base Bar deve escludere la canna da pesca"
+    assert "PWHUD_IsFishingOrPole" in base["triggers"][1]["untrigger"]["custom"], "Base Bar untrigger deve spegnersi se c'è la canna da pesca"
+    assert "PWHUD_IsFishingOrPole" in bg["triggers"][1]["trigger"]["custom"], "Background Frame deve escludere la canna da pesca"
+    assert "PWHUD_IsFishingOrPole" in bg["triggers"][1]["untrigger"]["custom"], "Background Frame untrigger deve spegnersi se c'è la canna da pesca"
+    assert "PWHUD_IsFishingOrPole" in trig_hs["custom"], "HS Queued deve escludere la canna da pesca"
+    assert "PWHUD_IsFishingOrPole" in trig_cl["custom"], "Cleave Queued deve escludere la canna da pesca"
+
+    print("[OK] test_rotational completato con successo (tutti i componenti di 15 - Rotational Bar verificati con esclusione canna da pesca).")
     return True
 
 if __name__ == "__main__":

@@ -66,7 +66,7 @@ The bottom row features a dynamic auto-adapting architecture engineered specific
 
 ### 4. Synchronized 278px Center Bars (`14`, `15`, `16`)
 - **14 - Rage Bar warTank ($278 \times 14\text{px}$ at $y = -20$)**: Precise numeric value centered with 3-tier dynamic color shifts: dark red under 25 points (starvation), deep crimson between 25 and 44 points, and bright amber/gold above 45 points (safe rage-dumping threshold for Heroic Strike / Cleave).
-- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ at $y = -7$)**: Fluid Main-Hand swing timer aurabar ($274 \times 5\text{px}$) showing the real-time progress between melee attacks with centered decimal countdown (%c, e.g. 1.8s) and dynamic queuing synchronization:
+- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ at $y = -7$)**: Fluid Main-Hand swing timer aurabar ($274 \times 5\text{px}$) showing the real-time progress between melee attacks with centered decimal countdown (%c, e.g. 1.8s) and dynamic queuing synchronization (automatically hidden when a fishing pole is equipped or active):
   - Base solid bar in Warrior copper/bronze (`[0.65, 0.35, 0.12, 0.90]`) scrolling across weapon swing speed.
   - Radiant Gold bar (`[1.0, 0.84, 0.0, 1.0]`) with golden `LibCustomGlow-1.0` Pixel Glow instantly upon queueing *Heroic Strike*, continuing swing progress seamlessly.
   - Radiant Emerald Green bar (`[0.1, 0.95, 0.2, 1.0]`) with green `LibCustomGlow-1.0` Pixel Glow instantly upon queueing *Cleave*, continuing swing progress seamlessly.

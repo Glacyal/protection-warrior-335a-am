@@ -39,7 +39,7 @@ SHARED_CASTBAR_LOGIC_LUA = r"""_G.PWHUD_GetTargetCastInfo = function()
     local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo("target")
     local isChannel = false
     if not spell then
-        local cName, cText, cTexture, cStart, cEnd, cTrade, cNotInt = UnitChannelInfo("target")
+        local cName, cRank, cText, cTexture, cStart, cEnd, cTrade, cNotInt = UnitChannelInfo("target")
         if cName then
             spell = cName
             displayName = cText
@@ -340,7 +340,7 @@ def build_bars_auras() -> list[dict]:
                             if spell and sTime and eTime then
                                 return (eTime - sTime) / 1000, eTime / 1000
                             end
-                            local cName, cText, cTexture, cStart, cEnd = UnitChannelInfo("target")
+                            local cName, cRank, cText, cTexture, cStart, cEnd = UnitChannelInfo("target")
                             if cName and cStart and cEnd then
                                 return (cEnd - cStart) / 1000, cEnd / 1000
                             end
@@ -355,7 +355,7 @@ def build_bars_auras() -> list[dict]:
                             if not icon then
                                 local spell, rank, disp, tIcon = UnitCastingInfo("target")
                                 if not spell then
-                                    local cName, cText, cTexture = UnitChannelInfo("target")
+                                    local cName, cRank, cText, cTexture = UnitChannelInfo("target")
                                     if cName then
                                         spell = cName
                                         tIcon = cTexture
@@ -417,7 +417,7 @@ def build_bars_auras() -> list[dict]:
             "customText": r"""function()
                 local spell, rank, disp, icon = UnitCastingInfo("player")
                 if not spell then
-                    local cName, cText, cTexture = UnitChannelInfo("player")
+                    local cName, cRank, cText, cTexture = UnitChannelInfo("player")
                     if cName then
                         spell = cName
                         icon = cTexture
@@ -464,7 +464,7 @@ def build_bars_auras() -> list[dict]:
                             if spell and sTime and eTime then
                                 return (eTime - sTime) / 1000, eTime / 1000
                             end
-                            local cName, cText, cTexture, csTime, ceTime = UnitChannelInfo("player")
+                            local cName, cRank, cText, cTexture, csTime, ceTime = UnitChannelInfo("player")
                             if cName and csTime and ceTime then
                                 return (ceTime - csTime) / 1000, ceTime / 1000
                             end
@@ -473,7 +473,7 @@ def build_bars_auras() -> list[dict]:
                         "customIcon": r"""function()
                             local spell, rank, disp, icon = UnitCastingInfo("player")
                             if not spell then
-                                local cName, cText, cTexture = UnitChannelInfo("player")
+                                local cName, cRank, cText, cTexture = UnitChannelInfo("player")
                                 if cName then
                                     spell = cName
                                     icon = cTexture

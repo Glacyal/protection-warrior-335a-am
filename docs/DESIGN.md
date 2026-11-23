@@ -93,7 +93,8 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
   - **Annullamento Immediato su Interruzione**: Untrigger semantico immediato (`spell == nil`): se il tank interrompe il cast muovendosi, saltando o premendo ESC/stopcast, la barra scompare subito.
 - **Risoluzione Icone Dinamiche & Compatibilità WotLK 3.3.5a**:
   - `auto = True`: WeakAuras preleva nativamente la texture dall'evento di trigger senza override statici.
-  - Unpacking conforme WotLK 3.3.5a: `UnitCastingInfo` (texture 4° ritorno) e `UnitChannelInfo` (texture 3° ritorno, senza `rank`).
+  - Unpacking conforme WotLK 3.3.5a: `UnitCastingInfo` e `UnitChannelInfo` scompattano correttamente gli 8 ritorni nativi (`name, rank, text, texture, startTime, endTime...`) garantendo che i timestamp di inizio e fine siano numerici (nessun errore aritmetico su stringa o boolean).
+  - Soppressione Automatica Canna da Pesca su Swing Timer: `15 - Rotational Bar warTank` rileva l'equipaggiamento della canna da pesca o la canalizzazione della pesca tramite `_G.PWHUD_IsFishingOrPole`, nascondendo lo swing timer e delegando la canalizzazione a `16 - Castbar warTank`.
   - Fallback universale con `GetSpellTexture(spell)` e binding diretto `aura_env.region.icon:SetTexture(icon)` per aggiornamento frame a latenza zero.
 
 ### 4.4 Pannello Statistiche Difensive (`18 - Stats Panel warTank`)

@@ -298,6 +298,15 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.20 Risoluzione Errore Lua su Castbar Player Channeled/Pesca & Soppressione Canna da Pesca su Rotational Bar
+- **Risoluzione Errore Aritmetico su Stringa per Incantesimi Incanalati/Pesca**:
+  - Corretto l'ordine dei parametri di ritorno di `UnitChannelInfo("player")` in `Castbar - Player warTank`. L'inclusione di `cRank` garantisce che `csTime` e `ceTime` ricevano valori numerici, eliminando l'errore `attempt to perform arithmetic on a string value` durante la pesca o qualsiasi canalizzazione.
+- **Soppressione Automatica Canna da Pesca da 15 - Rotational Bar warTank**:
+  - Introdotto il rilevamento globale `_G.PWHUD_IsFishingOrPole` che verifica canalizzazioni di pesca e canne da pesca equipaggiate nello slot 16 Main Hand (`IsEquippedItemType("Fishing Poles")` / `"Canne da pesca"` / `GetItemInfo`).
+  - Sopprime e disattiva all'istante tutti e 4 i componenti dello swing timer (`Background`, `Base Bar`, `HS Queued`, `Cleave Queued`) quando si impugna o usa la canna da pesca, riservando la progressione del lancio unicamente a `16 - Castbar warTank`.
+
+---
+
 ## 5. Glossario & Riferimento Sigle Tecniche Tanking (WotLK 3.3.5a)
 
 | Sigla | Termine Completo | Descrizione Meccanica e Formule WotLK |

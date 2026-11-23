@@ -66,7 +66,7 @@ La riga inferiore adotta un'architettura auto-adattiva a centratura dinamica nat
 
 ### 4. Barre Centrali Sincronizzate a 278px (`14`, `15`, `16`)
 - **14 - Rage Bar warTank ($278 \times 14\text{px}$ a $y = -20$)**: Valore numerico esatto al centro (%p) con colorazione a 3 stadi: rosso scuro sotto 25 punti (starvation), crimson pieno tra 25 e 44 punti e ambra/oro sopra i 45 punti (soglia scarico sicuro Heroic Strike/Cleave).
-- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ a $y = -7$)**: Aurabar fluida dello swing timer per la mano primaria ($274 \times 5\text{px}$) che mostra in tempo reale lo scorrimento tra un attacco in mischia e il successivo, con timer decimale residuo (%c, es. 1.8s) centrato e sincronizzazione d'accodamento:
+- **15 - Rotational Bar warTank ($278 \times 7\text{px}$ a $y = -7$)**: Aurabar fluida dello swing timer per la mano primaria ($274 \times 5\text{px}$) che mostra in tempo reale lo scorrimento tra un attacco in mischia e il successivo, con timer decimale residuo (%c, es. 1.8s) centrato e sincronizzazione d'accodamento (nascosta automaticamente quando viene equipaggiata o usata la canna da pesca):
   - Barra base in rame/bronzo Warrior (`[0.65, 0.35, 0.12, 0.90]`) a scorrimento calibrato sulla velocità dell'arma.
   - Barra Oro brillante (`[1.0, 0.84, 0.0, 1.0]`) con Pixel Glow dorato `LibCustomGlow-1.0` all'accodamento di *Heroic Strike*, che prosegue lo scorrimento in perfetta continuità.
   - Barra Verde Smeraldo (`[0.1, 0.95, 0.2, 1.0]`) con Pixel Glow verde `LibCustomGlow-1.0` all'accodamento di *Cleave*, che prosegue lo scorrimento in perfetta continuità.
