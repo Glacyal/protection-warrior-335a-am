@@ -99,46 +99,11 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         return c
     end
 
-    _G.PWHUD_GetKickInfo = _G.PWHUD_GetKickInfo or function()
-        local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo("target")
-        if not spell then
-            spell, rank, displayName, icon, startTime, endTime, isTradeSkill, notInterruptible = UnitChannelInfo("target")
+    _G.PWHUD_GetKickInfo = function()
+        if _G.PWHUD_GetTargetCastInfo then
+            return _G.PWHUD_GetTargetCastInfo()
         end
-        if not spell then return nil end
-
-        local form = GetShapeshiftForm() -- 1 = Battle, 2 = Defensive, 3 = Berserker
-        local hasShield = (GetInventoryItemID("player", 17) ~= nil)
-        local now = GetTime()
-        local sStart, sDur = GetSpellCooldown("Shield Bash")
-        local shieldBashReady = (sDur == nil or sDur <= 1.5 or (sStart + sDur <= now))
-        local pStart, pDur = GetSpellCooldown("Pummel")
-        local pummelReady = (pDur == nil or pDur <= 1.5 or (pStart + pDur <= now))
-
-        local res = {
-            spellName = spell,
-            icon = icon,
-            notInterruptible = notInterruptible,
-            remaining = (endTime and (endTime / 1000 - now)) or 0,
-            recommended = "SHIELD BASH",
-            canKick = true,
-        }
-
-        if notInterruptible then
-            res.canKick = false
-            res.recommended = "IMMUNE"
-            return res
-        end
-
-        if (form == 2 or form == 1) and hasShield and shieldBashReady then
-            res.recommended = "SHIELD BASH"
-        elseif form == 3 and pummelReady then
-            res.recommended = "PUMMEL"
-        elseif form == 2 and not shieldBashReady and pummelReady then
-            res.recommended = "STANCE -> PUMMEL"
-        else
-            res.recommended = "STUN / CD"
-        end
-        return res
+        return nil
     end
 
     _G.PWHUD_GetEmergencyCD = _G.PWHUD_GetEmergencyCD or function()

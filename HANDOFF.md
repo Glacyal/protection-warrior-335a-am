@@ -288,6 +288,18 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.19 Alert - Kick Now Lua Error Elimination: Hostile Target Filter, Legacy Kick Logic Cleanup & Clean Untrigger
+- **Elimination of Boolean Arithmetic Exception**:
+  - Removed obsolete duplicate `_G.PWHUD_GetKickInfo` from `builder/components/utility.py` which incorrectly unpacked the 6th return value of `UnitChannelInfo` (`isTradeSkill`, boolean) into `endTime`, causing an irrecoverable `attempt to perform arithmetic on a boolean value` when party members channeled spells or crafted.
+- **Strict Hostile Target Filtering (`UnitCanAttack`)**:
+  - Enforced `UnitCanAttack("player", "target")` across `_G.PWHUD_GetTargetCastInfo()` and `Alert - Kick Now`. Completely prevents the interrupt engine from inspecting or attempting to interrupt friendly players and dungeon party members.
+- **State Cleanup & Untrigger Fix**:
+  - Replaced corrupted `untrigger: function() return false end` with immediate semantic cleanup returning `true` whenever target is missing, friendly, dead, or not casting an interruptible spell.
+- **Italian Spell Localization Support**:
+  - Added Italian client spell names (*Colpo di Scudo*, *Percossa*) alongside English names (*Shield Bash*, *Pummel*) for range and cooldown evaluation.
+
+---
+
 ## 5. Technical Glossary & Tanking Acronyms (WotLK 3.3.5a)
 
 | Acronym | Full Name | Mechanics & Formulas |

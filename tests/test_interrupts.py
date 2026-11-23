@@ -82,6 +82,8 @@ def run_tests():
     alert_kick = children_by_id["Alert - Kick Now"]
     assert alert_kick["regionType"] == "text"
     assert "INTERRUPT" in alert_kick["customText"]
+    assert "UnitCanAttack" in alert_kick["customText"]
+    assert "ki == nil" in alert_kick["triggers"][1]["untrigger"]["custom"]
 
     print("[OK] test_interrupts completato con successo (Castbar Target e Player entrambe dx->sx con Kick/Reflect, icone dinamiche e untrigger immediato validati).")
     return True

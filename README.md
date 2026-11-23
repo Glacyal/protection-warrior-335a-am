@@ -81,7 +81,7 @@ The bottom row features a dynamic auto-adapting architecture engineered specific
 ### 5. Central Text Alerts (`17 - Alerts warTank`)
 Minimalist alert group positioned at $y = 78$ directly above the procs, strictly limited to critical survival prompts:
 - **Alert - Emergency CD**: Critical notification `CRIT HP: USE SHIELD WALL!` with audio cue.
-- **Alert - Kick Now**: Clear interrupt prompt `INTERRUPT: SHIELD BASH!`.
+- **Alert - Kick Now**: Clear interrupt prompt `INTERRUPT: SHIELD BASH!` (filtered strictly for hostile attackable targets via `UnitCanAttack`, zero friendly errors, with multi-language EN/IT spell support).
 *(Note: All rotational and intrusive text banners—including Shield Slam Ready, Boss Enraged, and Wrong Stance—have been completely removed to preserve zero center-screen clutter; rotational procs live exclusively as compact icons in `01 - Procs warTank`)*.
 
 ### 6. Protection Warrior Tanking Stats Panel (`18 - Stats Panel warTank`)

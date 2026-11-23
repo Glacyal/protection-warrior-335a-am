@@ -711,3 +711,21 @@ floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$
     - Test Suite parallela: 10/10 PASS in 0.51s.
     - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (76.253 caratteri).
     - Commit & push su `origin/master`.
+
+- [x] **Task 40: Risoluzione Errore Lua in "Alert - Kick Now" (Filtro Bersaglio Ostile `UnitCanAttack`, Eliminazione Duplicate Kick Logic Obsoleta in `utility.py` con Mismatch Signature `UnitChannelInfo`, Supporto Spell Localizzate IT e Untrigger Pulito)**:
+  - [x] **Direttiva Utente**:
+    - *"cosa sarebbe e come si potrebbe fixxare?"* (screenshot in-game con errore `WeakAuras: Aura 'Alert - Kick Now': This aura has caused a Lua error` subito dopo che i membri del gruppo Spaktut e Cattiva hanno confermato il ruolo per il dungeon).
+  - [x] **Analisi Cause Radice**:
+    1. **Errore Aritmetico su Boolean (`UnitChannelInfo`)**: `builder/components/utility.py` conteneva una vecchia definizione duplicata di `_G.PWHUD_GetKickInfo` (risalente a versioni precedenti del builder) che scompattava `UnitChannelInfo` con un offset errato, assegnando il 6° valore di ritorno (`isTradeSkill`, di tipo booleano) a `endTime`. Nel calcolo del tempo residuo `(endTime / 1000 - now)`, l'interprete Lua 5.1 di WoW 3.3.5a sollevava l'eccezione irreversibile `attempt to perform arithmetic on a boolean value` non appena un alleato o compagno di gruppo avviava un channel o un craft.
+    2. **Assenza Filtro di Ostilità (`UnitCanAttack`)**: Né `_G.PWHUD_GetTargetCastInfo` né `Alert - Kick Now` verificavano l'ostilità del bersaglio (`UnitCanAttack("player", "target")`). Se il tank selezionava un membro del party o un NPC alleato intento a castare (cura, buff, pietra del focolare, craft), l'aura tentava di calcolare l'avviso di kick su un alleato.
+    3. **Untrigger Corrotto (`return false`)**: Il trigger dell'avviso `Alert - Kick Now` definiva `"untrigger": {"type": "custom", "custom": "function() return false end"}`. In WeakAuras per 3.3.5a, restituire `false` nell'untrigger impedisce la disattivazione e il ciclo di cleanup dell'aura, lasciandola in uno stato orfano in cui il codice `customText` riceveva parametri `nil`.
+    4. **Mancanza Localizzazione Nomi Spell IT**: Le chiamate ad `IsSpellInRange` controllavano solo i nomi in inglese (*Shield Bash*, *Pummel*), mancando le denominazioni del client italiano (*Colpo di Scudo*, *Percossa*).
+  - [x] **Implementazione Soluzione**:
+    - `builder/components/bars.py`: aggiunto controllo perentorio `if not UnitExists("target") or not UnitCanAttack("player", "target") or UnitIsDead("target") then return nil end` nella funzione globale `_G.PWHUD_GetTargetCastInfo()`. Integrati i nomi italiani (*Colpo di Scudo*, *Percossa*) nelle tuple di interrupt.
+    - `builder/components/utility.py`: rimossa definitivamente la definizione obsoleta e ridondante di `_G.PWHUD_GetKickInfo`, delegando in modo centralizzato ed ermetico a `_G.PWHUD_GetTargetCastInfo()`.
+    - `builder/components/alerts.py`: aggiunto controllo `UnitCanAttack("player", "target")` in `customText`, e aggiornato l'untrigger per restituire `true` (immediato cleanup e disattivazione) non appena il bersaglio non esiste, è morto, è amichevole o non presenta cast interrompibili.
+  - [x] **Validazione & Collaudo**:
+    - Aggiornati test in `tests/test_interrupts.py` con verifiche vincolanti su `UnitCanAttack` in `customText` e `ki == nil` nell'untrigger di `Alert - Kick Now`.
+    - Test Suite parallela: 10/10 test superati con successo in 0.40s.
+    - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (76.853 caratteri).
+    - Esecuzione CP (Commit & Push su `origin/master`).

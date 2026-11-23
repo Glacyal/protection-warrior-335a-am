@@ -32,6 +32,10 @@ from builder.core.constants import (
 
 
 SHARED_CASTBAR_LOGIC_LUA = r"""_G.PWHUD_GetTargetCastInfo = function()
+    if not UnitExists("target") or not UnitCanAttack("player", "target") or UnitIsDead("target") then
+        return nil
+    end
+
     local spell, rank, displayName, icon, startTime, endTime, isTradeSkill, castID, notInterruptible = UnitCastingInfo("target")
     local isChannel = false
     if not spell then
@@ -62,6 +66,7 @@ SHARED_CASTBAR_LOGIC_LUA = r"""_G.PWHUD_GetTargetCastInfo = function()
 
     -- Check Cooldowns
     local sbStart, sbDur = GetSpellCooldown("Shield Bash")
+    if not sbStart then sbStart, sbDur = GetSpellCooldown("Colpo di Scudo") end
     if not sbStart then sbStart, sbDur = GetSpellCooldown("Spaccatesta") end
     local sbReady = (sbDur == nil or sbDur <= 1.5 or (sbStart + sbDur <= now))
 
@@ -69,7 +74,7 @@ SHARED_CASTBAR_LOGIC_LUA = r"""_G.PWHUD_GetTargetCastInfo = function()
     if not srStart then srStart, srDur = GetSpellCooldown("Riflessione degli Incantesimi") end
     local srReady = (srDur == nil or srDur <= 1.5 or (srStart + srDur <= now))
 
-    local inMelee = (IsSpellInRange and (IsSpellInRange("Shield Bash", "target") == 1 or IsSpellInRange("Spaccatesta", "target") == 1))
+    local inMelee = (IsSpellInRange and (IsSpellInRange("Shield Bash", "target") == 1 or IsSpellInRange("Colpo di Scudo", "target") == 1 or IsSpellInRange("Spaccatesta", "target") == 1))
     if inMelee == nil or inMelee == false then
         inMelee = CheckInteractDistance("target", 3)
     end
@@ -133,6 +138,7 @@ SHARED_CASTBAR_LOGIC_LUA = r"""_G.PWHUD_GetTargetCastInfo = function()
             res.actionType = "REFLECT"
         elseif inMelee then
             local pStart, pDur = GetSpellCooldown("Pummel")
+            if not pStart then pStart, pDur = GetSpellCooldown("Percossa") end
             if not pStart then pStart, pDur = GetSpellCooldown("Pestone") end
             local pummelReady = (pDur == nil or pDur <= 1.5 or (pStart + pDur <= now))
             if pummelReady then

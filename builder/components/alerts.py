@@ -7,6 +7,7 @@ Gestisce gli avvisi testuali contestuali centrali (a y = 78, sopra Procs):
 (Nota: Banner testuali invasivi per Boss Enraged, Wrong Stance e Sword and Board rimossi per garantire zero clutter).
 """
 from builder.core.constants import FONT_EXPRESSWAY
+from builder.components.bars import SHARED_CASTBAR_LOGIC_LUA
 
 
 def build_alerts_auras() -> list[dict]:
@@ -110,8 +111,14 @@ def build_alerts_auras() -> list[dict]:
             "yOffset": 24,
             "customTextUpdate": "update",
             "customText": r"""function()
-                local ki = _G.PWHUD_GetKickInfo and _G.PWHUD_GetKickInfo()
-                if ki and not ki.notInterruptible and ki.canKick then
+                if not UnitExists("target") or not UnitCanAttack("player", "target") or UnitIsDead("target") then
+                    return ""
+                end
+                if not _G.PWHUD_GetTargetCastInfo then
+                    """ + SHARED_CASTBAR_LOGIC_LUA + r"""
+                end
+                local ki = _G.PWHUD_GetTargetCastInfo()
+                if ki and not ki.notInterruptible and ki.canKick and ki.recommended then
                     return string.format("|cFF00FFFFINTERRUPT: %s!|r", ki.recommended)
                 end
                 return ""
@@ -123,11 +130,26 @@ def build_alerts_auras() -> list[dict]:
                         "custom_type": "status",
                         "check": "update",
                         "custom": r"""function()
-                            local ki = _G.PWHUD_GetKickInfo and _G.PWHUD_GetKickInfo()
+                            if not UnitExists("target") or not UnitCanAttack("player", "target") or UnitIsDead("target") then
+                                return false
+                            end
+                            if not _G.PWHUD_GetTargetCastInfo then
+                                """ + SHARED_CASTBAR_LOGIC_LUA + r"""
+                            end
+                            local ki = _G.PWHUD_GetTargetCastInfo()
                             return (ki ~= nil and not ki.notInterruptible and ki.canKick)
                         end""",
                     },
-                    "untrigger": {"type": "custom", "custom": "function() return false end"}
+                    "untrigger": {
+                        "type": "custom",
+                        "custom": r"""function()
+                            if not UnitExists("target") or not UnitCanAttack("player", "target") or UnitIsDead("target") then
+                                return true
+                            end
+                            local ki = _G.PWHUD_GetTargetCastInfo and _G.PWHUD_GetTargetCastInfo()
+                            return (ki == nil or ki.notInterruptible or not ki.canKick)
+                        end"""
+                    }
                 },
                 "activeTriggerMode": -10,
             },

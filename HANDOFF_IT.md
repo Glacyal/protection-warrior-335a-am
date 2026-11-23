@@ -286,6 +286,18 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.19 Risoluzione Errore Lua in Alert - Kick Now: Filtro Bersaglio Ostile, Pulizia Logica Obsoleta in utility.py e Untrigger Pulito
+- **Eliminazione Errore Aritmetico su Boolean**:
+  - Rimossa la vecchia definizione duplicata di `_G.PWHUD_GetKickInfo` in `builder/components/utility.py` che assegnava erroneamente il 6° ritorno di `UnitChannelInfo` (`isTradeSkill`, booleano) a `endTime`, scatenando l'eccezione `attempt to perform arithmetic on a boolean value` quando i membri del party canalizzavano incantesimi o abilità di professione.
+- **Filtro Rigido Bersaglio Ostile (`UnitCanAttack`)**:
+  - Applicato il controllo `UnitCanAttack("player", "target")` sia in `_G.PWHUD_GetTargetCastInfo()` che in `Alert - Kick Now`, impedendo all'avviso di kick di attivarsi o scansionare alleati e compagni di gruppo in dungeon/raid.
+- **Pulizia Stato & Risoluzione Untrigger**:
+  - Sostituito l'untrigger corrotto `function() return false end` con una disattivazione semantica immediata (`return true`) non appena il bersaglio non esiste, è morto, è amichevole o non presenta lanci interrompibili.
+- **Supporto Localizzazione Client Italiano**:
+  - Integrati i nomi italiani (*Colpo di Scudo*, *Percossa*) accanto a quelli inglesi (*Shield Bash*, *Pummel*) per la verifica di gittata e ricarica delle abilità di interruzione.
+
+---
+
 ## 5. Glossario & Riferimento Sigle Tecniche Tanking (WotLK 3.3.5a)
 
 | Sigla | Termine Completo | Descrizione Meccanica e Formule WotLK |
