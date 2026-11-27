@@ -106,25 +106,29 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         return nil
     end
 
-    _G.PWHUD_GetEmergencyCD = _G.PWHUD_GetEmergencyCD or function()
+    _G.PWHUD_GetEmergencyCD = function(maxThreshold)
         local curHP = UnitHealth("player") or 0
         local maxHP = UnitHealthMax("player") or 1
         local pct = (curHP / maxHP) * 100
-        if pct > 35 then return nil end
+        local threshold = maxThreshold or 35
+        if pct > threshold then return nil end
 
         local now = GetTime()
-        local function isReady(name)
+        local function isReady(name, id)
             local s, d = GetSpellCooldown(name)
-            return (d == nil or d <= 1.5 or (s + d <= now))
+            if (not s or d == 0) and id then
+                s, d = GetSpellCooldown(id)
+            end
+            return (d == nil or d <= 1.5 or (s and d and (s + d <= now)))
         end
 
-        if isReady("Shield Wall") then
+        if isReady("Shield Wall", 871) or isReady("Muro di Scudo") then
             return { action = "SHIELD WALL", icon = "Interface\\Icons\\Ability_Warrior_ShieldWall", pct = pct }
-        elseif isReady("Last Stand") then
+        elseif isReady("Last Stand", 12975) or isReady("Ultima Difesa") then
             return { action = "LAST STAND", icon = "Interface\\Icons\\Spell_Nature_ShamanRage", pct = pct }
-        elseif isReady("Shield Block") then
+        elseif isReady("Shield Block", 2565) or isReady("Blocco con lo Scudo") then
             return { action = "SHIELD BLOCK", icon = "Interface\\Icons\\Ability_Defensive", pct = pct }
-        elseif isReady("Enraged Regeneration") then
+        elseif isReady("Enraged Regeneration", 55694) or isReady("Rigenerazione Furente") then
             return { action = "ENRAGED REGEN", icon = "Interface\\Icons\\Ability_Warrior_EnragedRegeneration", pct = pct }
         else
             return { action = "HEALTHSTONE / POT", icon = "Interface\\Icons\\INV_Stone_04", pct = pct }

@@ -80,7 +80,7 @@ La riga inferiore adotta un'architettura auto-adattiva a centratura dinamica nat
 
 ### 5. Avvisi Testuali Centrali (`17 - Alerts warTank`)
 Gruppo allarmi minimalista posizionato a $y = 78$ sopra i procs, limitato rigorosamente alle sole emergenze critiche:
-- **Alert - Emergency CD**: Notifica critica `CRIT HP: USE SHIELD WALL!` con allarme sonoro.
+- **Alert - Emergency CD**: Notifica critica `CRIT HP (%.0f%%): POP SHIELD WALL!` con allarme sonoro (scatta a <35% HP, persiste finché la vita non risale oltre l'80% o termina il combat).
 - **Alert - Kick Now**: Chiamata di interruzione immediata `INTERRUPT: SHIELD BASH!` (filtrata rigorosamente su bersagli ostili attaccabili tramite `UnitCanAttack`, zero errori su alleati, con supporto multilingua EN/IT).
 *(Nota: Tutti i banner testuali rotazionali ed invasivi—inclusi Shield Slam Ready, Boss Enraged e Wrong Stance—sono stati eliminati definitivamente per garantire zero clutter visivo centrale; i proc rotazionali vivono esclusivamente come icone compatte in `01 - Procs warTank`)*.
 

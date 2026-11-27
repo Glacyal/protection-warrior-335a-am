@@ -755,3 +755,24 @@ floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$
     - Suite parallela: 10/10 test superati con successo in 0.40s.
     - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (77.536 caratteri).
     - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 42: Risoluzione Errore Lua in "Alert - Emergency CD" (Fix Invocazione `:upper()` su Tabella, Supporto Spell ID/IT e Isteresi di Disattivazione al Ritorno Oltre 80% HP)**:
+  - [x] **Direttiva Utente**:
+    - *"devo fare una modifica, se buggato, considera che se esce può pure sparire nel caso in cui la vita ritorna oltre 80%"* (screenshot con errore `WeakAuras: Aura 'Alert - Emergency CD': This aura has caused a Lua error`).
+  - [x] **Analisi Causa Radice**:
+    1. **Errore di Metodo su Tabella**: In `customText` di `Alert - Emergency CD`, la funzione `_G.PWHUD_GetEmergencyCD()` restituiva un oggetto tabella (`{ action = "SHIELD WALL", icon = "...", pct = pct }`). L'istruzione `cd:upper()` tentava di invocare il metodo `:upper()` su una tabella Lua anziché sul campo stringa `cd.action`, provocando l'eccezione irreversibile `attempt to call method 'upper' (a nil value)`.
+    2. **Untrigger Non Valido (`return false`)**: L'aura aveva `untrigger: function() return false end`, che impediva a WeakAuras di chiudere il ciclo di visualizzazione e causava corruzione di stato al frame rate successivo.
+  - [x] **Implementazione Soluzione & Isteresi Vitale (35% -> 80% HP)**:
+    - `builder/components/alerts.py`:
+      - Corretto `customText` estraendo in sicurezza `cd.action` (o `cd` se stringa) prima di applicare `:upper()`, con fallback su `"DEFENSIVE"`.
+      - Trigger di emergenza: si innesca quando il tank è in combattimento e la salute scende sotto il 35% (`pct < 35 and UnitAffectingCombat("player")`).
+      - Untrigger a isteresi: una volta attivato, l'avviso rimane persistente a schermo finché la salute del tank non risale stabilmente **oltre l'80%** (`pct >= 80`), oppure al termine del combattimento (`not UnitAffectingCombat`) o alla morte (`UnitIsDeadOrGhost`).
+    - `builder/components/utility.py`:
+      - Aggiornato `_G.PWHUD_GetEmergencyCD(maxThreshold)` con parametro di soglia opzionale (default 35, o 80 durante l'isteresi attiva) e supporto a spell ID e nomi italiani (*Muro di Scudo*, *Ultima Difesa*, *Blocco con lo Scudo*, *Rigenerazione Furente*).
+    - `builder/components/procs.py`:
+      - Aggiornato anche `Emergency Low HP Alert` con untrigger semantico corretto.
+  - [x] **Validazione & Collaudo**:
+    - Aggiornati test in `tests/test_danger_alerts.py` per verificare estrazione `cd.action`, soglia 80% nell'untrigger e uscita da combat.
+    - Test Suite parallela: 10/10 test superati con successo in 0.50s.
+    - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (78.166 caratteri).
+    - Esecuzione CP (Commit & Push su `origin/master`).

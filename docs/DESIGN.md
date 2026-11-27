@@ -170,7 +170,7 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
 - **Allarmi Critici di Sopravvivenza Residui (`17 - Alerts warTank`)**:
   - Posizione: X = 0, Y = +78 px (centro visivo, sopra la Castbar).
   - Componenti:
-    - `Alert - Emergency CD`: `|cFFFF1010CRIT HP (%.0f%%): USE %s!|r` (18pt, prioritizzazione salvavita Shield Wall / Last Stand / Shield Block / Pot quando il tank è sotto il 35% HP).
+    - `Alert - Emergency CD`: `|cFFFF0000CRIT HP (%.0f%%): POP %s!|r` (22pt, prioritizzazione salvavita Shield Wall / Last Stand / Shield Block / Pot quando il tank scende sotto il 35% HP, con isteresi attiva fino al recupero oltre l'80% HP o termine combat).
     - `Alert - Kick Now`: `|cFF00FFFFINTERRUPT: %s!|r` (16pt, ciano brillante quando il target ostile `UnitCanAttack` sta canalizzando o lanciando un'abilità interrompibile, con gestione pulita dell'untrigger e supporto bilingue EN/IT per Shield Bash/Colpo di Scudo e Pummel/Percossa).
 - **Indicatore Compatto Postura Difensiva Errata (`04 - Defensive Stance warTank`)**:
   - Posizione: X = -158 px, Y = 0 px (icona 28x28px, allineata alle shout e al pannello statistiche).

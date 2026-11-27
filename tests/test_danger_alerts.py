@@ -52,9 +52,12 @@ def run_tests():
     assert vig_off["desaturate"] is True
     assert "not allyActive" in vig_off["triggers"][1]["trigger"]["custom"]
 
-    # Alert - Emergency CD in 17 - Alerts
+    # Alert - Emergency CD in 17 - Alerts (Hysteresis a 80% HP e fix table index/upper)
     alert_em = children_by_id["Alert - Emergency CD"]
     assert "CRIT HP" in alert_em["customText"]
+    assert "cd.action" in alert_em["customText"], "customText deve estrarre cd.action da tabella senza invocare :upper() direttamente sulla tabella"
+    assert "80" in alert_em["triggers"][1]["untrigger"]["custom"], "untrigger deve rimanere attivo fino al ritorno oltre 80% HP"
+    assert "UnitAffectingCombat" in alert_em["triggers"][1]["untrigger"]["custom"], "untrigger deve disattivarsi fuori combat"
 
     # 04 - Defensive Stance - OutOfStance (allineato a Fury Warrior: visibile solo out-of-stance in combat)
     stance_warn = children_by_id["04 - Defensive Stance - OutOfStance warTank"]

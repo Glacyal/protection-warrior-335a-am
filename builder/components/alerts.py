@@ -52,17 +52,22 @@ def build_alerts_auras() -> list[dict]:
             "yOffset": -24,
             "customTextUpdate": "update",
             "customText": r"""function()
-                local cd = _G.PWHUD_GetEmergencyCD and _G.PWHUD_GetEmergencyCD()
-                if cd then
-                    return string.format("|cFFFF0000CRIT HP: POP %s!|r", cd:upper())
+                local actionName = nil
+                if _G.PWHUD_GetEmergencyCD then
+                    local cd = _G.PWHUD_GetEmergencyCD(80)
+                    if type(cd) == "table" and cd.action then
+                        actionName = cd.action
+                    elseif type(cd) == "string" then
+                        actionName = cd
+                    end
                 end
-                local hp = UnitHealth("player")
-                local maxHp = UnitHealthMax("player")
+                if not actionName or actionName == "" then
+                    actionName = "DEFENSIVE"
+                end
+                local hp = UnitHealth("player") or 0
+                local maxHp = UnitHealthMax("player") or 1
                 local pct = maxHp > 0 and (hp / maxHp * 100) or 100
-                if pct < 35 then
-                    return "|cFFFF0000CRIT HP: POP DEFENSIVE!|r"
-                end
-                return ""
+                return string.format("|cFFFF0000CRIT HP (%.0f%%): POP %s!|r", pct, actionName:upper())
             end""",
             "actions": {
                 "init": {"do_custom": False},
@@ -81,13 +86,27 @@ def build_alerts_auras() -> list[dict]:
                         "custom_type": "status",
                         "check": "update",
                         "custom": r"""function()
-                            local hp = UnitHealth("player")
-                            local maxHp = UnitHealthMax("player")
+                            if not UnitAffectingCombat("player") or UnitIsDeadOrGhost("player") then
+                                return false
+                            end
+                            local hp = UnitHealth("player") or 0
+                            local maxHp = UnitHealthMax("player") or 1
                             local pct = maxHp > 0 and (hp / maxHp * 100) or 100
-                            return pct < 35 and UnitAffectingCombat("player")
+                            return pct < 35
                         end""",
                     },
-                    "untrigger": {"type": "custom", "custom": "function() return false end"}
+                    "untrigger": {
+                        "type": "custom",
+                        "custom": r"""function()
+                            if not UnitAffectingCombat("player") or UnitIsDeadOrGhost("player") then
+                                return true
+                            end
+                            local hp = UnitHealth("player") or 0
+                            local maxHp = UnitHealthMax("player") or 1
+                            local pct = maxHp > 0 and (hp / maxHp * 100) or 100
+                            return pct >= 80
+                        end"""
+                    }
                 },
                 "activeTriggerMode": -10,
             },

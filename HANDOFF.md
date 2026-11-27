@@ -309,6 +309,16 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.21 Emergency CD Alert Lua Error Resolution & 80% HP Recovery Hysteresis
+- **Resolution of Table Method `:upper()` Lua Exception**:
+  - `_G.PWHUD_GetEmergencyCD()` returns a table `{ action = "...", icon = "...", pct = ... }`. Fixed `customText` in `Alert - Emergency CD` to safely extract `cd.action` before formatting uppercase, preventing the `attempt to call method 'upper' (a nil value)` crash.
+- **Dynamic 80% HP Recovery Hysteresis**:
+  - Implemented requested persistence mechanic: the alert triggers when health drops below 35% in combat, but remains active until health recovers **above 80%** (`pct >= 80`), combat ends, or the player dies. This prevents annoying alert flickering when health hovers around the 35% threshold during active healing.
+- **Multi-Language & Spell ID Cooldown Evaluation**:
+  - `_G.PWHUD_GetEmergencyCD(maxThreshold)` supports dynamic threshold checking up to 80% HP and evaluates cooldowns via spell IDs (871, 12975, 2565, 55694) and Italian localization (*Muro di Scudo*, *Ultima Difesa*, *Blocco con lo Scudo*, *Rigenerazione Furente*).
+
+---
+
 ## 5. Technical Glossary & Tanking Acronyms (WotLK 3.3.5a)
 
 | Acronym | Full Name | Mechanics & Formulas |

@@ -921,7 +921,18 @@ end""",
                             return string.format("%.0f%%", (cur / maxHP) * 100)
                         end"""
                     },
-                    "untrigger": {"type": "custom", "custom": "function() return false end"}
+                    "untrigger": {
+                        "type": "custom",
+                        "custom": r"""function()
+                            if not UnitAffectingCombat("player") or UnitIsDeadOrGhost("player") then
+                                return true
+                            end
+                            local hp = UnitHealth("player") or 0
+                            local maxHp = UnitHealthMax("player") or 1
+                            local pct = maxHp > 0 and (hp / maxHp * 100) or 100
+                            return pct >= 80
+                        end"""
+                    }
                 },
                 "activeTriggerMode": -10,
             },

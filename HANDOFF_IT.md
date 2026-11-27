@@ -307,6 +307,16 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.21 Risoluzione Errore Lua in Alert - Emergency CD & Isteresi di Disattivazione a 80% HP
+- **Risoluzione Errore Invocazione Metodo `:upper()` su Tabella**:
+  - `_G.PWHUD_GetEmergencyCD()` restituisce una tabella `{ action = "...", icon = "...", pct = ... }`. Corretto `customText` in `Alert - Emergency CD` estraendo in sicurezza `cd.action`, eliminando l'errore `attempt to call method 'upper' (a nil value)`.
+- **Isteresi Dinamica al Recupero Oltre l'80% HP**:
+  - Implementata la meccanica di persistenza richiesta dall'utente: l'allarme visivo e sonoro scatta quando la vita scende sotto il 35% in combattimento, ma rimane attivo e visibile finché la salute non risale stabilmente **oltre l'80%** (`pct >= 80`), o fino al termine del combattimento/morte. Evita il flickering fastidioso quando il tank oscilla attorno alla soglia critica del 35%.
+- **Valutazione Cooldown con Spell ID e Client Italiano**:
+  - `_G.PWHUD_GetEmergencyCD(maxThreshold)` supporta soglia dinamica fino all'80% HP e rileva i cooldown difensivi sia tramite Spell ID (871, 12975, 2565, 55694) che tramite nomi italiani (*Muro di Scudo*, *Ultima Difesa*, *Blocco con lo Scudo*, *Rigenerazione Furente*).
+
+---
+
 ## 5. Glossario & Riferimento Sigle Tecniche Tanking (WotLK 3.3.5a)
 
 | Sigla | Termine Completo | Descrizione Meccanica e Formule WotLK |
