@@ -317,6 +317,18 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.22 Advisor Castbar a 4 Stati Netti (`BOTH` / `KICK` / `REFLECT` / `IMMUNE`) per Classic, TBC e WotLK
+- **Audit Completo Cross-Espansione (Mob, PG, Boss)**:
+  - Completato censimento dettagliato in [docs/CAST_ADVISOR_AUDIT.md](file:///d:/0Progetti/protection-warrior-335a-am/docs/CAST_ADVISOR_AUDIT.md) con classificazione operativa completa tra dungeon/raid Classic, TBC, WotLK 3.3.5a e scontri PvP.
+- **Tracker Event-Driven CLEU `spellId` & `spellSchool` (`_G.PWHUD_CastTracker`)**:
+  - Ancorato nella regione foglia `Castbar - Target warTank` (evitando dipendenze da `actions.init` su nodi gruppo) su eventi `SPELL_CAST_START` & `SPELL_CAST_SUCCESS` per rilevare scuola fisica (`spellSchool == 1` come *Steady Shot*, *Shattering Throw*, *Shoot*, mai riflettibile) ed ID univoco spell.
+- **Motore a 4 Stati & Rilevamento Immunità**:
+  - Separa nettamente `canKick` e `canReflect`: filtra mestieri (`isTradeSkill`), scansiona i buff del bersaglio a zero allocazioni per *Divine Shield*, *Hand of Protection* (che blocca i kick fisici), *Ice Block*, *Aura Mastery* + *Concentration Aura*, *Shroud of the Occult* e *Spell Reflection* nemico.
+  - Applica Blacklist Anti-Reflect con caching O(1) (cure, resurrezioni, evocazioni, AoE a terra/cono, *Mana Burn*, canali avviati, fisici/boss) e soppressione automatica sui `worldboss` con Whitelist esplicita (*Lord Jaraxxus Fel Fireball*, *Essence of Desire Deaden*, *Attumen Intangible Presence*, encounter stile PvP), mantenendo `Kel'Thuzad Frostbolt`, `Vezax Searing Flames` e `Deathwhisper Frostbolt` rigorosamente `KICK`-only.
+  - Allineato `Alert - Kick Now` per attivarsi esclusivamente quando `canKick == true`.
+
+---
+
 ## 5. Glossario & Riferimento Sigle Tecniche Tanking (WotLK 3.3.5a)
 
 | Sigla | Termine Completo | Descrizione Meccanica e Formule WotLK |

@@ -776,3 +776,32 @@ floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$
     - Test Suite parallela: 10/10 test superati con successo in 0.50s.
     - Rigenerata stringa master `IMPORT_STRING_v5.21.8.txt` (78.166 caratteri).
     - Esecuzione CP (Commit & Push su `origin/master`).
+
+- [x] **Task 43: Audit & Verifica Meccanica 3.3.5a per il War Tank — Distinzione Netta tra Cast Interrompibili, Riflettibili, Entrambi e Immuni su Classic, TBC e WotLK (Mob, PG e Boss)**:
+  - [x] **Direttive Utente**:
+    - *"per la 3.3.5a per il war tutte le cose sono interrompibili oppure reflectabili?, mi sembra di no bisogna fare una distinzione netta se un cast può essere reflectato, interrotto oppure nessuna delle tue, prima si eseguire modifiche fai un primo task dove si verifica questa situazione tra mob pg e boss e poi un'altro task per applicare questo fix"*.
+    - *"bisogna per tutti i boss e mob presenti valutare classic tbc e tutta la 3.3.5a una lista completa e raggrupparle per determinare cosa posso e non posso fare"*.
+  - [x] **Verifica Architetturale & Gap Analysis su `bars.py` / `alerts.py`**:
+    - Identificati i falsi positivi correnti in `_G.PWHUD_GetTargetCastInfo`:
+      1. Qualsiasi cast con scudo (`notInterruptible == true`) diretto verso il tank veniva marcato erroneamente come `SPELL REFLECTION` (anche per meccaniche fisiche, AoE, soffi e spell raid boss non riflettibili).
+      2. Qualsiasi cast interrompibile veniva marcato come `SHIELD BASH / REFLECT` o fallback `SPELL REFLECTION`, ignorando cure, evocazioni, AoE a terra, *Mana Burn*, cast fisici e boss cast immuni al reflect come *Kel'Thuzad Frostbolt*.
+      3. Assenza di filtraggio `isTradeSkill`, immunità PvP (*Aura Mastery* + *Concentration Aura*, *Divine Shield*, *Hand of Protection*, *Ice Block*), controllo `spellSchool` (`0x1` fisico vs magico) e classificazione `worldboss`.
+  - [x] **Censimento Completo Classic + TBC + WotLK (3.3.5a) in [CAST_ADVISOR_AUDIT.md](file:///d:/0Progetti/protection-warrior-335a-am/docs/CAST_ADVISOR_AUDIT.md)**:
+    - Valutati e raggruppati nei 4 stati operativi (`BOTH`, `KICK`, `REFLECT`, `IMMUNE`) tutti i **Dungeon & Raid Classic** (*MC, BWL, ZG, AQ20/40, BRD, Stratholme, Scholomance, UBRS, Dire Maul, SM...*), **TBC** (*Karazhan, Gruul, Magtheridon, SSC, TK, Hyjal, BT, ZA, Sunwell, Shattered Halls, Black Morass, Magisters' Terrace, Arcatraz, Steamvault...*) e **WotLK 3.3.5a** (tutti i **16 Dungeon** + tutti i **9 Raid** inclusi *Naxxramas, Ulduar, ToC, ICC, Ruby Sanctum*) oltre alle casistiche **PG PvP**.
+    - Progettata architettura mista ad alta precisione (`_G.PWHUD_CastTracker` su `SPELL_CAST_START` per `spellId` + `spellSchool`, rilevamento buff immunità, Blacklist EN/IT Anti-Reflect e Whitelist esplicita Boss riflettibili come *Deaden*, *Intangible Presence*, *Fel Fireball*).
+    - Nessuna modifica applicata al codice runtime in `builder/` come da direttiva esplicita pre-modifica.
+
+- [x] **Task 44: Implementazione Fix Distinzione Netta Interrupt vs Spell Reflection vs Immune (`16 - Castbar warTank` & `17 - Alerts warTank`)**:
+  - [x] **Implementazione `_G.PWHUD_CastTracker` Event-Driven (`SPELL_CAST_START` & `SPELL_CAST_SUCCESS`)**:
+    - Integrato listener su `COMBAT_LOG_EVENT_UNFILTERED` in `Castbar - Target warTank` (inizializzato su regione foglia per conformità [MEMORY.md §2.4](file:///d:/0Progetti/protection-warrior-335a-am/docs/MEMORY.md#L103-L117)) che traccia per ogni `sourceGUID` lo `spellId` e lo `spellSchool` (`0x1` Fisico vs Magico `> 1`) a impatto CPU/GC nullo (riutilizzo tabelle e `wipe` al termine combat).
+  - [x] **Motore Decisionale a 4 Stati Netti (`BOTH`, `KICK`, `REFLECT`, `IMMUNE`) per Classic / TBC / WotLK**:
+    - **Pre-Check**: Ignora mestieri/pesca (`isTradeSkill`) e bersagli amichevoli/morti (`not UnitCanAttack`).
+    - **Asse 1 (`canKick`)**: Esclude `notInterruptible == true` ed immunità PvP/PvE rilevate via `UnitBuff` (*Divine Shield*, *Hand of Protection* che blocca Shield Bash/Pummel fisico, *Ice Block*, combo *Aura Mastery* + *Concentration Aura*, *Shroud of the Occult*).
+    - **Asse 2 (`canReflect`)**: Esclude cast fisici (`spellSchool == 1`), canali già avviati (`isChannel == true`), nemici con auto-reflect attivo (*Shroud of the Occult*, boss *Spell Reflection*), cure/buff/evocazioni/resurrezioni/AoE/*Mana Burn* (blacklist `noReflectIds` + `noReflectPatterns` con cache O(1)) e `worldboss`/livello `-1`, lasciando attiva la **Whitelist Boss Riflettibili** (*Lord Jaraxxus Fel Fireball*, *Essence of Desire Deaden*, *Attumen Intangible Presence* e incantesimi PvP di *Faction Champions* / *Delrissa*).
+  - [x] **Coerenza UI `Castbar - Target warTank` & `Alert - Kick Now`**:
+    - `Castbar - Target`: Ciano `[SHIELD BASH / REFLECT]` / `[SHIELD BASH]` / `[PUMMEL]` / `[KICKABLE]` per `BOTH`/`KICK`; Magenta `[SPELL REFLECTION]` per `REFLECT` (o `BOTH` fuori melee/SB in CD); Grigio `[IMMUNE]` (mai falso Reflect) per `IMMUNE`.
+    - `Alert - Kick Now`: Si attiva rigorosamente quando `canKick == true` (mai su meccaniche `IMMUNE` o `REFLECT` pure), evitando falsi inviti al kick.
+  - [x] **Validazione & Collaudo**:
+    - Espansi test in `tests/test_interrupts.py` verificando CLEU `spellSchool == 1`, `isTradeSkill`, `worldboss`, whitelist boss Classic/TBC/WotLK, blacklist cure/AoE/Mana Burn/Soul Reaper/Steady Shot e buff immunità PvP.
+    - Suite parallela: 10/10 PASS; stringa e `docs/index.html` rigenerate e sincronizzate.
+    - Aggiornata tutta la documentazione bilingue ed eseguita operazione CP.

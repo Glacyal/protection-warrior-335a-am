@@ -275,4 +275,14 @@ A seguito della rimozione di `% armor` e `SBV` per garantire la massima pulizia 
    - Spaziatura: passo di $26\text{ px}$ ($24\text{ px}$ larghezza + $2\text{ px}$ gap).
    - Estensione totale: da $X = -243\text{ px}$ a $X = -141\text{ px}$ (ampiezza $102\text{ px}$), centrata su $X = -192\text{ px}$ con $3\text{ px}$ di margine simmetrico rispetto al pannello da $96\text{ px}$ e $2\text{ px}$ di distacco dalla Rage Bar.
    - Dimensione font subtext: 10pt per timer countdown `%c`, 9pt per etichette `OFF`, 8pt per etichetta `STANCE`.
+   - Soppressione cennata per `15 - Rotational Bar`: rilevamento canna da pesca/pesca attiva tramite `_G.PWHUD_IsFishingOrPole`.
    - **Divieto Assoluto di Regressione**: Non allargare mai il pannello né le icone oltre queste dimensioni salvo esplicita richiesta dell'utente.
+
+---
+
+## 8. Regola Tecnica Advisor Castbar 3.3.5a (`SPELL_CAST_START` & Distinzione Mob / PG / Boss)
+- In WotLK 3.3.5a `UnitCastingInfo` / `UnitChannelInfo` **non restituiscono `spellId` né `spellSchool`**:
+  - L'eventuale natura fisica (`spellSchool == 1`, es. *Steady Shot*, *Shattering Throw*, *Slam*, *Shoot*) deve essere estratta tramite listener `COMBAT_LOG_EVENT_UNFILTERED` (`SPELL_CAST_START` e `SPELL_CAST_SUCCESS`, parametro 11 = `spellSchool`, parametro 9 = `spellId`).
+  - I canali già avviati (`isChannel == true`) richiedono **KICK** e non vanno suggeriti come `REFLECT`.
+  - Su Raid/World Boss (`UnitClassification("target") == "worldboss"` o `UnitLevel("target") == -1`), la riflessione va disabilitata di default (es. *Kel'Thuzad Frostbolt* = `KICK`, *Lich King Soul Reaper* = `IMMUNE`) salvando solo la whitelist esplicita (*Fel Fireball*, *Deaden*, *Intangible Presence*, encounter PvP-like).
+  - Tutte le inizializzazioni dei frame listener globale vanno ancorate in regioni **foglia** (`Castbar - Target warTank`), MAI affidate esclusivamente a `group.actions.init`.

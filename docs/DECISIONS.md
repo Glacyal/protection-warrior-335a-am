@@ -180,3 +180,16 @@ Questo documento registra le decisioni architetturali e progettuali adottate nel
      - **Stivali (Slot 8)**: Solo se provvisti di tinker attivo d'Ingegneria (*Nitro Boosts*) o fallback su *Enraged Regeneration*.
   4. **Punto Unico di Inizializzazione Core**: Poiché WeakAuras 3.3.5a non esegue `actions.init` sul gruppo radice container, il bootstrap di `_G.PWHUD_InitCore` e la registrazione di `_G.PWHUD_UpdateUtilityRowPositions` risiedono perentoriamente nel trigger di `05 - Trinket 1 warTank` (`slot == 13`).
 - **Conseguenze**: Riga perfettamente bilanciata, centrata e reattiva in ogni configurazione di gear, zero buchi visivi, zero spreco di CPU e conformità totale alle direttive dell'utente.
+
+---
+
+## ADR-015: Advisor Castbar a 4 Stati Netti (`BOTH`, `KICK`, `REFLECT`, `IMMUNE`) per Classic, TBC e WotLK (Mob, PG, Boss)
+- **Stato**: Approvato / Implementato (Task 43 & 44)
+- **Contesto**: In WotLK 3.3.5a `UnitCastingInfo` / `UnitChannelInfo` non espongono `spellId`, `spellSchool` né alcun flag `notReflectable`. Valutare soltanto `notInterruptible` e `targettarget` generava falsi consigli `SPELL REFLECTION` su abilità Raid Boss non riflettibili, cure, evocazioni, AoE a terra, *Mana Burn*, canali già in corso e abilità fisiche (*Steady Shot*, *Shattering Throw*, *Soul Reaper*), nonché falsi inviti al kick su bersagli sotto *Aura Mastery* o *Hand of Protection*.
+- **Decisione**:
+  1. **Tracker CLEU (`_G.PWHUD_CastTracker`) su Regione Foglia**: Intercetta `SPELL_CAST_START` e `SPELL_CAST_SUCCESS` in `Castbar - Target warTank` (regione foglia `aurabar`, nel rispetto di ADR-014 / MEMORY §2.4) salvando `spellId` e `spellSchool` per `sourceGUID` senza allocazioni per-frame.
+  2. **Separazione Netta tra `canKick` e `canReflect`**:
+     - `canKick`: nega `notInterruptible`, immunità fisiche/interrupt (*Divine Shield*, *Hand of Protection*, *Ice Block*, *Aura Mastery* + *Concentration Aura*) e *Shroud of the Occult*.
+     - `canReflect`: richiede target diretto sul tank, esclude `isTradeSkill`, canali avviati, scuola fisica (`spellSchool == 1`), auto-reflect nemici, blacklist O(1) cure/AoE/*Mana Burn*/fisici, e nega di default i `worldboss`/livello `-1` ad eccezione della whitelist esplicita Classic/TBC/WotLK (*Fel Fireball*, *Deaden*, *Intangible Presence*, incantesimi PvP di *Faction Champions*/*Delrissa*).
+  3. **Allineamento Alert**: `Alert - Kick Now` si attiva solo quando `canKick == true`.
+- **Conseguenze**: Nessuno spreco di Rabbia o GCD su cast immuni o non riflettibili; comportamento affidabile in tutte le istanze Classic, TBC, WotLK, Arena e Battleground (vedi [CAST_ADVISOR_AUDIT.md](file:///d:/0Progetti/protection-warrior-335a-am/docs/CAST_ADVISOR_AUDIT.md)).

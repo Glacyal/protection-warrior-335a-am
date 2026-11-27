@@ -129,15 +129,26 @@ def build_alerts_auras() -> list[dict]:
             "xOffset": 0,
             "yOffset": 24,
             "customTextUpdate": "update",
+            "actions": {
+                "init": {
+                    "do_custom": True,
+                    "custom": "if not _G.PWHUD_GetTargetCastInfo and _G.PWHUD_InitCastAdvisor then _G.PWHUD_InitCastAdvisor() end",
+                },
+                "start": {},
+                "finish": {},
+            },
             "customText": r"""function()
                 if not UnitExists("target") or not UnitCanAttack("player", "target") or UnitIsDead("target") then
                     return ""
                 end
-                if not _G.PWHUD_GetTargetCastInfo then
-                    """ + SHARED_CASTBAR_LOGIC_LUA + r"""
+                if not _G.PWHUD_GetTargetCastInfo and _G.PWHUD_InitCastAdvisor then
+                    _G.PWHUD_InitCastAdvisor()
                 end
-                local ki = _G.PWHUD_GetTargetCastInfo()
-                if ki and not ki.notInterruptible and ki.canKick and ki.recommended then
+                local ki = _G.PWHUD_GetTargetCastInfo and _G.PWHUD_GetTargetCastInfo()
+                if ki and ki.canKick and ki.recommended then
+                    if ki.recommended == "SPELL REFLECTION" then
+                        return "|cFFFF55FFUSE SPELL REFLECTION!|r"
+                    end
                     return string.format("|cFF00FFFFINTERRUPT: %s!|r", ki.recommended)
                 end
                 return ""
@@ -152,11 +163,11 @@ def build_alerts_auras() -> list[dict]:
                             if not UnitExists("target") or not UnitCanAttack("player", "target") or UnitIsDead("target") then
                                 return false
                             end
-                            if not _G.PWHUD_GetTargetCastInfo then
-                                """ + SHARED_CASTBAR_LOGIC_LUA + r"""
+                            if not _G.PWHUD_GetTargetCastInfo and _G.PWHUD_InitCastAdvisor then
+                                _G.PWHUD_InitCastAdvisor()
                             end
-                            local ki = _G.PWHUD_GetTargetCastInfo()
-                            return (ki ~= nil and not ki.notInterruptible and ki.canKick)
+                            local ki = _G.PWHUD_GetTargetCastInfo and _G.PWHUD_GetTargetCastInfo()
+                            return (ki ~= nil and ki.canKick == true)
                         end""",
                     },
                     "untrigger": {
@@ -166,7 +177,7 @@ def build_alerts_auras() -> list[dict]:
                                 return true
                             end
                             local ki = _G.PWHUD_GetTargetCastInfo and _G.PWHUD_GetTargetCastInfo()
-                            return (ki == nil or ki.notInterruptible or not ki.canKick)
+                            return (ki == nil or not ki.canKick)
                         end"""
                     }
                 },

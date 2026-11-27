@@ -90,7 +90,20 @@ def run_tests():
     assert "cRank" in player_cast["customText"], "customText deve scompattare cRank per assegnare correttamente cTexture"
     assert "cRank" in player_cast["triggers"][1]["trigger"]["customIcon"], "customIcon deve scompattare cRank per assegnare cTexture all'icona"
 
-    print("[OK] test_interrupts completato con successo (Castbar Target e Player entrambe dx->sx con Kick/Reflect, icone dinamiche, canale 3.3.5a e untrigger immediato validati).")
+    # 6. Verifica Task 44: Distinzione netta a 4 stati (BOTH / KICK / REFLECT / IMMUNE) Classic / TBC / WotLK
+    cast_init = target_cast["actions"]["init"]["custom"]
+    cast_trig = target_cast["triggers"][1]["trigger"]["custom"]
+    assert "PWHUD_CastTracker" in cast_init and "PWHUD_CastTracker" in cast_trig, "Deve essere presente il tracker CLEU su regione foglia (MEMORY 2.4)"
+    assert "SPELL_CAST_START" in cast_init and "spellSchool == 1" in cast_init, "Deve escludere le abilita fisiche (spellSchool == 1) dalla Spell Reflection"
+    assert "isTradeSkill" in cast_init, "Deve filtrare i mestieri (isTradeSkill)"
+    assert "isWorldBoss" in cast_init and "worldboss" in cast_init, "Deve distinguere i Raid/World Boss da mob e PG"
+    assert "bossReflectWhitelistIds" in cast_init and "fel fireball" in cast_init and "deaden" in cast_init and "intangible presence" in cast_init
+    assert "mana burn" in cast_init and "steady shot" in cast_init and "blizzard" in cast_init and "soul reaper" in cast_init
+    assert "aura mastery" in cast_init and "hand of protection" in cast_init and "divine shield" in cast_init
+    assert "canKick" in cast_init and "canReflect" in cast_init
+    assert "PWHUD_InitCastAdvisor" in alert_kick["actions"]["init"]["custom"]
+
+    print("[OK] test_interrupts completato con successo (Castbar Target/Player, Tracker CLEU 4 stati Classic/TBC/WotLK e Alert Kick verificati).")
     return True
 
 if __name__ == "__main__":

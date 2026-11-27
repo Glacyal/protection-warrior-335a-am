@@ -81,11 +81,12 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
 - **Posizione**: X = 0, Y = +8 px
 - **Direzione Unificata da Destra a Sinistra**: Entrambe le barre condividono lo scorrimento progressivo da destra verso sinistra (`inverse = True`), garantendo continuità visiva ergonomica con lo swing timer e l'intero display centrale.
 - **Motore Primario — Castbar Bersaglio (`Castbar - Target warTank`, Priorità 1)**:
-  - Tracciamento in tempo reale di qualsiasi incantesimo o canalizzazione del target ostile corrente.
-  - **Advisor Intelligente Trifasico (Opzione A)**:
-    - *Lancio Interrompibile a Raggio Mischia*: Colore Ciano brillante (`[0.0, 0.85, 1.0]`), dicitura `NomeSpell [SHIELD BASH]` (o `[PUMMEL]` / `[STUN / CD]`).
-    - *Magia Diretta sul Tank con Scudo*: Colore Magenta/Viola (`[0.78, 0.25, 0.95]`), dicitura `NomeSpell [SPELL REFLECTION]`, prioritario anche a distanza (> 5 yd) o con Shield Bash in ricarica.
-    - *Abilità Non Interrompibile*: Colore Grigio piombo (`[0.50, 0.50, 0.50]`), dicitura `NomeSpell [IMMUNE]`, evitando cooldown sprecati.
+  - Tracciamento in tempo reale di qualsiasi incantesimo o canalizzazione del target ostile corrente (escludendo mestieri/pesca `isTradeSkill`).
+  - **Advisor Intelligente a 4 Stati (`BOTH` / `KICK` / `REFLECT` / `IMMUNE`) validato su Classic, TBC e WotLK (Mob, PG, Boss)** (dettagli completi in [CAST_ADVISOR_AUDIT.md](file:///d:/0Progetti/protection-warrior-335a-am/docs/CAST_ADVISOR_AUDIT.md)):
+    - **`BOTH` (Interrompibile + Riflettibile)**: Colore Ciano brillante (`[0.0, 0.85, 1.0]`), `NomeSpell [SHIELD BASH / REFLECT]` in melee con Scudo & Shield Bash pronto; commuta in Magenta (`[0.78, 0.25, 0.95]`, `NomeSpell [SPELL REFLECTION]`) fuori portata melee o con Shield Bash in ricarica.
+    - **`KICK` (Solo Interrompibile)**: Colore Ciano brillante (`[0.0, 0.85, 1.0]`), `NomeSpell [SHIELD BASH]` (o `[PUMMEL]` / `[KICK (CD)]` / `[KICKABLE]`). Applicato rigorosamente a cure, resurrezioni, evocazioni, AoE a terra, *Mana Burn*, cast fisici (`spellSchool == 1` es. *Steady Shot*, *Shoot*), canali già avviati e cast boss kick-only (es. *Kel'Thuzad Frostbolt*, *Vezax Searing Flames*, *Deathwhisper Frostbolt*) — **mai** suggerimenti falsi di Spell Reflection.
+    - **`REFLECT` (Solo Riflettibile)**: Colore Magenta/Viola (`[0.78, 0.25, 0.95]`), `NomeSpell [SPELL REFLECTION]`, quando l'interrupt è bloccato (es. magia diretta sotto *Aura Mastery* PvP) o su whitelist boss riflettibili (*Essence of Desire Deaden*, *Attumen Intangible Presence*, *Jaraxxus Fel Fireball*).
+    - **`IMMUNE` (Nessuna delle due)**: Colore Grigio piombo (`[0.50, 0.50, 0.50]`), `NomeSpell [IMMUNE]`, su ~95% delle abilità Raid Boss (*Soul Reaper*, *Infest*, *Defile*, *Frost Breath*, *Bone Spike*), abilità fisiche/AoE non interrompibili, e cure sotto *Divine Shield*, *Hand of Protection* o *Aura Mastery*.
   - **Cancellazione Istantanea su Kick**: Untrigger semantico immediato (`ki == nil`): non appena il bersaglio riceve un kick (dal tank o da alleati nel raid) o il cast termina, la barra svanisce all'istante.
 - **Motore Secondario — Castbar Giocatore (`Castbar - Player warTank`, Priorità 2)**:
   - Tracciamento fluido dei lanci e delle canalizzazioni del tank (armi a distanza, professioni, oggetti) con scorrimento uniforme da destra verso sinistra.
@@ -171,7 +172,7 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
   - Posizione: X = 0, Y = +78 px (centro visivo, sopra la Castbar).
   - Componenti:
     - `Alert - Emergency CD`: `|cFFFF0000CRIT HP (%.0f%%): POP %s!|r` (22pt, prioritizzazione salvavita Shield Wall / Last Stand / Shield Block / Pot quando il tank scende sotto il 35% HP, con isteresi attiva fino al recupero oltre l'80% HP o termine combat).
-    - `Alert - Kick Now`: `|cFF00FFFFINTERRUPT: %s!|r` (16pt, ciano brillante quando il target ostile `UnitCanAttack` sta canalizzando o lanciando un'abilità interrompibile, con gestione pulita dell'untrigger e supporto bilingue EN/IT per Shield Bash/Colpo di Scudo e Pummel/Percossa).
+    - `Alert - Kick Now`: `|cFF00FFFFINTERRUPT: %s!|r` (20pt, ciano brillante — o `|cFFFF55FFUSE SPELL REFLECTION!|r` su cast `BOTH` fuori melee/SB in CD — attivo esclusivamente quando `canKick == true` su bersaglio ostile `UnitCanAttack`, con soppressione automatica su `IMMUNE`/`REFLECT` puri e supporto multilingua EN/IT per Shield Bash/Colpo di Scudo e Pummel/Percossa).
 - **Indicatore Compatto Postura Difensiva Errata (`04 - Defensive Stance warTank`)**:
   - Posizione: X = -158 px, Y = 0 px (icona 28x28px, allineata alle shout e al pannello statistiche).
   - In postura corretta (*Defensive Stance*, Stance 2): **completamente invisibile** (zero distrazioni in combattimento).

@@ -319,6 +319,18 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.22 Classic/TBC/WotLK 4-State Cast Advisor (`BOTH` / `KICK` / `REFLECT` / `IMMUNE`)
+- **Full Cross-Expansion Audit & Classification**:
+  - Completed comprehensive verification in [docs/CAST_ADVISOR_AUDIT.md](file:///d:/0Progetti/protection-warrior-335a-am/docs/CAST_ADVISOR_AUDIT.md) mapping Mob, Enemy Player (PvP), and Boss interactions across Classic, TBC, and WotLK 3.3.5a.
+- **Event-Driven CLEU `spellId` & `spellSchool` Tracker (`_G.PWHUD_CastTracker`)**:
+  - Anchored inside leaf aura `Castbar - Target warTank` (avoiding group-level `actions.init` per WotLK WeakAuras behavior) capturing `SPELL_CAST_START` & `SPELL_CAST_SUCCESS` to determine exact `spellId` and `spellSchool` (blocking physical castbars `spellSchool == 1` like *Steady Shot* / *Shattering Throw* / *Shoot* from ever triggering Spell Reflection).
+- **Net 4-State Resolution Engine & Immunity Detection**:
+  - Separates `canKick` and `canReflect`: enforces `isTradeSkill` suppression, scans target buffs without GC allocations for *Divine Shield*, *Hand of Protection* (blocking physical kicks), *Ice Block*, *Aura Mastery* + *Concentration Aura*, *Shroud of the Occult*, and boss *Spell Reflection*.
+  - Enforces an O(1)-cached Anti-Reflect Blacklist (heals, rez, summons, ground/cone AoEs, *Mana Burn*, active channels, physical/boss mechanics) plus `worldboss` suppression with explicit Classic/TBC/WotLK Boss Reflect Whitelist (*Lord Jaraxxus Fel Fireball*, *Essence of Desire Deaden*, *Attumen Intangible Presence*, PvP-like council encounters) while keeping `Kel'Thuzad Frostbolt`, `General Vezax Searing Flames`, and `Lady Deathwhisper Frostbolt` strictly `KICK`-only.
+  - Updated `Alert - Kick Now` to trigger strictly when `canKick == true`.
+
+---
+
 ## 5. Technical Glossary & Tanking Acronyms (WotLK 3.3.5a)
 
 | Acronym | Full Name | Mechanics & Formulas |
