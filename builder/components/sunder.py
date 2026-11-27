@@ -37,7 +37,7 @@ def build_sunder_auras() -> list[dict]:
             "color": [1, 1, 1, 1],
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "customTextUpdate": "update",
             "customText": r"""function()

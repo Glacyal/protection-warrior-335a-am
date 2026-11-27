@@ -331,6 +331,18 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.23 `/wa` Preview Cleanup, Non-Overlapping Alerts & Utility Row Alignment
+- **Verified WotLK 3.3.5a Tank Buster Icon (`Spell_Shadow_Skull`)**:
+  - Replaced nonexistent `Spell_Shadow_SoulLeech_3` texture in `Tank Buster Alert` with native `Spell_Shadow_Skull`, eliminating the red `?` in `/wa` preview mode.
+- **Alert Vertical Clearance & Utility Preview Symmetrical Row (`IsOptionsOpen`)**:
+  - Raised `Alert - Emergency CD` to `yOffset: +6` (`net +84`) and `Alert - Kick Now` to `yOffset: +36` (`net +114`) so critical text cleanly clears `01 - Procs warTank` (`+52`).
+  - Fixed the `xOffset = 28` collision between `10 - Gloves` and `10b - Shield Block`, standardized all 11 static utility defaults to `-125 .. +125` (`24x24px`), and updated `_G.PWHUD_UpdateUtilityRowPositions()` to detect `WeakAuras.IsOptionsOpen()` so all 11 icons align without overlap during `/wa` configuration.
+- **Zero Yellow Cooldown Edge Needles & Clean Castbar Preview Icons**:
+  - Disabled `cooldownEdge: False` uniformly across Shouts, Emergency HP, Utility icons, and `19 - Sunder Armor Tracker`.
+  - Replaced placeholder `Interface\Icons\Temp` ("W") display icons on Castbars with `Ability_Warrior_ShieldBash` / `Ability_Warrior_DefensiveStance`, and fitted the `STANCE` label to `7pt`.
+
+---
+
 ## 5. Technical Glossary & Tanking Acronyms (WotLK 3.3.5a)
 
 | Acronym | Full Name | Mechanics & Formulas |

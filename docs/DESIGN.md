@@ -169,7 +169,7 @@ L'interfaccia utente è fondata su tre principi chiave per la gestione sicura de
   - **Banner Testuali Eliminati**: `Alert - Sword and Board`, `Alert - Boss Enraged` e `Alert - Wrong Stance` sono stati **definitivamente rimossi** dal gruppo `17 - Alerts warTank`.
   - **Proc Rotazionali in Gruppo Dedicato (`01 - Procs warTank`)**: *Sword and Board*, *Revenge Ready*, *Shield Slam* e i debuff su target vivono esclusivamente come icone compatte con timer e bordi dedicati sopra la barra di cast.
 - **Allarmi Critici di Sopravvivenza Residui (`17 - Alerts warTank`)**:
-  - Posizione: X = 0, Y = +78 px (centro visivo, sopra la Castbar).
+  - Posizione gruppo: X = 0, Y = +78 px (con child offset: `Alert - Emergency CD` a `y = +6` $\implies$ netto +84 px, e `Alert - Kick Now` a `y = +36` $\implies$ netto +114 px, completamente liberi sopra `01 - Procs` a +52 px).
   - Componenti:
     - `Alert - Emergency CD`: `|cFFFF0000CRIT HP (%.0f%%): POP %s!|r` (22pt, prioritizzazione salvavita Shield Wall / Last Stand / Shield Block / Pot quando il tank scende sotto il 35% HP, con isteresi attiva fino al recupero oltre l'80% HP o termine combat).
     - `Alert - Kick Now`: `|cFF00FFFFINTERRUPT: %s!|r` (20pt, ciano brillante — o `|cFFFF55FFUSE SPELL REFLECTION!|r` su cast `BOTH` fuori melee/SB in CD — attivo esclusivamente quando `canKick == true` su bersaglio ostile `UnitCanAttack`, con soppressione automatica su `IMMUNE`/`REFLECT` puri e supporto multilingua EN/IT per Shield Bash/Colpo di Scudo e Pummel/Percossa).

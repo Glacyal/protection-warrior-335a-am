@@ -1129,8 +1129,14 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
     -- RIPOSIZIONAMENTO DINAMICO NATURALE (CENTRATURA DINAMICA 1-10 ICONE)
     -- =========================================================================
     local lastRowUpdate = 0
+    local wasOptionsOpen = false
     _G.PWHUD_UpdateUtilityRowPositions = function(force)
         local now = GetTime()
+        local optionsOpen = (WeakAuras and WeakAuras.IsOptionsOpen and WeakAuras.IsOptionsOpen()) or false
+        if optionsOpen ~= wasOptionsOpen then
+            force = true
+            wasOptionsOpen = optionsOpen
+        end
         if not force and (now - lastRowUpdate < 0.15) then return end
         lastRowUpdate = now
 
@@ -1155,27 +1161,44 @@ SHARED_WARRIOR_CORE_BOOTSTRAP_LUA = r"""function()
         end
         if not group then return end
 
-        local hasT1 = _G.PWHUD_CheckSlotEquipped and _G.PWHUD_CheckSlotEquipped(13)
-        local hasT2 = _G.PWHUD_CheckSlotEquipped and _G.PWHUD_CheckSlotEquipped(14)
-        local hasRing = _G.PWHUD_CheckRingEquipped and _G.PWHUD_CheckRingEquipped()
-        local hasCloak = _G.PWHUD_CheckSlotEquipped and _G.PWHUD_CheckSlotEquipped(15)
-        local hasTier = _G.PWHUD_CheckTierSetEquipped and _G.PWHUD_CheckTierSetEquipped()
-        local hasEnchant = _G.PWHUD_CheckEnchantsEquipped and _G.PWHUD_CheckEnchantsEquipped()
-        local hasGloves = _G.PWHUD_CheckSlotEquipped and _G.PWHUD_CheckSlotEquipped(10)
-        local hasBoots = _G.PWHUD_CheckSlotEquipped and _G.PWHUD_CheckSlotEquipped(8)
-
         local activeOrder = {}
-        if hasT1 then table.insert(activeOrder, "05 - Trinket 1 warTank") end
-        if hasT2 then table.insert(activeOrder, "06 - Trinket 2 warTank") end
-        if hasRing then table.insert(activeOrder, "06b - Ring warTank") end
-        if hasCloak then table.insert(activeOrder, "07 - Cloak warTank") end
-        if hasTier then table.insert(activeOrder, "08 - Tier Set warTank") end
-        if hasEnchant then table.insert(activeOrder, "09 - Enchants warTank") end
-        if hasGloves then table.insert(activeOrder, "10 - Gloves warTank") end
-        table.insert(activeOrder, "10b - Shield Block warTank")
-        table.insert(activeOrder, "11 - Shield Wall warTank")
-        table.insert(activeOrder, "12 - Last Stand warTank")
-        if hasBoots then table.insert(activeOrder, "13 - Boots warTank") end
+        if optionsOpen then
+            -- In preview /wa tutte le 11 icone vengono allineate in modo pulito e senza sovrapposizioni
+            activeOrder = {
+                "05 - Trinket 1 warTank",
+                "06 - Trinket 2 warTank",
+                "06b - Ring warTank",
+                "07 - Cloak warTank",
+                "08 - Tier Set warTank",
+                "09 - Enchants warTank",
+                "10 - Gloves warTank",
+                "10b - Shield Block warTank",
+                "11 - Shield Wall warTank",
+                "12 - Last Stand warTank",
+                "13 - Boots warTank",
+            }
+        else
+            local hasT1 = _G.PWHUD_CheckSlotEquipped and _G.PWHUD_CheckSlotEquipped(13)
+            local hasT2 = _G.PWHUD_CheckSlotEquipped and _G.PWHUD_CheckSlotEquipped(14)
+            local hasRing = _G.PWHUD_CheckRingEquipped and _G.PWHUD_CheckRingEquipped()
+            local hasCloak = _G.PWHUD_CheckSlotEquipped and _G.PWHUD_CheckSlotEquipped(15)
+            local hasTier = _G.PWHUD_CheckTierSetEquipped and _G.PWHUD_CheckTierSetEquipped()
+            local hasEnchant = _G.PWHUD_CheckEnchantsEquipped and _G.PWHUD_CheckEnchantsEquipped()
+            local hasGloves = _G.PWHUD_CheckSlotEquipped and _G.PWHUD_CheckSlotEquipped(10)
+            local hasBoots = _G.PWHUD_CheckSlotEquipped and _G.PWHUD_CheckSlotEquipped(8)
+
+            if hasT1 then table.insert(activeOrder, "05 - Trinket 1 warTank") end
+            if hasT2 then table.insert(activeOrder, "06 - Trinket 2 warTank") end
+            if hasRing then table.insert(activeOrder, "06b - Ring warTank") end
+            if hasCloak then table.insert(activeOrder, "07 - Cloak warTank") end
+            if hasTier then table.insert(activeOrder, "08 - Tier Set warTank") end
+            if hasEnchant then table.insert(activeOrder, "09 - Enchants warTank") end
+            if hasGloves then table.insert(activeOrder, "10 - Gloves warTank") end
+            table.insert(activeOrder, "10b - Shield Block warTank")
+            table.insert(activeOrder, "11 - Shield Wall warTank")
+            table.insert(activeOrder, "12 - Last Stand warTank")
+            if hasBoots then table.insert(activeOrder, "13 - Boots warTank") end
+        end
 
         local N = #activeOrder
         local step = 38
@@ -1674,14 +1697,14 @@ def build_utility_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "icon",
             "internalVersion": 90,
-            "xOffset": -140,
+            "xOffset": -125,
             "yOffset": -45,
-            "width": 28,
-            "height": 28,
+            "width": 24,
+            "height": 24,
             "displayIcon": "Interface\\Icons\\INV_Misc_Ornament_02",
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "inverse": False,
             "customTextUpdate": "update",
@@ -1716,14 +1739,14 @@ def build_utility_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "icon",
             "internalVersion": 90,
-            "xOffset": -112,
+            "xOffset": -100,
             "yOffset": -45,
-            "width": 28,
-            "height": 28,
+            "width": 24,
+            "height": 24,
             "displayIcon": "Interface\\Icons\\INV_Misc_RubySanctum1",
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "inverse": False,
             "customTextUpdate": "update",
@@ -1758,14 +1781,14 @@ def build_utility_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "icon",
             "internalVersion": 90,
-            "xOffset": -84,
+            "xOffset": -75,
             "yOffset": -45,
-            "width": 28,
-            "height": 28,
+            "width": 24,
+            "height": 24,
             "displayIcon": "Interface\\Icons\\INV_Jewelry_Ring_84",
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "inverse": False,
             "customTextUpdate": "update",
@@ -1800,10 +1823,10 @@ def build_utility_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "icon",
             "internalVersion": 90,
-            "xOffset": -56,
+            "xOffset": -50,
             "yOffset": -45,
-            "width": 28,
-            "height": 28,
+            "width": 24,
+            "height": 24,
             "displayIcon": "Interface\\Icons\\INV_Misc_Cape_19",
             "cooldown": True,
             "cooldownSwipe": True,
@@ -1842,10 +1865,10 @@ def build_utility_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "icon",
             "internalVersion": 90,
-            "xOffset": -28,
+            "xOffset": -25,
             "yOffset": -45,
-            "width": 28,
-            "height": 28,
+            "width": 24,
+            "height": 24,
             "displayIcon": "Interface\\Icons\\Ability_Racial_BloodRage",
             "cooldown": True,
             "cooldownSwipe": True,
@@ -1886,12 +1909,12 @@ def build_utility_auras() -> list[dict]:
             "internalVersion": 90,
             "xOffset": 0,
             "yOffset": -45,
-            "width": 28,
-            "height": 28,
+            "width": 24,
+            "height": 24,
             "displayIcon": "Interface\\Icons\\Spell_Holy_BlessingOfProtection",
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "inverse": False,
             "customTextUpdate": "update",
@@ -1926,14 +1949,14 @@ def build_utility_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "icon",
             "internalVersion": 90,
-            "xOffset": 28,
+            "xOffset": 25,
             "yOffset": -45,
-            "width": 28,
-            "height": 28,
+            "width": 24,
+            "height": 24,
             "displayIcon": "Interface\\Icons\\INV_Gauntlets_26",
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "inverse": False,
             "customTextUpdate": "update",
@@ -1968,10 +1991,10 @@ def build_utility_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "icon",
             "internalVersion": 90,
-            "xOffset": 28,
+            "xOffset": 50,
             "yOffset": -45,
-            "width": 28,
-            "height": 28,
+            "width": 24,
+            "height": 24,
             "displayIcon": "Interface\\Icons\\Ability_Defensive",
             "cooldown": True,
             "cooldownSwipe": True,
@@ -2010,14 +2033,14 @@ def build_utility_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "icon",
             "internalVersion": 90,
-            "xOffset": 56,
+            "xOffset": 75,
             "yOffset": -45,
-            "width": 28,
-            "height": 28,
+            "width": 24,
+            "height": 24,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_ShieldWall",
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "inverse": False,
             "customTextUpdate": "update",
@@ -2052,14 +2075,14 @@ def build_utility_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "icon",
             "internalVersion": 90,
-            "xOffset": 84,
+            "xOffset": 100,
             "yOffset": -45,
-            "width": 28,
-            "height": 28,
+            "width": 24,
+            "height": 24,
             "displayIcon": "Interface\\Icons\\Spell_Nature_ShamanRage",
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "inverse": False,
             "customTextUpdate": "update",
@@ -2094,14 +2117,14 @@ def build_utility_auras() -> list[dict]:
             "parent": "Class Warrior (Protection)",
             "regionType": "icon",
             "internalVersion": 90,
-            "xOffset": 112,
+            "xOffset": 125,
             "yOffset": -45,
-            "width": 28,
-            "height": 28,
+            "width": 24,
+            "height": 24,
             "displayIcon": "Interface\\Icons\\Ability_Warrior_EnragedRegeneration",
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "inverse": False,
             "customTextUpdate": "update",

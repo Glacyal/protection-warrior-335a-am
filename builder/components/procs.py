@@ -207,7 +207,7 @@ TANK_BUSTER_CHECK_LUA = f"""function(force)
                     isAlert = true,
                     name = debuff.name,
                     count = count,
-                    icon = debuff.icon or "Interface\\\\Icons\\\\Spell_Shadow_SoulLeech_3",
+                    icon = debuff.icon or "Interface\\\\Icons\\\\Spell_Shadow_Skull",
                     dur = debuff.duration or 0,
                     exp = debuff.expirationTime or 0,
                     tag = tag
@@ -896,6 +896,8 @@ end""",
             "auto": False,
             "color": [1, 1, 1, 1],
             "cooldown": True,
+            "cooldownSwipe": True,
+            "cooldownEdge": False,
             "actions": {
                 "start": make_glow_action([1.0, 0.15, 0.15, 1.0]),
                 "finish": {"do_glow": True, "glow_action": "hide"},
@@ -950,7 +952,7 @@ end""",
             "internalVersion": 90,
             "width": 34,
             "height": 34,
-            "displayIcon": "Interface\\Icons\\Spell_Shadow_SoulLeech_3",
+            "displayIcon": "Interface\\Icons\\Spell_Shadow_Skull",
             "auto": False,
             "color": [1, 1, 1, 1],
             "cooldown": True,
@@ -978,10 +980,10 @@ end""",
                             return ""
                         end""",
                         "customIcon": """function()
-                            if not _G.PWHUD_CheckTankBusters then return "Interface\\Icons\\Spell_Shadow_SoulLeech_3" end
+                            if not _G.PWHUD_CheckTankBusters then return "Interface\\Icons\\Spell_Shadow_Skull" end
                             local isAlert, name, count, icon = _G.PWHUD_CheckTankBusters()
                             if isAlert and icon then return icon end
-                            return "Interface\\Icons\\Spell_Shadow_SoulLeech_3"
+                            return "Interface\\Icons\\Spell_Shadow_Skull"
                         end""",
                         "customDuration": """function()
                             if not _G.PWHUD_CheckTankBusters then return 0, 0 end

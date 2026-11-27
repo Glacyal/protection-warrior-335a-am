@@ -534,7 +534,7 @@ def build_bars_auras() -> list[dict]:
             "icon_side": "LEFT",
             "iconSource": 0,
             "auto": True,
-            "displayIcon": "Interface\\Icons\\Temp",
+            "displayIcon": "Interface\\Icons\\Ability_Warrior_ShieldBash",
             "customTextUpdate": "update",
             "actions": {
                 "init": {
@@ -624,7 +624,7 @@ def build_bars_auras() -> list[dict]:
                             if icon and aura_env and aura_env.region and aura_env.region.icon and aura_env.region.icon.SetTexture then
                                 aura_env.region.icon:SetTexture(icon)
                             end
-                            return icon or "Interface\\Icons\\Temp"
+                            return icon or "Interface\\Icons\\Ability_Warrior_ShieldBash"
                         end""",
                     },
                     "untrigger": {
@@ -667,7 +667,7 @@ def build_bars_auras() -> list[dict]:
             "icon_side": "LEFT",
             "iconSource": 0,
             "auto": True,
-            "displayIcon": "Interface\\Icons\\Temp",
+            "displayIcon": "Interface\\Icons\\Ability_Warrior_DefensiveStance",
             "customTextUpdate": "update",
             "customText": r"""function()
                 local spell, rank, disp, icon = UnitCastingInfo("player")
@@ -740,7 +740,7 @@ def build_bars_auras() -> list[dict]:
                             if icon and aura_env and aura_env.region and aura_env.region.icon and aura_env.region.icon.SetTexture then
                                 aura_env.region.icon:SetTexture(icon)
                             end
-                            return icon or "Interface\\Icons\\Temp"
+                            return icon or "Interface\\Icons\\Ability_Warrior_DefensiveStance"
                         end""",
                     },
                     "untrigger": {

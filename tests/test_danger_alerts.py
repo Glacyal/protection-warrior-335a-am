@@ -29,9 +29,12 @@ def run_tests():
     assert "Alert - Sword and Board" not in children_by_id["17 - Alerts warTank"]["controlledChildren"]
     assert children_by_id["17 - Alerts warTank"]["controlledChildren"] == ["Alert - Emergency CD", "Alert - Kick Now"]
 
-    # Tank Buster Alert in 01 - Procs (Task 20 - WotLK 3.3.5a Database)
+    # Tank Buster Alert in 01 - Procs (Task 20 - WotLK 3.3.5a Database + Task 45 valid icon)
     buster = children_by_id["Tank Buster Alert"]
     assert buster["width"] == 34
+    assert buster["displayIcon"] == "Interface\\Icons\\Spell_Shadow_Skull"
+    assert "Spell_Shadow_SoulLeech_3" not in str(buster)
+    assert em.get("cooldownEdge") is False
     assert buster["cooldown"] is True
     assert buster["cooldownSwipe"] is True
     assert buster["cooldownEdge"] is False

@@ -523,7 +523,7 @@ def build_buffs_auras() -> list[dict]:
             "color": [1, 1, 1, 1],
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "inverse": False,
             "customTextUpdate": "update",
@@ -623,7 +623,7 @@ def build_buffs_auras() -> list[dict]:
             "color": [1, 1, 1, 1],
             "cooldown": True,
             "cooldownSwipe": True,
-            "cooldownEdge": True,
+            "cooldownEdge": False,
             "cooldownTextDisabled": True,
             "inverse": False,
             "customTextUpdate": "update",
@@ -814,7 +814,7 @@ end""",
             "desaturate": False,
             "subRegions": [
                 {"type": "subbackground"},
-                make_subtext("STANCE", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=8, y_offset=1),
+                make_subtext("STANCE", justify="CENTER", anchor_point="INNER_BOTTOM", font_size=7, y_offset=1),
             ],
             "triggers": {
                 1: {

@@ -49,7 +49,7 @@ def build_alerts_auras() -> list[dict]:
             "selfPoint": "CENTER",
             "anchorPoint": "CENTER",
             "xOffset": 0,
-            "yOffset": -24,
+            "yOffset": 6,
             "customTextUpdate": "update",
             "customText": r"""function()
                 local actionName = nil
@@ -127,7 +127,7 @@ def build_alerts_auras() -> list[dict]:
             "selfPoint": "CENTER",
             "anchorPoint": "CENTER",
             "xOffset": 0,
-            "yOffset": 24,
+            "yOffset": 36,
             "customTextUpdate": "update",
             "actions": {
                 "init": {

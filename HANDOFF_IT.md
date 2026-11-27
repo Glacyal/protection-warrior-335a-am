@@ -329,6 +329,18 @@ protection-warrior-335a-am/
 
 ---
 
+### 4.23 Pulizia Totale Preview `/wa`, Rimozione Sovrapposizioni Alert/Utility & Icone Verificate 3.3.5a
+- **Eliminazione `?` su `Tank Buster Alert` (`Spell_Shadow_Skull`)**:
+  - Sostituita la texture non valida `Spell_Shadow_SoulLeech_3` con l'icona nativa 3.3.5a `Spell_Shadow_Skull`, eliminando il punto interrogativo rosso in preview `/wa`.
+- **Spaziatura Alert sopra Proc & Allineamento Riga Utility in `/wa` (`IsOptionsOpen`)**:
+  - Alzati `Alert - Emergency CD` (`yOffset: +6`, netto `+84`) e `Alert - Kick Now` (`yOffset: +36`, netto `+114`) sopra `01 - Procs warTank` (`+52`) per azzerare sovrapposizioni sui proc.
+  - Risolta la collisione statica tra `10 - Gloves` e `10b - Shield Block` (`xOffset = 28`), impostate le 11 coordinate statiche da `-125` a `+125` (`24x24px`) e aggiornata `_G.PWHUD_UpdateUtilityRowPositions()` con rilevamento `WeakAuras.IsOptionsOpen()` per allineare tutte e 11 le icone nella preview di `/wa`.
+- **Zero Lancette Gialle & Icone Pulite su Castbar**:
+  - Impostato uniformemente `cooldownEdge: False` su Shout, Emergency HP, Utility e `19 - Sunder Armor Tracker`.
+  - Sostituito il segnaposto `"W"` (`Temp`) sulle Castbar con `Ability_Warrior_ShieldBash` / `Ability_Warrior_DefensiveStance` e regolata la label `STANCE` a `7pt`.
+
+---
+
 ## 5. Glossario & Riferimento Sigle Tecniche Tanking (WotLK 3.3.5a)
 
 | Sigla | Termine Completo | Descrizione Meccanica e Formule WotLK |

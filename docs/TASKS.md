@@ -805,3 +805,15 @@ floor$), tabella di scaling $N = 3 \dots 11$ (step $25	ext{px} \dots 52	ext{px}$
     - Espansi test in `tests/test_interrupts.py` verificando CLEU `spellSchool == 1`, `isTradeSkill`, `worldboss`, whitelist boss Classic/TBC/WotLK, blacklist cure/AoE/Mana Burn/Soul Reaper/Steady Shot e buff immunità PvP.
     - Suite parallela: 10/10 PASS; stringa e `docs/index.html` rigenerate e sincronizzate.
     - Aggiornata tutta la documentazione bilingue ed eseguita operazione CP.
+
+- [x] **Task 45: Pulizia Totale Layout & Preview `/wa` WeakAuras (Zero `?`, Zero Sovrapposizioni Alert/Utility, Zero Lancette Gialle & Icone Temp)**:
+  - [x] **Analisi Visuale Preview `/wa` (Screenshot Utente)**:
+    1. **Punto Interrogativo Rosso `?` su `Tank Buster Alert`**: `Spell_Shadow_SoulLeech_3` risultava inesistente negli archivi MPQ di WotLK 3.3.5a (`procs.py`). Sostituito ovunque con la texture nativa verificata `Interface\Icons\Spell_Shadow_Skull`.
+    2. **Sovrapposizione di `Alert - Emergency CD` sui Proc**: Con `yOffset = -24` dentro `17 - Alerts warTank` (`y = 78`), la scritta `CRIT HP` cadeva a `y = 54`, coprendo i proc di `01 - Procs warTank` (`y = 52`). Spostati `Alert - Emergency CD` a `yOffset = +6` (netto `y = +84`) e `Alert - Kick Now` a `yOffset = +36` (netto `y = +114`).
+    3. **Sovrapposizioni & Buchi Riga Utility (`05 - 13`) in `/wa`**: `10 - Gloves` e `10b - Shield Block` condividevano `xOffset = 28`, mentre le icone inattive si aprivano alle coordinate statiche sopra quelle riposizionate a runtime. Allineati gli statici a $N=11$ (`24x24px`, passo `25px`: `-125` $\to$ `+125`) e aggiunta rilevazione `WeakAuras.IsOptionsOpen()` in `_G.PWHUD_UpdateUtilityRowPositions` per stendere in preview tutte le 11 icone ordinate senza urtare lo Stats Panel.
+    4. **Eliminazione Lancette Gialle (`cooldownEdge: False`)**: Disattivato `cooldownEdge` su tutte le icone rimanenti (`Battle Shout`, `Commanding Shout`, `Emergency Low HP`, `Sunder Armor Tracker` e tutte le 11 icone Utility).
+    5. **Sostituzione Icona `Temp` ("W") su Castbar & Rifinitura `STANCE`**: Impostate `Ability_Warrior_ShieldBash` (Target) e `Ability_Warrior_DefensiveStance` (Player) come `displayIcon` e ridotta l'etichetta `STANCE` a `7pt` per mantenerla contenuta nei `24x24px`.
+  - [x] **Validazione & Collaudo**:
+    - Aggiunti test vincolanti in `tests/test_tree_layout.py` e `tests/test_danger_alerts.py`.
+    - Stringa e `docs/index.html` rigenerate e sincronizzate (`82726` caratteri); documentato il fix in `DESIGN.md`, `HANDOFF.md`, `HANDOFF_IT.md` e `TASKS.md`.
+    - Suite parallela: 10/10 PASS (verifica finale pre-CP).

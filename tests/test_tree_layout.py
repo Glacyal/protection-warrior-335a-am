@@ -65,6 +65,26 @@ def run_tests():
     assert alerts["yOffset"] == 78
     assert "10b - Shield Block warTank" in children_by_id
 
+    # Verifica pulizia preview /wa (zero sovrapposizioni, zero cooldownEdge, zero icona Temp)
+    util_ids = [
+        "05 - Trinket 1 warTank", "06 - Trinket 2 warTank", "06b - Ring warTank",
+        "07 - Cloak warTank", "08 - Tier Set warTank", "09 - Enchants warTank",
+        "10 - Gloves warTank", "10b - Shield Block warTank", "11 - Shield Wall warTank",
+        "12 - Last Stand warTank", "13 - Boots warTank",
+    ]
+    util_xs = [children_by_id[u]["xOffset"] for u in util_ids]
+    assert util_xs == [-125, -100, -75, -50, -25, 0, 25, 50, 75, 100, 125], f"Utility static xOffsets non simmetrici: {util_xs}"
+    for u in util_ids:
+        assert children_by_id[u]["width"] == 24 and children_by_id[u]["height"] == 24
+        assert children_by_id[u]["cooldownEdge"] is False
+
+    assert children_by_id["Alert - Emergency CD"]["yOffset"] >= 6, "Alert - Emergency CD non deve sovrapporsi a 01 - Procs (y=52)"
+    assert children_by_id["Alert - Kick Now"]["yOffset"] >= 36
+    assert target_cast["displayIcon"] != "Interface\\Icons\\Temp"
+    assert player_cast["displayIcon"] != "Interface\\Icons\\Temp"
+    assert children_by_id["19 - Sunder Armor Tracker warTank"]["cooldownEdge"] is False
+    assert "IsOptionsOpen" in children_by_id["05 - Trinket 1 warTank"]["triggers"][1]["trigger"]["custom"]
+
     # Verifica Load Conditions: Classe Warrior + Talento Devastate (ID 103)
     assert root["load"]["use_class"] is True
     assert root["load"]["class"]["single"] == "WARRIOR"
